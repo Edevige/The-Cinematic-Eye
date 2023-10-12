@@ -2,7 +2,7 @@
 
     
     <div>
-        <div class="position-relative">
+        <div class="position-relative m-2">
           <div class=" row w-100 mx-auto"  >
             <div v-for="(item, index) in activeFilm" class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <img :src=imgUrl+item.backdrop_path class="img-fluid mx-auto d-block" :alt=index >
