@@ -1,7 +1,7 @@
 <script setup>
 
-import FilmCarousel from './components/FilmCarousel.vue';
-import FilmHeader from './components/FilmHeader.vue';
+import FilmCarousel from '@/components/FilmCarousel.vue';
+import FilmHeader from '@/components/FilmHeader.vue';
 </script>
 
 <template>
