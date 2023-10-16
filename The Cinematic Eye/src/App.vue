@@ -11,8 +11,8 @@ import FilmHeader from './components/FilmHeader.vue';
 
   <main>
     <div class="wrapper">
-      <FilmCarousel :prop-url="'https://api.themoviedb.org/3/movie/popular'"/>
-      <FilmCarousel :prop-url="'https://api.themoviedb.org/3/movie/top_rated'"/>
+      <FilmCarousel :prop-url="'https://api.themoviedb.org/3/movie/popular'" title="Popolari"/>
+      <FilmCarousel :prop-url="'https://api.themoviedb.org/3/movie/top_rated'" title="I Migliori"/>
     </div>
 
   </main>

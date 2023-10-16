@@ -2,21 +2,27 @@
 
     
     <div>
-        <div class="position-relative m-2">
-          <div class=" row w-100 mx-auto"  >
-            <div v-for="(item, index) in activeFilm" class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <img :src=imgUrl+item.backdrop_path class="img-fluid mx-auto d-block" :alt=index >
+        <div class="m-2 carousel-container">
+            <p class="h1 p-2">{{title }}</p>
+            <div class="position-relative ">
+                <div class=" row w-100 mx-auto"  >
+                    <div v-for="(item, index) in activeFilm" class="col-12 col-sm-6 col-md-4 col-lg-3 position-relative">
+                        <img :src=imgUrl+item.backdrop_path class="img-fluid mx-auto d-block" :alt=index >
+                        <div class="film-info">
+                            <a class="h6 p-2">{{item.original_title}}</a>
+                        </div>
+                    </div>
+                </div>
+            
+                <button @click="nextSlide()" class="carousel-control-prev" type="button" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button @click="nextSlide()" class="carousel-control-next" type="button" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
             </div>
-           
-        </div>
-          <button @click="nextSlide()" class="carousel-control-prev" type="button" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button @click="nextSlide()" class="carousel-control-next" type="button" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
         </div>
     </div>
 </template>
@@ -25,7 +31,8 @@
     import axios from 'axios';
     export default {
         props:{
-            propUrl: String
+            propUrl: String,
+            title: String
         },
         setup () {      
         },
@@ -83,12 +90,30 @@
 <style lang="scss" scoped>
 .carousel-control-next, .carousel-control-prev{
     width: 5%;
-    //background: gray;
     border-radius: 2em;
-    //top: 50px;
+}
+.carousel-container{
+    padding-bottom: 2rem;
+}
+.h1{
+    text-align: center;
+    color: whitesmoke;
+    padding-bottom: 0.5rem;
+}
 
-
-
+.film-info{
+    position: absolute;
+    bottom: 1rem;
+    left: 0;
+    right: 0;
+    text-align: center;
+    .h6{
+        background-color: darkslategray;
+        border-radius: 0.5rem;
+        color: whitesmoke;
+        text-decoration: none;
+        
+    }
 }
 
 </style>
