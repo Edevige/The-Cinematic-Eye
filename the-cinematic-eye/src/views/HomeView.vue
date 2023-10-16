@@ -1,14 +1,9 @@
 <script setup>
 
 import FilmCarousel from '@/components/FilmCarousel.vue';
-import FilmHeader from '@/components/FilmHeader.vue';
 </script>
 
 <template>
-  <header> 
-    <FilmHeader />
-  </header>
-
   <main>
     <div class="wrapper">
       <FilmCarousel :prop-url="'https://api.themoviedb.org/3/movie/popular'" title="Popolari"/>

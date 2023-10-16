@@ -1,8 +1,9 @@
+<script setup>
+import FilmHeader from '@/components/FilmHeader.vue';
+</script>
+
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
+  <FilmHeader/>
   
   <router-view/>
 </template>
