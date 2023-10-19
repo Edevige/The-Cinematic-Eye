@@ -15,9 +15,6 @@ import FilmCarousel from '@/components/FilmCarousel.vue';
 
 <style scoped>
 
-
-
-
 @media (min-width: 1024px) {
   
   main{
