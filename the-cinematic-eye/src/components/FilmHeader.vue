@@ -1,7 +1,10 @@
 <template>
     <nav class="navbar">
         <div class="container-fluid">
-            <a class="navbar-brand">The Cinematic Eye</a>
+            <router-link class="navbar-brand" to="/">
+                <img src="@/assets/logo.png" alt="Logo" height="24" class="d-inline-block align-text-top invertColor">
+                The Cinematic Eye
+            </router-link>
             
             <div class="d-flex">
                 <div class="d-flex">
