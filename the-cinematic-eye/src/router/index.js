@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import FilmView from '../views/FilmView.vue'
-
+import SigninView from '../views/SigninView.vue'
 const routes = [
   {
     path: '/',
@@ -20,6 +20,16 @@ const routes = [
     path: '/film/:id',
     name: 'film',
     component: FilmView
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: SigninView
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: 'ErrorView',
+    component: () => import('../components/Error.vue'),
   }
 ]
 
