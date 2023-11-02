@@ -5,15 +5,15 @@
                 <img class="img img-fluid w-auto" :src="imgUrl+filmObj.poster_path"/>
             </div>
             <div class="film-info col-9 d-flex flex-column">
-                <div class="pt-4"><h3>{{ filmObj.title }}</h3></div>
+                <div class="pt-4"><h2>{{ filmObj.title }}</h2></div>
                 <hr/>
-                <div><h5>{{ filmObj.original_title }}</h5></div>
+                <div class="mb-4"><h3>{{ filmObj.original_title }}</h3></div>
                 <div class="flex-fill d-flex flex-row">
                     <div class="d-flex flex-column justify-content-around">
-                       <div><h3 class="text-start">GENRE: {{ generes }}</h3></div>
-                       <div><h3 class="text-start">RUNNING TIME: {{ filmObj.runtime }}</h3></div>
-                       <div><h3 class="text-start">DIRECTOR: {{ director }}</h3></div>
-                       <div><h3 class="text-start">CREW:</h3></div>
+                       <div><h4 class="text-start">GENRE: {{ generes }}</h4></div>
+                       <div><h4 class="text-start">RUNNING TIME: {{ filmObj.runtime }}min</h4></div>
+                       <div><h4 class="text-start">DIRECTOR: {{ director }}</h4></div>
+                       <div><h4 class="text-start">CREW:</h4></div>
                     </div>
                     <div class="flex-fill">
                         <div class="d-grid gap-2 ps-5 pe-5 pt-2 pb-2 btn-div">
@@ -98,7 +98,7 @@ export default {
         console.log(f);
         let flag = true;
         f.data.results.forEach(vid => {
-            if(vid.site == 'YouTube' && flag){
+            if(vid.site == 'YouTube' && vid.type == 'Trailer' && flag){
                 this.trailerUrl += vid.key+'?rel=0';
                 flag = false;
                 return;
