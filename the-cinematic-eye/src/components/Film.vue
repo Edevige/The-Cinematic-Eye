@@ -2,7 +2,7 @@
     <div class="filmContainer">
         <div class="row">
             <div class="col-3">
-                <img class="img img-fluid w-auto" :src="imgUrl+filmObj.poster_path"/>
+                <img class="img img-fluid w-auto mt-4" :src="imgUrl+filmObj.poster_path"/>
             </div>
             <div class="film-info col-9 d-flex flex-column">
                 <div class="pt-4"><h2>{{ filmObj.title }}</h2></div>

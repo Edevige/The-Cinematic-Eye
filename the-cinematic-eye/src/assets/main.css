@@ -8,18 +8,18 @@
   font-weight: normal;
 }
 
-
+.darkbg{
+    background-color: darkslategrey;
+  }
 @media (min-width: 1024px) {
   body {
     display: flex;
     place-items: center;
     
   }
-  .darkbg{
-    background-color: darkslategrey;
-  }
+  
 
-  #app {
+  #mainApp {
     border-radius: 2rem;
     background-color: rgba(105, 105, 105, 0.5);
  

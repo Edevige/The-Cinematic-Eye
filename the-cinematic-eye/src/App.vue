@@ -1,11 +1,16 @@
 <script setup>
 import FilmHeader from '@/components/FilmHeader.vue';
+import FilmFooter from './components/FilmFooter.vue';
 </script>
 
 <template>
-  <FilmHeader/>
+  <div id="mainApp">
+    <FilmHeader/>
   
-  <router-view/>
+    <router-view/>
+  </div>
+  <FilmFooter/>
+  
 </template>
 
 <style lang="scss">
