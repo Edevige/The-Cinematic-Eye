@@ -87,9 +87,8 @@ export default {
         searchForm(par){
             if (par == '') {
                 this.search = !this.search;
-            } else {
-                
-            }
+            } 
+            //else {}
         }
     }
 

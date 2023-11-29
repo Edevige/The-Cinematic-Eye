@@ -78,13 +78,13 @@ export default {
                     return;
         }}});
         f.data.crew.forEach(element => {        
-            if(element.department = 'Directing'){
+            if(element.department == 'Directing'){
                 if(element.job == 'Director'){
                     this.director = element.original_name;
                     return;
         }}});
        },
-       getGenres(film){
+       getGenres(){
         let genresStr = "";
         this.filmObj.genres.forEach(g => {
             genresStr += g.name+" ";

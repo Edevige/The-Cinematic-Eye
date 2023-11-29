@@ -81,8 +81,6 @@ export default {
         border: none;
         resize: none;
         background-color: transparent;
-        -moz-appearance: none;
-        -webkit-appearance: none;
         -webkit-flex: 0 0 auto;
         flex: 0 0 auto;
         line-height: 1.4;

@@ -1,6 +1,6 @@
 <script>
 import axios from 'axios';
-import  Film  from "@/components/Film.vue";
+//import  Film  from "@/components/Film.vue";
 import { defineAsyncComponent } from 'vue'
 
 export default{
