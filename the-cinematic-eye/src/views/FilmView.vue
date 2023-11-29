@@ -2,12 +2,13 @@
 import axios from 'axios';
 import  Film  from "@/components/Film.vue";
 import { defineAsyncComponent } from 'vue'
+import FilmFooter from '@/components/FilmFooter.vue';
 
 export default{
   components: {
-    Film:
-    defineAsyncComponent(() =>import('@/components/Film.vue')),
-    },
+    Film: defineAsyncComponent(() => import('@/components/Film.vue')),
+    FilmFooter
+},
   data(){
     return{
     fetchParam:{
@@ -49,6 +50,7 @@ mounted(){
   <main>
     <div class="wrapper">
       <div v-for="item in films"> <Film  :filmObj=item /></div>
+      <FilmFooter/>
      
     </div>
 

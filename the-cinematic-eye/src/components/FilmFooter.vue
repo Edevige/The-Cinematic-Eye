@@ -49,24 +49,13 @@ export default {
         top: 0;
         width: 100%;
         height: 100%;
-        display: -ms-flexbox;
-        -ms-flex-flow: row nowrap;
-        display: -webkit-flex;
-        -webkit-align-items: center;
-        -webkit-align-content: center;
-        -webkit-justify-content: center;
         display: flex;
         align-items: center;
         align-content: center;
         justify-content: center;
-        -webkit-flex-flow: row nowrap;
         flex-flow: row nowrap;
         flex-direction: row;
-        -ms-writing-mode: lr-tb;
-        -webkit-writing-mode: horizontal-tb;
         writing-mode: horizontal-tb;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
         box-sizing: border-box;
         border-style: solid;
         overflow: hidden;
@@ -81,21 +70,11 @@ export default {
         border: none;
         resize: none;
         background-color: transparent;
-        -moz-appearance: none;
-        -webkit-appearance: none;
-        -webkit-flex: 0 0 auto;
+        appearance: none;
         flex: 0 0 auto;
         line-height: 1.4;
         text-align: center;
         white-space: nowrap;
-        //font-family: inherit;
-        //text-transform: inherit;
-        //font-weight: inherit;
-        //font-style: inherit;
-        //text-decoration: inherit;
-        color: inherit;
-        //font-size: inherit;
-        //letter-spacing: inherit;
         overflow: visible;
     }
 </style>
