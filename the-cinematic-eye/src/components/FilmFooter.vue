@@ -3,13 +3,30 @@
         <a href="https://github.com/Edevige/The-Cinematic-Eye" 
         target="_blank">
             <div class="fwidget widget-button" 
-            style="left: 130px; top: 400px; width: 248px; height: 72px; z-index: 417; 
-            transform: rotate(-12deg) translate(0px); border-radius: 40px;">
+            style="left: 155px; top: 372px; width: 248px; height: 72px; z-index: 417; 
+            transform: rotate(-33deg) translate(0px); border-radius: 40px;">
                 <div class="common-button" style="flex-direction: row;">
                     <div class="text" style="display: inline-block; width: auto; padding-left: 0px; text-indent: 0px; height: 72px; line-height: 72px;">GITHUB</div>
                 </div>
             </div>
         </a>
+        <a href="https://github.com/Edevige/The-Cinematic-Eye" 
+        target="_blank">
+            <div class="fwidget widget-button " 
+            style="left: 375px; top: 262px; width: 158px; height: 158px; z-index: 417; 
+            transform: rotate(-12deg) translate(0px); border-radius: 79px;">
+                <div class="common-button" style="flex-direction: row;">
+                    <div class="text" style="display: inline-block; width: auto; padding-left: 0px; text-indent: 0px; height: 72px; line-height: 72px;"><i class="bi bi-instagram"></i></div>
+                </div>
+            </div>
+        </a>
+        <a href="https://github.com/Edevige/The-Cinematic-Eye" 
+        target="_blank">
+            <div class="burst-12">
+                
+            </div>
+        </a>
+        
     </div>
 </template>
 
@@ -68,7 +85,7 @@ export default {
         -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
         box-sizing: border-box;
-        border-style: solid;
+        //border-style: solid;
         overflow: hidden;
     }
     .common-button .text {
@@ -96,4 +113,31 @@ export default {
         //letter-spacing: inherit;
         overflow: visible;
     }
+    .text .bi{
+        font-size: 65px;
+    }
+    .burst-12 {
+      background: rgb(255, 255, 255);
+      width: 80px;
+      height: 80px;
+      position: relative;
+      text-align: center;
+    }
+    .burst-12:before,
+    .burst-12:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 80px;
+      width: 80px;
+      background: rgb(255, 255, 255);
+    }
+    .burst-12:before {
+      transform: rotate(30deg);
+    }
+    .burst-12:after {
+      transform: rotate(60deg);
+    }
+  
 </style>

@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 app.get("/", (_req, res) => {
-  res.send({ message: "Hello, world!" });
+  res.send({ message: "Hello there!" });
 });
 
 app.listen(port, () => {
