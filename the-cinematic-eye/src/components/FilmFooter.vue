@@ -10,21 +10,31 @@
                 </div>
             </div>
         </a>
-        <a href="https://github.com/Edevige/The-Cinematic-Eye" 
+        <a href="https://tiktok.com" 
         target="_blank">
             <div class="fwidget widget-button " 
-            style="left: 375px; top: 262px; width: 158px; height: 158px; z-index: 417; 
+            style="left: 375px; top: 335px; width: 158px; height: 158px; z-index: 417; 
             transform: rotate(-12deg) translate(0px); border-radius: 79px;">
                 <div class="common-button" style="flex-direction: row;">
                     <div class="text" style="display: inline-block; width: auto; padding-left: 0px; text-indent: 0px; height: 72px; line-height: 72px;"><i class="bi bi-tiktok"></i></div>
                 </div>
             </div>
         </a>
-        <a href="https://github.com/Edevige/The-Cinematic-Eye" 
+        <a href="https://instagram.com" 
         target="_blank" >
-            <div class="burst-12" style="transform: rotate(27deg); top: 168px;
+            <div class="burst-12" style="transform: rotate(27deg); top: 400px;
   left: 547px;">
                 <i class="bi bi-instagram"></i>
+            </div>
+        </a>
+        <a href="http://127.0.0.1:5173" 
+        target="_blank">
+            <div class="fwidget widget-button" 
+            style="left: 555px;top: 365px; width: 248px; height: 72px; z-index: 417; 
+            transform: rotate(45deg) translate(0px); border-radius: 40px;">
+                <div class="common-button" style="flex-direction: row;">
+                    <div class="text" style="display: inline-block; width: auto; padding-left: 0px; text-indent: 0px; height: 72px; line-height: 72px;">CONTACT</div>
+                </div>
             </div>
         </a>
         
@@ -44,10 +54,11 @@ export default {
 <style lang="scss" scoped>
 
     .footDiv{
-        height: min-content;
+        height: 400px;
+        position: absolute;
     }
     .fwidget{
-        position: relative;
+        position: absolute;
     }
     .widget-button{
         background-color: rgb(255,254,244);
@@ -117,7 +128,7 @@ export default {
       background: rgb(255, 255, 255);
       width: 80px;
       height: 80px;
-      position: relative;
+      position: absolute;
       text-align: center;
     }
     .burst-12:before,
