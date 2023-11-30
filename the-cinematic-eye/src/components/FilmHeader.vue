@@ -8,7 +8,7 @@
             
             <div class="d-flex">
                 <div class="d-flex">
-                    <input v-if="search" class="form-control me-2" v-model="searchPar" type="search" placeholder="Search" aria-label="Search">
+                    <input v-if="search" class="form-control me-2" @keyup.enter="searchCall(searchPar)" v-model="searchPar" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" @click="searchForm(searchPar)"><i class="bi bi-search"></i></button>
                 </div>
                 
@@ -88,8 +88,14 @@ export default {
             if (par == '') {
                 this.search = !this.search;
             } 
-            //else {}
+            else {
+                this.searchCall(par);
+            }
+        } ,
+        searchCall(par){
+            this.$router.push('/s/'+ par);
         }
+        
     }
 
 }
