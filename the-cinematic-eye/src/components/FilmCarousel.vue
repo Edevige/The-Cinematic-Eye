@@ -29,6 +29,7 @@
 
 <script>
     import axios from 'axios';
+    import TMdbApi from '@/services/TMdbApi';
     export default {
         props:{
             propUrl: String,
@@ -38,14 +39,7 @@
         },
         data(){
             return{
-                fetchParam:{
-                    method: 'GET',
-                    url: this.propUrl,
-                    headers: {
-                        accept: 'application/json',
-                        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmOWVmNjBkZmQ4NjJmOGIxMzI0ZGY0OTQyZDMxNDA3MiIsInN1YiI6IjY1MjY5MDYyZmQ2MzAwNWQ3YTJjYWI5ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.NSW-bH3GyddzVOjp2igXra96BL6YYuS_6htBga53SRA'
-                    }
-                },
+                fetchParam: this.propUrl,
                 film: [],
                 imgUrl: "https://image.tmdb.org/t/p/original",
                 activeFilm: [],
@@ -55,8 +49,7 @@
         methods:{
             async fetchFilm(){
 
-                const f = await axios
-                    .request(this.fetchParam);
+                const f = await TMdbApi().get(this.fetchParam);
                 this.film = f.data.results;
                 this.activefilm();
             },

@@ -12,23 +12,16 @@ export default{
 },
   data(){
     return{
-    fetchParam:{
-                    method: 'GET',
-                    url: 'https://api.themoviedb.org/3/movie/',
-                    headers: {
-                        accept: 'application/json',
-                        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmOWVmNjBkZmQ4NjJmOGIxMzI0ZGY0OTQyZDMxNDA3MiIsInN1YiI6IjY1MjY5MDYyZmQ2MzAwNWQ3YTJjYWI5ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.NSW-bH3GyddzVOjp2igXra96BL6YYuS_6htBga53SRA'
-      }
-    },         
+    fetchParam:'movie/',      
     films: [],
     filmId: Number
     }
   },
   methods:{
     async getfilm(filmID){
-      this.fetchParam.url = this.fetchParam.url + filmID;
-      const f = await axios
-        .request(this.fetchParam);
+      this.fetchParam = this.fetchParam + filmID;
+      
+      const f = await TMdbApi().get(this.fetchParam);
       console.log(f);
       this.films[0]=f.data
     }

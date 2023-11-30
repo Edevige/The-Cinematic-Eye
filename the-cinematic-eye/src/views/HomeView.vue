@@ -6,8 +6,8 @@ import FilmCarousel from '@/components/FilmCarousel.vue';
 <template>
   <main>
     <div class="wrapper">
-      <FilmCarousel :prop-url="'https://api.themoviedb.org/3/movie/popular'" title="Popolari"/>
-      <FilmCarousel :prop-url="'https://api.themoviedb.org/3/movie/top_rated'" title="I Migliori"/>
+      <FilmCarousel :prop-url="'movie/popular'" title="Popolari"/>
+      <FilmCarousel :prop-url="'movie/top_rated'" title="I Migliori"/>
     </div>
 
   </main>
