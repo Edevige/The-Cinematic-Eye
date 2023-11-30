@@ -30,7 +30,10 @@ const routes = [
   {
     path: '/s/:sPar',
     name: 'search',
-    component: SearchView
+    component: SearchView,
+    meta:{
+      nav: true
+    }
   },
   {
     path: "/:pathMatch(.*)*",

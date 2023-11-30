@@ -7,7 +7,7 @@
                     src="https://placehold.co/200x300?text=No\nposter " />
 
             </div>
-            <div class="col">{{ item.original_title }}</div>
+            <div class="col d-flex align-items-center " style="color:white"><div class="h4 m-4">{{ item.original_title }}</div></div>
         </div>
     </div>
 </template>
