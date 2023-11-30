@@ -1,13 +1,15 @@
 <script>
+import FilmReviews from '@/components/FilmReviews.vue';
 import axios from 'axios';
+import TMdbApi from '@/services/TMdbApi';
 //import  Film  from "@/components/Film.vue";
 import { defineAsyncComponent } from 'vue'
 
 export default{
   components: {
-    Film:
-    defineAsyncComponent(() =>import('@/components/Film.vue')),
-    },
+    Film: defineAsyncComponent(() => import('@/components/Film.vue')),
+    FilmReviews
+},
   data(){
     return{
     fetchParam:{
@@ -48,8 +50,8 @@ mounted(){
 <template>
   <main>
     <div class="wrapper">
-      <div v-for="item in films"> <Film  :filmObj=item /></div>
-     
+      <div v-for="item in films"> <Film  :filmObj=item /><FilmReviews/></div>
+      
     </div>
 
   </main>
