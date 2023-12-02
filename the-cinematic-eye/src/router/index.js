@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import FilmView from '../views/FilmView.vue'
-import SigninView from '../views/SigninView.vue'
+import RegisterView from '../views/RegisterVieww.vue'
 import SearchView from '../views/SearchView.vue'
 const routes = [
   {
@@ -25,7 +25,7 @@ const routes = [
   {
     path: '/register',
     name: 'register',
-    component: SigninView
+    component: RegisterView
   },
   {
     path: '/s/:sPar',
