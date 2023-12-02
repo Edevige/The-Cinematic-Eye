@@ -1,5 +1,5 @@
 export default function(sequelize, DataTypes){
-    sequelize.define('Test', {
+    return sequelize.define('Test', {
         testField:{
             type: DataTypes.STRING,
             unique: true,
