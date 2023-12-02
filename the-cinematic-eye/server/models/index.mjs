@@ -14,13 +14,17 @@ const sequelize = new Sequelize(
 
 import Test from './Test.mjs';
 
-Test(sequelize, DataTypes)
+const test = Test(sequelize, DataTypes);
 
+import Users from './Users.mjs';
 
+const users = Users(sequelize, DataTypes);
+const db = {
+    
+}
 
-const db = {}
-
-export default {
+export {
     db,
-    sequelize
+    sequelize,
+    users
 }
