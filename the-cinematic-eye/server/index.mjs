@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
-import models from "./models/index.mjs"
+import {sequelize} from "./models/index.mjs"
 import routes from "./routes.mjs";
 import config from "./config/config.mjs";
 
@@ -12,10 +12,9 @@ app.use(express.json());
 app.use(cors());
 
 
-
 routes(app);
 
-models.sequelize.sync()
+sequelize.sync()
   .then(() => {
     app.listen(config.port, () => {
       console.log("Server listening on port", config.port);
