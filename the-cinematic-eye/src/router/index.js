@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import FilmView from '../views/FilmView.vue'
-import RegisterView from '../views/RegisterVieww.vue'
+import RegisterView from '../views/RegisterView.vue'
 import SearchView from '../views/SearchView.vue'
 const routes = [
   {

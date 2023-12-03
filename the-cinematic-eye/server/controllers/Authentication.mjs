@@ -9,8 +9,8 @@ export default {
         try {
             const user = await users.create(bodyHashed);
             res.send(user.toJSON()) 
-        } catch (error) { 
-            res.status(400).send({er: error})
+        } catch (e) { 
+            res.status(400).send({error: e})
         }         
     },
     async login(req, res){
@@ -27,7 +27,7 @@ export default {
             }
           } catch (err) {
             res.send({
-                er: err
+                error: err
             })
           }
     }
