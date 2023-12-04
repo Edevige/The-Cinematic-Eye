@@ -80,7 +80,7 @@ export default {
         return{
             search: false,
             searchPar: '',
-            logged: true
+            
         }
     },
     methods:{
@@ -96,6 +96,9 @@ export default {
             this.$router.push('/s/'+ par);
         }
         
+    },
+    computed:{
+        logged(){return this.$store.state.logged} 
     }
 
 }
