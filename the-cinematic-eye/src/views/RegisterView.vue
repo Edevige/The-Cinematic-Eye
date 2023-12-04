@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div class="d-flex flex-column">
+        <div class="h1 pt-3 m-auto">Register</div>
         <RegisterForm/>
     </div>
 </template>
@@ -17,5 +18,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+    .h1{
+    text-align: center;
+    color: whitesmoke;
+    padding-bottom: 0.5rem;
+}
 </style>

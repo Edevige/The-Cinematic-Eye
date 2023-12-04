@@ -3,21 +3,30 @@
         <form 
           name="register-form"
           autocomplete="off">
+          <div class="mb-3">
+          <label class="form-label" for="emailInput">Email</label>
           <input type="email"
-            label="Email"
+            class="form-control text-center"
+            id="emailInput"
+            placeholder="email"
             v-model="email">
-          <br>
+          </div>
+          <div class="mb-3">
+          <label class="form-label" for="passInput">Password</label>
           <input
-            label="Password"
+            class="form-control text-center"
+            id="passInput"
             type="password"
+            placeholder="password"
             v-model="password"
             autocomplete="new-password"
           >
+        </div>
         </form>
         <br>
-        <div class="danger-alert" v-html="error" />
+        <div v-if="error !== null " class="alert alert-danger alert-dismissible ms-5 me-5" role="alert" >{{ error }}<button type="button" class="btn-close" @click="error=null;" aria-label="Close"></button></div>
         <br>
-        <button type="button" class="btn btn-light" @click="register">Register
+        <button type="button" class="btn btn-light" @click="register" >Register
         </button>
     </div>
 </template>
@@ -52,8 +61,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    .danger-alert{
-        color:red;
-        font-size: 15px;
+    .alert{
+      font-size: large;
+      font-weight: bold;
+    }
+    .form-label{
+      font-size: x-large;
+      color:whitesmoke;
     }
 </style>
