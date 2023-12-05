@@ -1,4 +1,4 @@
-export default {
+const config = {
     port: 3000,
     db :{
         database: process.env.DB_NAME || 'tce' ,
@@ -10,5 +10,9 @@ export default {
             port: process.env.DB_PORT || '5432',
             //storage: './tce.sqlite'
         }
+    },
+    authentication: {
+       jwtSecret: process.env.JWT_SECRET || 'secret'
     }
-}
+};
+export default config
