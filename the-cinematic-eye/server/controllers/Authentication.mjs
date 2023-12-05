@@ -16,8 +16,7 @@ export default {
             const user = await users.create(req.body);
             res.send(user.toJSON()) 
         } catch (e) { 
-            console.log(e);
-            res.status(400).send({error: e})
+            res.status(400).send({error: 'Email already in use'})
         }         
     },
     async login(req, res){
