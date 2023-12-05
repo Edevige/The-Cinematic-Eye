@@ -1,4 +1,3 @@
-//import argon2id from "argon2";
 import {users} from "../models/index.mjs"
 import jsonwebtoken from "jsonwebtoken"
 import config from "../config/config.mjs";
@@ -13,13 +12,8 @@ function jwtTokenGen(user){
 
 export default {
     async register(req, res){
-            const bodyHashed = {
-                email: req.body.email,
-                //password: await argon2id.hash(req.body.password)
-                password: req.body.password
-            }
         try {
-            const user = await users.create(bodyHashed);
+            const user = await users.create(req.body);
             res.send(user.toJSON()) 
         } catch (e) { 
             console.log(e);
@@ -36,7 +30,6 @@ export default {
             if(!match){
                 res.status(403).send({ message: "NOP!" });
             }
-            //else if(await argon2id.verify(match.password, req.body.password)) {
             else if(match.comparePass(req.body.password)) {
                 res.status(200).send({ 
                     user: match,
