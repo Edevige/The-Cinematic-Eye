@@ -15,15 +15,18 @@ export default {
     },
     async login(req, res){
         try {
-            const match = await users.findAll({
+            const match = await users.findOne({
                 where: {
                   email: req.body.email
                 }
               });
-            if (await argon2id.verify(match[0].password, req.body.password)) {
-                res.send({ message: "General "+req.body.email });
+            if(!match){
+                res.status(403).send({ message: "NOP!" });
+            }
+            else if(await argon2id.verify(match.password, req.body.password)) {
+                res.status(200).send({ message: "General "+req.body.email });
             } else {
-                res.send({ message: "NOP!" });
+                res.status(403).send({ message: "NOP!" });
             }
           } catch (err) {
             res.send({
