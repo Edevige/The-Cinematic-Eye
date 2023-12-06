@@ -29,14 +29,18 @@ export default {
             if(!match){
                 res.status(403).send({ message: "NOP!" });
             }
-            else if(match.comparePass(req.body.password)) {
-                res.status(200).send({ 
+            else {
+                const isEqual = await match.comparePass(req.body.password);
+                if(isEqual) {
+                    res.status(200).send({ 
                     user: match,
                     token: jwtTokenGen(match.toJSON()),
                     message: "General "+req.body.email });
-            } else {
-                res.status(403).send({ message: "NOP!" });
-            }
+                } else {
+                    res.status(403).send({ message: "NOP!" });
+            
+
+            }}
           } catch (err) {
             res.status(500).send({
                 error: 'An unexpected error occured, conctat the system admin'

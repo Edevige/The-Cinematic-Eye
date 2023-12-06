@@ -5,9 +5,11 @@ async function hashPass(user){
         return
     }
     try {
-        return await argon2id.hash(user.password).then(hash => {user.setDataValue('password',hash)})
+         const passHash = await argon2id.hash(user.password);
+         user.setDataValue('password',passHash);
+         return passHash
     } catch (error) {
-        console.log(error);
+        console.log('error',error);
     }
     
 }
@@ -24,7 +26,6 @@ export default function(sequelize, DataTypes){
             allowNull: false 
         }
     },{hooks: {
-        beforeCreate: hashPass,
         beforeUpdate: hashPass,
         beforeSave: hashPass
     }})
@@ -32,8 +33,8 @@ export default function(sequelize, DataTypes){
 
     user.prototype.comparePass = async function (password){
         try {
-            console.log(this.password, password);
-            return await argon2id.verify(this.password, password);
+             const isEqual = await argon2id.verify(this.password, password);
+             return isEqual;
         } catch (error) {
             console.log(error);
         }
