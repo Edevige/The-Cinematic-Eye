@@ -27,7 +27,7 @@ export default {
                 }
               });
             if(!match){
-                res.status(403).send({ message: "NOP!" });
+                res.status(403).send({ error: "NOP!" });
             }
             else {
                 const isEqual = await match.comparePass(req.body.password);
@@ -37,9 +37,7 @@ export default {
                     token: jwtTokenGen(match.toJSON()),
                     message: "General "+req.body.email });
                 } else {
-                    res.status(403).send({ message: "NOP!" });
-            
-
+                    res.status(403).send({ error: "NOP!" });
             }}
           } catch (err) {
             res.status(500).send({
