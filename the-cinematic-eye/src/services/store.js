@@ -8,6 +8,12 @@ export default createStore({
     mutations:{
         mutTest(state){
             state.test='Mutation too';
+        },
+        login(state){
+            state.logged = true;
+        },
+        logout(state){
+            state.logged = true;
         }
     }
 })
