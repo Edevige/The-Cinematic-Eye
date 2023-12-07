@@ -45,18 +45,19 @@
                             <li><a class="dropdown-item" href="#">Action</a></li>
                             <li><a class="dropdown-item" href="#">Another action</a></li>
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li><button type="button" @click="logout" class="btn btn-outline-light me-2 ms-auto">LogOut</button></li>
                         </div>
                         <div v-if="!logged">
                             <form>
                                 <div class="bt-3 mb-3 me-2 ms-2">
-                                    <input type="email" class="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Email/Username">
+                                    <input type="email"  v-model="logMail" class="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Email/Username">
                                 </div>
                                 <div class="mb-3 me-2 ms-2">
-                                    <input type="password" class="form-control" id="InputPassword" placeholder="Password">
+                                    <input type="password" v-model="logPass" class="form-control" id="InputPassword" placeholder="Password">
                                 </div>
                                 <div class="d-flex justify-content-around">
                                     <i class="bi bi-google"></i>
-                                    <button type="submit" class="btn btn-outline-light ms-2">Log</button>
+                                    <button type="button" @click="login" class="btn btn-outline-light ms-2">Login</button>
                                 </div>
                                  
                             </form>
@@ -70,6 +71,7 @@
 </template>
 
 <script>
+import AuthenticationService from '@/services/AuthenticationService';
 export default {
     setup () {
         
@@ -80,6 +82,11 @@ export default {
         return{
             search: false,
             searchPar: '',
+            logMail: '',
+            logPass: '',
+            error: null,
+            user:{},
+            jwt: ''
             
         }
     },
@@ -94,6 +101,25 @@ export default {
         } ,
         searchCall(par){
             this.$router.push('/s/'+ par);
+        },
+        async login() {
+            try {
+                const response = await AuthenticationService.login({
+                    email: this.logMail,
+                    password: this.logPass
+                });
+                this.user = response.data.user;
+                this.jwt = response.data.token;
+                this.$store.commit('login')
+                
+            } catch (error) {
+                this.error = error.response.data.error
+            }
+        },
+        logout(){
+            this.user = {};
+            this.jwt = "";
+            this.$store.commit('logout')
         }
         
     },

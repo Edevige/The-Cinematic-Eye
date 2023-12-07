@@ -13,7 +13,7 @@ export default createStore({
             state.logged = true;
         },
         logout(state){
-            state.logged = true;
+            state.logged = false;
         }
     }
 })
