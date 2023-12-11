@@ -45,7 +45,7 @@
                             <li><a class="dropdown-item" href="#">Action</a></li>
                             <li><a class="dropdown-item" href="#">Another action</a></li>
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            <li><button type="button" @click="logout" class="btn btn-outline-light me-2 ms-auto">LogOut</button></li>
+                            <li><button type="button" @click="logout" class="btn btn-outline-light ms-5 me-auto">LogOut</button></li>
                         </div>
                         <div v-if="!logged">
                             <form>
@@ -84,10 +84,7 @@ export default {
             searchPar: '',
             logMail: '',
             logPass: '',
-            error: null,
-            user:{},
-            jwt: ''
-            
+            error: null,      
         }
     },
     methods:{
@@ -108,9 +105,12 @@ export default {
                     email: this.logMail,
                     password: this.logPass
                 });
-                this.user = response.data.user;
-                this.jwt = response.data.token;
+                this.$store.dispatch('setToken',response.data.token)
+                this.$store.dispatch('setUser',response.data.user)
                 this.$store.commit('login')
+
+                this.logMail = '';
+                this.logPass = '';
                 
             } catch (error) {
                 this.error = error.response.data.error
