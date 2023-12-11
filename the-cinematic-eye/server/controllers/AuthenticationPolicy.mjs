@@ -6,7 +6,7 @@ export default {
       email: Joi.string().email(),
       password: Joi.string().regex(new RegExp("^[a-zA-Z0-9]{8,32}$")),
       username: Joi.string().regex(new RegExp("^[a-zA-Z0-9]{2,16}$")),
-      name: Joi.string().regex(new RegExp("^(?![s.]+$)[a-zA-Zs.]*$")),
+      name: Joi.string().regex(new RegExp("^[a-zA-Z ,.'-]+")),
       birthdate: Joi.date().iso().less("now"),
     });
 
@@ -33,7 +33,7 @@ export default {
         case "name":
           res.status(400).send({
             error:
-              "Invalid username <br> Valid characters:<br>lowercase letters<br>uppercase letters<br>spaces",
+              "Invalid name <br> Valid characters:<br>lowercase letters<br>uppercase letters<br>spaces",
           });
           break;
         case "date":
