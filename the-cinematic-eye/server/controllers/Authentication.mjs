@@ -14,9 +14,13 @@ export default {
     async register(req, res){
         try {
             const user = await users.create(req.body);
-            res.send(user.toJSON()) 
+            res.send({
+                user: user.toJSON(),
+                token: jwtTokenGen(user.toJSON())
+            }
+                ) 
         } catch (e) { 
-            res.status(400).send({error: 'Email already in use'})
+            res.status(400).send({error: e})
         }         
     },
     async login(req, res){
