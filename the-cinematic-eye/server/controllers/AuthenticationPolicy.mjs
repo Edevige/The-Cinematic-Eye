@@ -7,7 +7,8 @@ export default {
       password: Joi.string().regex(new RegExp("^[a-zA-Z0-9]{8,32}$")),
       username: Joi.string().regex(new RegExp("^[a-zA-Z0-9]{2,16}$")),
       name: Joi.string().regex(new RegExp("^[a-zA-Z ,.'-]+")),
-      birthdate: Joi.date().iso().less("now")
+      birthdate: Joi.date().iso().less("now"),
+      subscribed: Joi.boolean(),
     });
 
     const { error, value } = schema.validate(req.body);
@@ -39,6 +40,11 @@ export default {
         case "date":
           res.status(400).send({
             error: "Invalid date",
+          });
+          break;
+        case "subscribed":
+          res.status(400).send({
+            error: "Invalid subscrition value",
           });
           break;
         default:

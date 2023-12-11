@@ -37,6 +37,10 @@ export default function (sequelize, DataTypes) {
       birthdate: {
         type: DataTypes.DATEONLY,
       },
+      subscribed: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
     },
     {
       hooks: {

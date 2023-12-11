@@ -12,7 +12,8 @@
       </div>
       <div class="mb-3">
         <label class="form-label" for="cpassInput">Confirm Password*</label>
-        <input class="form-control text-center" id="cpassInput" type="password" placeholder="password" v-model="cpassword">
+        <input class="form-control text-center" id="cpassInput" type="password" placeholder="password"
+          v-model="cpassword">
       </div>
       <div class="mb-3">
         <label class="form-label" for="userInput">Username*</label>
@@ -28,13 +29,17 @@
         <input class="form-control text-center" id="dateInput" type="date" v-model="birthdate">
       </div>
       <div class="mb-3" style="color: whitesmoke">
-        <input id="termsAgree" type="checkbox" v-model="termsCheck" class="me-2"/>I Agree with <router-link to="/terms" style="color:lightskyblue">The Cinematic Eye Terms</router-link>
-      </div>  
+        <input id="termsAgree" type="checkbox" v-model="termsCheck" class="me-2" />I Agree with <router-link to="/terms"
+          style="color:lightskyblue">The Cinematic Eye Terms</router-link>
+      </div>
+      <div class="mb-3" style="color: whitesmoke">
+        <input id="newsletter" type="checkbox" v-model="subCheck" class="me-2" />I want to subscribe to the TCE Newsletter
+      </div>
     </form>
     <br>
     <div v-if="error !== null" class="alert alert-danger alert-dismissible ms-5 me-5" role="alert">{{ error }}<button
         type="button" class="btn-close" @click="error = null;" aria-label="Close"></button></div>
-      
+
     <br>
     <button :disabled="!termsCheck" type="button" class="btn btn-light" @click="register">Register
     </button>
@@ -49,10 +54,11 @@ export default {
     return {
       email: '',
       password: '',
-      cpassword:'',
+      cpassword: '',
       username: '',
       name: '',
       birthdate: '',
+      subCheck: true,
       error: null,
       termsCheck: false
     }
@@ -67,13 +73,14 @@ export default {
         const authObj = {};
         authObj.email = this.email;
         authObj.password = this.password;
-        if(this.name != '' ) authObj.name = this.name;
-        if(this.username != '' ) authObj.username = this.username;
-        if(this.birthdate != '' ) authObj.birthdate = this.birthdate;
+        authObj.subscribed = this.subCheck;
+        if (this.name != '') authObj.name = this.name;
+        if (this.username != '') authObj.username = this.username;
+        if (this.birthdate != '') authObj.birthdate = this.birthdate;
         try {
           const response = await AuthenticationService.register(authObj);
-          this.$store.dispatch('setToken',response.data.token)
-          this.$store.dispatch('setUser',response.data.user)
+          this.$store.dispatch('setToken', response.data.token)
+          this.$store.dispatch('setUser', response.data.user)
           this.$store.commit('login')
           this.$router.push({
             name: 'home'
