@@ -20,7 +20,11 @@ export default {
             }
                 ) 
         } catch (e) { 
-            res.status(400).send({error: e})
+            if(e.errors[0].type == "unique violation"){
+                res.status(400).send({error: e.errors[0].message})
+            }
+            else res.status(400).send({error: 'Unexpected error conctat the system admin'})
+            
         }         
     },
     async login(req, res){

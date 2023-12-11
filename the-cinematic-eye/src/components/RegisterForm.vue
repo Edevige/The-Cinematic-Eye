@@ -27,12 +27,16 @@
         <label class="form-label" for="dateInput">Birthdate</label>
         <input class="form-control text-center" id="dateInput" type="date" v-model="birthdate">
       </div>
+      <div class="mb-3" style="color: whitesmoke">
+        <input id="termsAgree" type="checkbox" v-model="termsCheck" class="me-2"/>I Agree with <router-link to="/terms" style="color:lightskyblue">The Cinematic Eye Terms</router-link>
+      </div>  
     </form>
     <br>
     <div v-if="error !== null" class="alert alert-danger alert-dismissible ms-5 me-5" role="alert">{{ error }}<button
         type="button" class="btn-close" @click="error = null;" aria-label="Close"></button></div>
+      
     <br>
-    <button type="button" class="btn btn-light" @click="register">Register
+    <button :disabled="!termsCheck" type="button" class="btn btn-light" @click="register">Register
     </button>
   </div>
 </template>
@@ -49,7 +53,8 @@ export default {
       username: '',
       name: '',
       birthdate: '',
-      error: null
+      error: null,
+      termsCheck: false
     }
   },
   methods: {
