@@ -1,6 +1,7 @@
 <template>
     <div class="d-flex flex-column">
-        <div class="d-flex flex-row" v-for="item in film">
+        <div  v-for="item in filmFound">
+            <router-link class="d-flex flex-row" :to="'/film/'+item.id" style="appearance: none !important; text-decoration: none;">
             <div class="col-1">
                 <img v-if="item.poster_path != null" class="img img-fluid w-auto mt-4" :src="imgUrl + item.poster_path" />
                 <img v-if="item.poster_path == null" class="img img-fluid w-auto mt-4"
@@ -8,6 +9,7 @@
 
             </div>
             <div class="col d-flex align-items-center " style="color:white"><div class="h4 m-4">{{ item.original_title }}</div></div>
+            </router-link>
         </div>
     </div>
 </template>
@@ -19,43 +21,42 @@ export default {
 
     data() {
         return {
-            searchPar: String,
+            searchParameter: String,
             searchPath: 'search/movie?include_adult=false&query=',
-            film: {},
+            filmFound: [],
             imgUrl: "https://image.tmdb.org/t/p/original"
 
         }
     },
     methods: {
         async searchFilm(query) {
-            const f = await TMdbApi().get(this.searchPath + query);
-            this.film = f.data.results
-            const pagesN = f.data.total_pages;
-            for (let index = 2; index <= pagesN; index++) {
+            const filmsRetrived = await TMdbApi().get(this.searchPath + query);
+            this.filmFound = filmsRetrived.data.results
+            const pagesNumber = filmsRetrived.data.total_pages;
+            for (let index = 2; index <= pagesNumber; index++) {
                 let url = this.searchPath + query+ '&page=' + index;
-                const f = await TMdbApi().get(url);
-                this.film = this.film.concat(f.data.results);
+                const filmData = await TMdbApi().get(url);
+                this.filmFound = this.filmFound.concat(filmData.data.results);
                 
             }
-            this.film = this.film.sort(this.popSort);
+            this.filmFound = this.filmFound.sort(this.popSort);
         },
-        popSort(a, b) {
+        popSort(film1, film2) {
 
-            if (a.popularity < b.popularity) {
+            if (film1.popularity < film2.popularity) {
                 return 1;
-            } else if (a.popularity < b.popularity) {
+            } else if (film1.popularity < film2.popularity) {
                 return -1;
             }
-
             return 0;
         }
     },
     mounted() {
-        this.searchFilm(this.searchPar);
+        this.searchFilm(this.searchParameter);
     },
     created() {
         const par = this.$route.params.sPar;
-        this.searchPar = par;
+        this.searchParameter = par;
     }
 }
 
