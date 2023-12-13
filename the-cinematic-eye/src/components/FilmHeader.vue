@@ -38,7 +38,7 @@
                                             <div>123</div> 
                                             <div>777</div>
                                         </div> 
-                                        <div class="text-center">Username</div>
+                                        <div class="text-center">{{this.$store.state.user.username}}</div>
                                     </div>
                                 </div>
                             </li>
@@ -58,6 +58,12 @@
                                 <div class="d-flex justify-content-around">
                                     <i class="bi bi-google"></i>
                                     <button type="button" @click="login" class="btn btn-outline-light ms-2">Login</button>
+                                    
+                                </div>
+                                <hr/>
+                                <p class="mb-1 text-center" style="font-size: smaller;">If you're not registered</p>
+                                <div class="d-flex justify-content-around">
+                                    <button type="button" @click="$router.push('/register')" class="btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn">Sign Up</button>
                                 </div>
                                  
                             </form>
@@ -161,5 +167,10 @@ export default {
     .dropdown-menu{
         --bs-dropdown-bg: #{$menu-color};
         --bs-dropdown-color: whitesmoke;
+    }
+    .register-btn{
+        font-size: small;
+        background-color: whitesmoke;
+        font-weight: bolder;
     }
 </style>
