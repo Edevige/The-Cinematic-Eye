@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import FilmView from '../views/FilmView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import SearchView from '../views/SearchView.vue'
+import store from '@/services/store'
 const routes = [
   {
     path: '/',
@@ -25,7 +26,8 @@ const routes = [
   {
     path: '/register',
     name: 'register',
-    component: RegisterView
+    component: RegisterView,
+    meta: { guest: true }
   },
   {
     path: '/s/:sPar',
@@ -46,5 +48,11 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
 })
+
+router.beforeEach((to, from) => {
+  if(to.meta.guest && store.state.logged){
+     return false
+  } 
+});
 
 export default router
