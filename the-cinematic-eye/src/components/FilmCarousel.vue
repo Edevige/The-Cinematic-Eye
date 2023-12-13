@@ -28,7 +28,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import TMdbApi from '@/services/TMdbApi';
     export default {
         props:{
