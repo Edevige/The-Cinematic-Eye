@@ -13,7 +13,12 @@ export default {
     setup() {
         return {};
     },
-    components: { RegisterForm }
+    components: { RegisterForm },
+    methods:{
+        logCheck(){
+            if(this.$store.state.logged){router.push("/")}
+        }
+    }
 }
 </script>
 
