@@ -1,6 +1,7 @@
 import {users} from "../models/index.mjs"
 import jsonwebtoken from "jsonwebtoken"
 import config from "../config/config.mjs";
+import {OAuth2Client} from 'google-auth-library';
 
 function jwtTokenGen(user){
     const ONE_WEEK = 60 * 60 * 24 * 7;
@@ -9,6 +10,14 @@ function jwtTokenGen(user){
     })
 }
 
+const client= new OAuth2Client('599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com');
+
+async function verifyGoogleToken(id_token){
+    const ticket = await client.verifyIdToken({
+        idToken: id_token,
+        audience: '599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com',
+    });
+}
 
 export default {
     async register(req, res){
@@ -52,5 +61,28 @@ export default {
                 error: 'An unexpected error occured, conctat the system admin'
             })
           }
+    },
+    async loginWithGoogleToken(req, res){
+        const {id_token} = req.body;
+        try {
+            const payload = await verifyGoogleToken(id_token);
+            const {email, name, picture} = payload;
+
+            let user= await users.findOne({where:{email}});
+            if(!user){
+                user=await users.create({email,name,picture});
+            }
+
+            const token=jwtTokenGen(user.toJSON());
+            res.send({
+                user:user.toJSON(),
+                token,
+            })
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({
+                error: 'Errore nella verifica del token ID di Google o nella creazione utente'
+            });
+        }
     }
 }

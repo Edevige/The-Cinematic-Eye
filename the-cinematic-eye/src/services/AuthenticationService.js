@@ -6,5 +6,8 @@ export default {
   },
   login (credentials) {
     return Api().post('login', credentials)
+  },
+  loginWithGoogleToken(id_token){
+    return Api().post('login/google',{id_token})
   }
 }

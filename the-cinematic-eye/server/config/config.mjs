@@ -2,8 +2,8 @@ const config = {
     port: 3000,
     db :{
         database: process.env.DB_NAME || 'tce' ,
-        user: process.env.DB_USER || 'edvige',
-        password: process.env.DB_PASS || 'edvige',
+        user: process.env.DB_USER || 'postgres',
+        password: process.env.DB_PASS || 'biar',
         options: {
             dialect: process.env.DIALECT || 'postgres',
             host : process.env.DB_HOST || '127.0.0.1',

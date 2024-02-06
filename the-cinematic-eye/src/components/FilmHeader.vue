@@ -49,14 +49,18 @@
                         </div>
                         <div v-if="!logged">
                             <form>
+                                
                                 <div class="bt-3 mb-3 me-2 ms-2">
                                     <input type="email"  v-model="logMail" class="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Email/Username">
                                 </div>
                                 <div class="mb-3 me-2 ms-2">
                                     <input type="password" v-model="logPass" class="form-control" id="InputPassword" placeholder="Password">
                                 </div>
+                                
                                 <div class="d-flex justify-content-around">
-                                    <i class="bi bi-google"></i>
+   
+                                    
+                                    <button type="button" @click="loginWithGoogle" class="btn btn-outline-light ms-2">G</button>
                                     <button type="button" @click="login" class="btn btn-outline-light ms-2">Login</button>
                                     
                                 </div>
@@ -64,6 +68,9 @@
                                 <p class="mb-1 text-center" style="font-size: smaller;">If you're not registered</p>
                                 <div class="d-flex justify-content-around">
                                     <button type="button" @click="$router.push('/register')" class="btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn">Sign Up</button>
+                                    <div></div>
+                                    <button type="button" @click="registerWithGooggle" class="g-signin2" data-width="300" data-height="200" data-longtitle="true">Sign Up with Google</button>
+                                    <button type="button" @click="$router.push('/register')" class="btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn">FB</button>
                                 </div>
                                  
                             </form>
@@ -79,6 +86,10 @@
 <script>
 import AuthenticationService from '@/services/AuthenticationService';
 export default {
+    name: 'GoogleLoginComponent',
+    mounted(){
+        this.loadGoogleSignInScript();
+    },
     setup () {
         
 
@@ -126,6 +137,51 @@ export default {
             this.user = {};
             this.jwt = "";
             this.$store.commit('logout')
+        },
+        //Carico l'Api di Google per il login
+        loadGoogleSignInScript() {
+      if (typeof gapi === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://apis.google.com/js/platform.js';
+        script.onload = () => {
+          this.initializeGoogleSignIn();
+        };
+        document.head.appendChild(script);
+      } else {
+        this.initializeGoogleSignIn();
+      }
+    },
+    //Inizializzo l'Api di Google per il login
+    initializeGoogleSignIn() {
+      gapi.load('auth2', () => {
+        gapi.auth2.init({
+          client_id: '599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com', 
+        }).then(() => {
+        
+        });
+      });
+    },
+    //Login con Google
+        async loginWithGoogle(){
+            const googleAuth=gapi.auth2.getAuthInstance();
+            try {
+                const googleUser= await googleAuth.signIn();
+                //const profile = googleUser.getBasicProfile(); 
+                const id_token= googleUser.getAuthResponse().id_token;
+                const response = await AuthenticationService.loginGoogleToken(id_token);
+                if (response.data.success) {
+                    this.$store.dispatch('setToken', response.data.token);
+                    this.$store.dispatch('setUser', response.data.user);
+                    this.$store.commit(login);
+                    
+                } else {
+                    
+                 this.error = "Autenticazione fallita";
+                }
+            } catch (error) {
+                console.error(error);
+            }
+            
         }
         
     },

@@ -33,3 +33,9 @@ npm run build
 ```sh
 npm run lint
 ```
+### Pacchetti da installare
+
+```sh
+npm install google-auth-library
+```
+
