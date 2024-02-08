@@ -69,7 +69,7 @@
                                 <div class="d-flex justify-content-around">
                                     <button type="button" @click="$router.push('/register')" class="btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn">Sign Up</button>
                                     <div></div>
-                                    <button type="button" @click="registerWithGooggle" class="g-signin2" data-width="300" data-height="200" data-longtitle="true">Sign Up with Google</button>
+                                    <button type="button" @click="registerWithGooggle" class="g-signin2 btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn" data-width="300" data-height="200" data-longtitle="true"><i class="bi bi-google"></i></button>
                                     <button type="button" @click="$router.push('/register')" class="btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn">FB</button>
                                 </div>
                                  
@@ -138,6 +138,9 @@ export default {
             this.jwt = "";
             this.$store.commit('logout')
         },
+
+
+        
         //Carico l'Api di Google per il login
         loadGoogleSignInScript() {
       if (typeof gapi === 'undefined') {
@@ -218,6 +221,10 @@ export default {
     }
     .bi-google{
         font-size: x-large;
+        color: black !important;
+        &:hover{
+            color: whitesmoke !important;
+        }
     }
     .btn-usr{padding: 0;}
     .dropdown-menu{
