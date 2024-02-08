@@ -29,8 +29,8 @@
         <input class="form-control text-center" id="dateInput" type="date" v-model="birthdate">
       </div>
       <div class="mb-3" style="color: whitesmoke">
-        <input id="termsAgree" type="checkbox" v-model="termsCheck" class="me-2" />I Agree with <router-link to="/terms"
-          style="color:lightskyblue">The Cinematic Eye Terms</router-link>
+        <input id="termsAgree" type="checkbox" v-model="termsCheck" class="me-2" />I Agree with <div onmouseover="" @click="(newTab('terms'))"
+          style="color:lightskyblue; cursor: pointer;">The Cinematic Eye Terms</div>
       </div>
       <div class="mb-3" style="color: whitesmoke">
         <input id="newsletter" type="checkbox" v-model="subCheck" class="me-2" />I want to subscribe to the TCE Newsletter
@@ -89,6 +89,10 @@ export default {
           this.error = error.response.data.error
         }
       }
+    },
+    newTab(routeName){
+      const routeData = this.$router.resolve({name: routeName});
+      window.open(routeData.href, '_blank', "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
     }
   }
 }
