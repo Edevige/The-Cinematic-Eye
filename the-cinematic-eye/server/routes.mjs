@@ -10,5 +10,6 @@ export default function (app) {
 
   app.post("/register", AuthenticationPolicy.register, Authentication.register);
   app.post("/login", AuthenticationPolicy.register, Authentication.login);
+  app.post("/loginWithGoogleToken", AuthenticationPolicy.register, Authentication.loginWithGoogleToken);
   app.get("/usrSrc", SearchPolicy.usrSearch, Search.usrSearch);
 }
