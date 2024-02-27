@@ -13,10 +13,19 @@ function jwtTokenGen(user){
 const client= new OAuth2Client('599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com');
 
 async function verifyGoogleToken(id_token){
+    try{
     const ticket = await client.verifyIdToken({
         idToken: id_token,
         audience: '599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com',
     });
+    if(ticket){
+        const payload= ticket.getPayload;
+        return payload;
+    }
+}
+    catch(error) {
+        console.error("Errore verifica Token: ", error);
+    }
 }
 
 export default {
@@ -84,5 +93,8 @@ export default {
                 error: 'Errore nella verifica del token ID di Google o nella creazione utente'
             });
         }
+    },
+    async registerWithGoogleToken(req, res){
+
     }
 }
