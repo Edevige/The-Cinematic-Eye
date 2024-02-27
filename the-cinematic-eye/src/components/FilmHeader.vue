@@ -168,7 +168,7 @@ export default {
                 const googleUser= await googleAuth.signIn();
                 //const profile = googleUser.getBasicProfile(); 
                 const id_token= googleUser.getAuthResponse().id_token;
-                const response = await AuthenticationService.loginGoogleToken(id_token);
+                const response = await AuthenticationService.loginWithGoogleToken(id_token);
                 if (response.data.success) {
                     this.$store.dispatch('setToken', response.data.token);
                     this.$store.dispatch('setUser', response.data.user);
