@@ -88,7 +88,6 @@ import AuthenticationService from '@/services/AuthenticationService';
 export default {
     name: 'GoogleLoginComponent',
     mounted(){
-        this.loadGoogleSignInScript();
     },
     setup () {
         
@@ -142,28 +141,6 @@ export default {
 
         
         //Carico l'Api di Google per il login
-        loadGoogleSignInScript() {
-      if (typeof gapi === 'undefined') {
-        const script = document.createElement('script');
-        script.src = 'https://apis.google.com/js/platform.js';
-        script.onload = () => {
-          this.initializeGoogleSignIn();
-        };
-        document.head.appendChild(script);
-      } else {
-        this.initializeGoogleSignIn();
-      }
-    },
-    //Inizializzo l'Api di Google per il login
-    initializeGoogleSignIn() {
-      gapi.load('auth2', () => {
-        gapi.auth2.init({
-          client_id: '599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com', 
-        }).then(() => {
-        
-        });
-      });
-    },
     //Login con Google
         async loginWithGoogle(){
             const googleAuth=gapi.auth2.getAuthInstance();

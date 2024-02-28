@@ -7,4 +7,4 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
 import store from './services/store';
 
-createApp(App).use(router).use(store).mount('#app');
+createApp(App).use(router).use(store).use().mount('#app');
