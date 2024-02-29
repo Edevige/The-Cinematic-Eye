@@ -13,7 +13,7 @@ app.use(cors());
 
 routes(app);
 
-sequelize.sync().then(() => {
+sequelize.sync({alter:true}).then(() => {
   app.listen(config.port, () => {
     console.log("Server listening on port", config.port);
   });
