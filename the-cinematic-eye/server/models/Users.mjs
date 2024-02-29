@@ -41,6 +41,10 @@ export default function (sequelize, DataTypes) {
         type: DataTypes.BOOLEAN,
         allowNull: false,
       },
+      google_id:{
+        type: DataTypes.STRING,
+        allowNull: true
+      }
     },
     {
       hooks: {
