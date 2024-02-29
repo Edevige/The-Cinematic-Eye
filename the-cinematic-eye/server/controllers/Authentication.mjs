@@ -15,11 +15,11 @@ const client= new OAuth2Client('599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.ap
 async function verifyGoogleToken(id_token){
     try{
     const ticket = await client.verifyIdToken({
-        idToken: id_token,
+        id_Token: id_token,
         audience: '599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com',
     });
     if(ticket){
-        const payload= ticket.getPayload;
+        const payload= ticket.getPayload();
         return payload;
     }
 }
@@ -75,18 +75,20 @@ export default {
         const {id_token} = req.body;
         try {
             const payload = await verifyGoogleToken(id_token);
-            const {email, name, picture} = payload;
+            const email = payload['email'];
 
             let user= await users.findOne({where:{email}});
             if(!user){
-                user=await users.create({email,name,picture});
+                return res.status(404).send({
+                    error: "Utente non trovato. Per favore registrati."
+                })
             }
 
-            const token=jwtTokenGen(user.toJSON());
+            const token= jwtTokenGen(user.toJSON());
             res.send({
                 user:user.toJSON(),
                 token,
-            })
+            });
         } catch (error) {
             console.error(error);
             res.status(500).send({
@@ -94,7 +96,38 @@ export default {
             });
         }
     },
-    async registerWithGoogleToken(req, res){
 
+
+    async registerWithGoogleToken(req, res) {
+    const {id_token} = req.body;
+    try {
+        const payload = await verifyGoogleToken(id_token);
+        const email = payload.email;
+        let user = await users.findOne({where: {email}});
+        if (user) {
+            return res.status(400).send({error: 'Utente già esistente'});
+        }
+
+        const username = email.split('@')[0] + Math.random().toString(36).substring(2, 7);
+
+        // Impostazione di un placeholder sicuro per la password
+        const placeholderPassword = 'REGISTERED_VIA_GOOGLE';
+
+        // Creazione dell'utente con valori predefiniti o calcolati
+        user = await users.create({
+            email,
+            password: placeholderPassword, // Considera l'hashing o un approccio sicuro
+            username,
+            name,
+            subscribed: false, // Imposta il valore di default secondo la logica del tuo business
+        });
+
+        const token = jwtTokenGen(user.toJSON());
+        res.send({user: user.toJSON(), token});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({error: 'Errore nella creazione utente'});
     }
+}
+
 }
