@@ -147,7 +147,7 @@ export default {
         try {
             const result = await AuthenticationService.loginWithGoogleToken(response);
         } catch (error) {
-            
+            this.error = error.response.data.error
         }
         
     },

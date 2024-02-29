@@ -72,23 +72,22 @@ export default {
           }
     },
     async loginWithGoogleToken(req, res){
-        const {id_token} = req.body;
+        const id_token = req.body;
         try {
             const payload = await verifyGoogleToken(id_token);
-            const email = payload['email'];
+            const id_google = payload['sub'];
 
-            let user= await users.findOne({where:{email}});
+            let user= await users.findOne({where:{id_google}});
             if(!user){
                 return res.status(404).send({
                     error: "Utente non trovato. Per favore registrati."
                 })
             }
 
-            const token= jwtTokenGen(user.toJSON());
-            res.send({
-                user:user.toJSON(),
-                token,
-            });
+            res.status(200).send({ 
+                user: match,
+                token: jwtTokenGen(match.toJSON()),
+                message: "General "+req.body.email });
         } catch (error) {
             console.error(error);
             res.status(500).send({
@@ -99,23 +98,23 @@ export default {
 
 
     async registerWithGoogleToken(req, res) {
-    const {id_token} = req.body;
+    const id_token = req.body;
     try {
         const payload = await verifyGoogleToken(id_token);
-        const email = payload.email;
-        let user = await users.findOne({where: {email}});
+        const id_google = payload['sub'];
+        let user = await users.findOne({where: {id_google}});
         if (user) {
             return res.status(400).send({error: 'Utente già esistente'});
         }
 
-        const username = email.split('@')[0] + Math.random().toString(36).substring(2, 7);
+        const username = payload.email.split('@')[0] + Math.random().toString(36).substring(2, 7);
 
         // Impostazione di un placeholder sicuro per la password
         const placeholderPassword = 'REGISTERED_VIA_GOOGLE';
 
         // Creazione dell'utente con valori predefiniti o calcolati
         user = await users.create({
-            email,
+            payload,
             password: placeholderPassword, // Considera l'hashing o un approccio sicuro
             username,
             name,
