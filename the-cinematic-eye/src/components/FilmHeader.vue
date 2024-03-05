@@ -59,7 +59,9 @@
                                 
                                 <div class="d-flex justify-content-around">
    
-                                    <GoogleLogin :callback="loginWithGoogle">
+                                    <GoogleLogin 
+                                    client-id= '599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com'
+                                    @success="loginWithGoogle">
                                         <button class="btn btn-outline-light ms-2">G</button>
                                     </GoogleLogin>
                                     
@@ -87,6 +89,7 @@
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService';
+import { response } from 'express';
 export default {
     name: 'GoogleLoginComponent',
     mounted(){
@@ -142,19 +145,34 @@ export default {
         },
 
     //Login con Google
-    
-    async loginWithGoogle(response){
+    async loginWithGoogle(googleUser){
+    const idToken = googleUser.getAuthResponse().id_token;
         try {
-            const result = await AuthenticationService.loginWithGoogleToken(response);
+            const response= await AuthenticationService.loginWithGoogleToken({
+                idToken:idToken,
+            });
+            this.$store.dispatch('setToken', response.data.token);
+            this.$store.dispatch('setUser', response.data.user);
+            this.$store.commit('login');
         } catch (error) {
-            this.error = error.response.data.error
+            this.error = error.response.data.error;
         }
         
     },
     
-    async registerWithGoggle(){
-
-        }
+    async registerWithGoogle(googleUser) {
+    const idToken = googleUser.getAuthResponse().id_token;
+    try {
+        const response = await AuthenticationService.registerWithGoogleToken({
+            idToken: idToken,
+        });
+        this.$store.dispatch('setToken', response.data.token);
+        this.$store.dispatch('setUser', response.data.user);
+        this.$store.commit('login'); 
+    } catch (error) {
+        this.error = error.response.data.error;
+    }
+},
         
     },
     computed:{
