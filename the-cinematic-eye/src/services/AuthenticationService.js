@@ -9,6 +9,9 @@ export default {
     return Api().post('login', credentials)
   },
   loginWithGoogleToken(id_token){
-    return Api().post('loginWithGoogleToken',id_token)
+    return Api().post('loginWithGoogleToken',{id_token})
+  },
+  registerWithGoogleToken(id_token){
+    return Api().post('registerWithGoogleToken', {id_token})
   }
 }
