@@ -60,7 +60,6 @@
                                 <div class="d-flex justify-content-around">
    
                                     <GoogleLogin 
-                                    client-id= '599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com'
                                     @success="loginWithGoogle">
                                         <button class="btn btn-outline-light ms-2">G</button>
                                     </GoogleLogin>
@@ -73,7 +72,10 @@
                                 <div class="d-flex justify-content-around">
                                     <button type="button" @click="$router.push('/register')" class="btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn">Sign Up</button>
                                     <div></div>
-                                    <button type="button" @click="registerWithGoggle" class="g-signin2 btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn" data-width="300" data-height="200" data-longtitle="true"><i class="bi bi-google"></i></button>
+                                    <GoogleLogin 
+                                    @success="registerWithGoogle">
+                                        <button class="btn btn-outline-light ms-2">G</button>
+                                    </GoogleLogin>
                                     <button type="button" @click="$router.push('/register')" class="btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn">FB</button>
                                 </div>
                                  
