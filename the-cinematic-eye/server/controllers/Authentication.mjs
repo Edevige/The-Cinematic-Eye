@@ -15,7 +15,7 @@ const client= new OAuth2Client('599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.ap
 async function verifyGoogleToken(id_token){
     try{
     const ticket = await client.verifyIdToken({
-        id_Token: id_token,
+        idToken: id_token,
         audience: '599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com',
     });
     if(ticket){
@@ -72,7 +72,7 @@ export default {
           }
     },
     async loginWithGoogleToken(req, res){
-        const id_token = req.body;
+        const {id_token} = req.body;
         try {
             const payload = await verifyGoogleToken(id_token);
             const id_google = payload['sub'];
@@ -85,9 +85,9 @@ export default {
             }
 
             res.status(200).send({ 
-                user: match,
-                token: jwtTokenGen(match.toJSON()),
-                message: "General "+req.body.email });
+                user: user,
+                token: jwtTokenGen(user.toJSON())
+            });
         } catch (error) {
             console.error(error);
             res.status(500).send({
@@ -98,7 +98,7 @@ export default {
 
 
     async registerWithGoogleToken(req, res) {
-    const id_token = req.body;
+    const {id_token} = req.body;
     try {
         const payload = await verifyGoogleToken(id_token);
         const id_google = payload['sub'];
@@ -107,18 +107,15 @@ export default {
             return res.status(400).send({error: 'Utente già esistente'});
         }
 
-        const username = payload.email.split('@')[0] + Math.random().toString(36).substring(2, 7);
-
-        // Impostazione di un placeholder sicuro per la password
-        const placeholderPassword = 'REGISTERED_VIA_GOOGLE';
-
         // Creazione dell'utente con valori predefiniti o calcolati
         user = await users.create({
-            payload,
-            password: placeholderPassword, // Considera l'hashing o un approccio sicuro
-            username,
-            name,
-            subscribed: false, // Imposta il valore di default secondo la logica del tuo business
+            email: payload.email, 
+            password: 'REGISTERED_VIA_GOOGLE', 
+            username: payload.email.split('@')[0],
+            name: payload.name, 
+            birthdate: null, 
+            subscribed: false, 
+            google_id: id_google 
         });
 
         const token = jwtTokenGen(user.toJSON());
