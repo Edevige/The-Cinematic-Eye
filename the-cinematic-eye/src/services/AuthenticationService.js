@@ -8,10 +8,10 @@ export default {
   login (credentials) {
     return Api().post('login', credentials)
   },
-  loginWithGoogleToken(id_token){
-    return Api().post('loginWithGoogleToken',{id_token})
+  loginWithGoogleToken(credentials){
+    return Api().post('loginWithGoogleToken',credentials)
   },
-  registerWithGoogleToken(id_token){
-    return Api().post('registerWithGoogleToken', {id_token})
+  registerWithGoogleToken(credentials){
+    return Api().post('registerWithGoogleToken', credentials)
   }
 }
