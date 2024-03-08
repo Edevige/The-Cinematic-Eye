@@ -59,10 +59,11 @@
                                 
                                 <div class="d-flex justify-content-around">
    
-                                    <GoogleLogin 
-                                    @success="loginWithGoogle">
-                                        <button class="btn btn-outline-light ms-2">G</button>
-                                    </GoogleLogin>
+                                    <GoogleSignInButton
+                                    @success="loginWithGoogle"
+                                    type="icon"
+                                    shape="circle">
+                                    </GoogleSignInButton>
                                     
                                     <button type="button" @click="login" class="btn btn-outline-light ms-2">Login</button>
                                     
@@ -72,10 +73,10 @@
                                 <div class="d-flex justify-content-around">
                                     <button type="button" @click="$router.push('/register')" class="btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn">Sign Up</button>
                                     <div></div>
-                                    <GoogleLogin 
-                                    @success="registerWithGoogle">
-                                        <button class="btn btn-outline-light ms-2">G</button>
-                                    </GoogleLogin>
+                                    <GoogleSignInButton
+                                    @success="registerWithGoogle"
+                                    type="icon">
+                                    </GoogleSignInButton>
                                     <button type="button" @click="$router.push('/register')" class="btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn">FB</button>
                                 </div>
                                  
@@ -91,11 +92,16 @@
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService';
-import { response } from 'express';
+//import { response } from 'express';
+import { GoogleSignInButton } from 'vue3-google-signin';
+
 export default {
     name: 'GoogleLoginComponent',
     mounted(){
         
+    },
+    components:{
+        GoogleSignInButton
     },
     setup () {
         
@@ -147,32 +153,30 @@ export default {
         },
 
     //Login con Google
-    async loginWithGoogle(googleUser){
-    const idToken = googleUser.getAuthResponse().id_token;
-        try {
-            const response= await AuthenticationService.loginWithGoogleToken({
-                idToken:idToken,
-            });
-            this.$store.dispatch('setToken', response.data.token);
-            this.$store.dispatch('setUser', response.data.user);
-            this.$store.commit('login');
-        } catch (error) {
-            this.error = error.response.data.error;
-        }
+    async loginWithGoogle(response){
+    const {access_token} = response;
+    try {
+        const {Gregister} =await AuthenticationService.loginWithGoogleToken({access_token});
+        this.$store.dispatch('setToken', Gregister.data.token);
+        this.$store.dispatch('setUser', Gregister.data.user);
+        this.$store.commit('login');
+    } catch (error) {
+        this.error = error.Gregister.data.error;
+    }
         
     },
     
-    async registerWithGoogle(googleUser) {
-    const idToken = googleUser.getAuthResponse().id_token;
+    async registerWithGoogle(response) {
+    const {access_token} = response;
     try {
-        const response = await AuthenticationService.registerWithGoogleToken({
-            idToken: idToken,
+        const {Gregister} =await AuthenticationService.registerWithGoogleToken({
+            idToken:access_token
         });
-        this.$store.dispatch('setToken', response.data.token);
-        this.$store.dispatch('setUser', response.data.user);
-        this.$store.commit('login'); 
+        this.$store.dispatch('setToken', Gregister.data.token);
+        this.$store.dispatch('setUser', Gregister.data.user);
+        this.$store.commit('login');
     } catch (error) {
-        this.error = error.response.data.error;
+        this.error = error.Gregister.data.error;
     }
 },
         
@@ -183,6 +187,7 @@ export default {
 
 }
 </script>
+
 
 <style lang="scss" scoped>
     $menu-color: rgb(26, 68, 67);

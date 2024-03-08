@@ -1,7 +1,6 @@
 import {users} from "../models/index.mjs"
 import jsonwebtoken from "jsonwebtoken"
 import config from "../config/config.mjs";
-import {OAuth2Client} from 'google-auth-library';
 
 function jwtTokenGen(user){
     const ONE_WEEK = 60 * 60 * 24 * 7;
@@ -10,13 +9,14 @@ function jwtTokenGen(user){
     })
 }
 
-const client= new OAuth2Client('599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com');
+const {OAuth2Client} = require('google-auth-library');
+const client= new OAuth2Client(config.googleClientId);
 
 async function verifyGoogleToken(id_token){
     try{
     const ticket = await client.verifyIdToken({
         idToken: id_token,
-        audience: '599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com',
+        audience: config.googleClientId,
     });
     if(ticket){
         const payload= ticket.getPayload();
@@ -79,9 +79,15 @@ export default {
 
             let user= await users.findOne({where:{id_google}});
             if(!user){
-                return res.status(404).send({
-                    error: "Utente non trovato. Per favore registrati."
-                })
+                user = await users.create({
+                    email: payload.email, 
+                    password: 'REGISTERED_VIA_GOOGLE', 
+                    username: payload.email.split('@')[0],
+                    name: payload.name, 
+                    birthdate: null, 
+                    subscribed: false, 
+                    google_id: id_google 
+                });
             }
 
             res.status(200).send({ 
@@ -98,7 +104,7 @@ export default {
 
 
     async registerWithGoogleToken(req, res) {
-    const {id_token} = req.body;
+    const id_token = req.body;
     try {
         const payload = await verifyGoogleToken(id_token);
         const id_google = payload['sub'];

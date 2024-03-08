@@ -10,6 +10,12 @@ const app = express();
 app.use(morgan("combined"));
 app.use(express.json());
 app.use(cors());
+app.use((req, res, next) => {
+  //res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  res.setHeader('Cross-Origin-Opener-Policy', 'Access-Control-Allow-Origin');
+  res.setHeader('Referrer-Policy', 'no-referrer-when-downgrade');
+  next();
+});
 
 routes(app);
 
