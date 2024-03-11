@@ -72,12 +72,13 @@ export default {
           }
     },
     async loginWithGoogleToken(req, res){
-        const id_token = req.body;
+        const id_token = req.body.token_id;
+        console.log("id_token arrivato: ", req.body.token_id);
         try {
             const payload = await verifyGoogleToken(id_token);
-            const id_google = payload['sub'];
+            const google_id = payload['sub'];
 
-            let user= await users.findOne({where:{id_google}});
+            let user= await users.findOne({where:{google_id}});
             if(!user){
                 user = await users.create({
                     email: payload.email, 
@@ -86,11 +87,12 @@ export default {
                     name: payload.name, 
                     birthdate: null, 
                     subscribed: false, 
-                    google_id: id_google 
+                    google_id: google_id 
                 });
 
                 const token = jwtTokenGen(user.toJSON());
-                res.send({user: user.toJSON(), token});
+                res.status(200).send({user: user.toJSON(), token});
+
             }
 
             res.status(200).send({ 

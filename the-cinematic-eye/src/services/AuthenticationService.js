@@ -9,6 +9,7 @@ export default {
     return Api().post('login', credentials)
   },
   loginWithGoogleToken(credentials){
+    console.log("token id da inviare: ", credentials)
     return Api().post('loginWithGoogleToken',credentials)
   },
   registerWithGoogleToken(credentials){

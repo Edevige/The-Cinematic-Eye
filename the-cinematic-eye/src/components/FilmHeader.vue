@@ -84,7 +84,6 @@
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService';
-//import { response } from 'express';
 import { GoogleSignInButton } from 'vue3-google-signin';
 
 export default {
@@ -160,14 +159,15 @@ export default {
     //Login con Google
     async loginWithGoogle(CredentialResponse){
     console.log("Google ID Token:", CredentialResponse.credential); 
-    const {token_id} = CredentialResponse.credential;
+    const token_id = CredentialResponse.credential;
     try {
-        const {Gregister} =await AuthenticationService.loginWithGoogleToken(token_id);
+        const Gregister =await AuthenticationService.loginWithGoogleToken({"token_id":token_id});
+        console.log("Gregister: ",Gregister);
         this.$store.dispatch('setToken', Gregister.data.token);
         this.$store.dispatch('setUser', Gregister.data.user);
         this.$store.commit('login');
     } catch (error) {
-        this.error = error.Gregister.data.error;
+        //this.error = error.Gregister.data.error;
     }
         
     },
