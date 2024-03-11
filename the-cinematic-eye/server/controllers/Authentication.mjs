@@ -73,7 +73,6 @@ export default {
     },
     async loginWithGoogleToken(req, res){
         const id_token = req.body.token_id;
-        console.log("id_token arrivato: ", req.body.token_id);
         try {
             const payload = await verifyGoogleToken(id_token);
             const google_id = payload['sub'];
@@ -106,35 +105,4 @@ export default {
             });
         }
     },
-
-
-    async registerWithGoogleToken(req, res) {
-    const id_token = req.body;
-    try {
-        const payload = await verifyGoogleToken(id_token);
-        const id_google = payload['sub'];
-        let user = await users.findOne({where: {id_google}});
-        if (user) {
-            return res.status(400).send({error: 'Utente già esistente'});
-        }
-
-        // Creazione dell'utente con valori predefiniti o calcolati
-        user = await users.create({
-            email: payload.email, 
-            password: 'REGISTERED_VIA_GOOGLE', 
-            username: payload.email.split('@')[0],
-            name: payload.name, 
-            birthdate: null, 
-            subscribed: false, 
-            google_id: id_google 
-        });
-
-        const token = jwtTokenGen(user.toJSON());
-        res.send({user: user.toJSON(), token});
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({error: 'Errore nella creazione utente'});
-    }
-}
-
 }

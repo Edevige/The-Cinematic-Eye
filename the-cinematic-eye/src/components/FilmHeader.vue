@@ -157,8 +157,7 @@ export default {
         },
 
     //Login con Google
-    async loginWithGoogle(CredentialResponse){
-    console.log("Google ID Token:", CredentialResponse.credential); 
+    async loginWithGoogle(CredentialResponse){ 
     const token_id = CredentialResponse.credential;
     try {
         const Gregister =await AuthenticationService.loginWithGoogleToken({"token_id":token_id});
@@ -167,7 +166,7 @@ export default {
         this.$store.dispatch('setUser', Gregister.data.user);
         this.$store.commit('login');
     } catch (error) {
-        //this.error = error.Gregister.data.error;
+        this.error = error.Gregister.data.error;
     }
         
     },
