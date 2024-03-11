@@ -59,11 +59,7 @@
                                 
                                 <div class="d-flex justify-content-around">
    
-                                    <GoogleSignInButton
-                                    @success="loginWithGoogle"
-                                    type="icon"
-                                    shape="circle">
-                                    </GoogleSignInButton>
+                                        <div id="googleButton"></div>
                                     
                                     <button type="button" @click="login" class="btn btn-outline-light ms-2">Login</button>
                                     
@@ -73,10 +69,6 @@
                                 <div class="d-flex justify-content-around">
                                     <button type="button" @click="$router.push('/register')" class="btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn">Sign Up</button>
                                     <div></div>
-                                    <GoogleSignInButton
-                                    @success="registerWithGoogle"
-                                    type="icon">
-                                    </GoogleSignInButton>
                                     <button type="button" @click="$router.push('/register')" class="btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn">FB</button>
                                 </div>
                                  
@@ -98,7 +90,7 @@ import { GoogleSignInButton } from 'vue3-google-signin';
 export default {
     name: 'GoogleLoginComponent',
     mounted(){
-        
+        this.initializeGoogle();
     },
     components:{
         GoogleSignInButton
@@ -114,10 +106,23 @@ export default {
             searchPar: '',
             logMail: '',
             logPass: '',
-            error: null,      
+            error: null,     
         }
     },
     methods:{
+        initializeGoogle(){
+            google.accounts.id.initialize({
+            client_id: "599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com",
+            callback: this.loginWithGoogle
+        });
+            
+            const parent= document.getElementById("googleButton");
+            google.accounts.id.renderButton(
+                parent,
+                {type: 'icon', size: 'medium', shape: 'circle'}
+        );
+    
+    },
         searchForm(par){
             if (par == '') {
                 this.search = !this.search;
@@ -153,10 +158,11 @@ export default {
         },
 
     //Login con Google
-    async loginWithGoogle(response){
-    const {access_token} = response;
+    async loginWithGoogle(CredentialResponse){
+    console.log("Google ID Token:", CredentialResponse.credential); 
+    const {token_id} = CredentialResponse.credential;
     try {
-        const {Gregister} =await AuthenticationService.loginWithGoogleToken({access_token});
+        const {Gregister} =await AuthenticationService.loginWithGoogleToken(token_id);
         this.$store.dispatch('setToken', Gregister.data.token);
         this.$store.dispatch('setUser', Gregister.data.user);
         this.$store.commit('login');
@@ -165,20 +171,6 @@ export default {
     }
         
     },
-    
-    async registerWithGoogle(response) {
-    const {access_token} = response;
-    try {
-        const {Gregister} =await AuthenticationService.registerWithGoogleToken({
-            idToken:access_token
-        });
-        this.$store.dispatch('setToken', Gregister.data.token);
-        this.$store.dispatch('setUser', Gregister.data.user);
-        this.$store.commit('login');
-    } catch (error) {
-        this.error = error.Gregister.data.error;
-    }
-},
         
     },
     computed:{

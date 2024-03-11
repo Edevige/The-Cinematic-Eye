@@ -72,7 +72,7 @@ export default {
           }
     },
     async loginWithGoogleToken(req, res){
-        const {id_token} = req.body;
+        const id_token = req.body;
         try {
             const payload = await verifyGoogleToken(id_token);
             const id_google = payload['sub'];
@@ -88,6 +88,9 @@ export default {
                     subscribed: false, 
                     google_id: id_google 
                 });
+
+                const token = jwtTokenGen(user.toJSON());
+                res.send({user: user.toJSON(), token});
             }
 
             res.status(200).send({ 
