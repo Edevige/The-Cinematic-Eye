@@ -1,6 +1,7 @@
 import {users} from "../models/index.mjs"
 import jsonwebtoken from "jsonwebtoken"
 import config from "../config/config.mjs";
+import { OAuth2Client } from "google-auth-library";
 
 function jwtTokenGen(user){
     const ONE_WEEK = 60 * 60 * 24 * 7;
@@ -9,7 +10,6 @@ function jwtTokenGen(user){
     })
 }
 
-const {OAuth2Client} = require('google-auth-library');
 const client= new OAuth2Client(config.googleClientId);
 
 async function verifyGoogleToken(id_token){
