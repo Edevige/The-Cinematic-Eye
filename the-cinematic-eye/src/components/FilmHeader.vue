@@ -161,7 +161,6 @@ export default {
     const token_id = CredentialResponse.credential;
     try {
         const Gregister =await AuthenticationService.loginWithGoogleToken({"token_id":token_id});
-        console.log("Gregister: ",Gregister);
         this.$store.dispatch('setToken', Gregister.data.token);
         this.$store.dispatch('setUser', Gregister.data.user);
         this.$store.commit('login');
