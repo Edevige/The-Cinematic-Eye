@@ -14,6 +14,7 @@ const config = {
     authentication: {
        jwtSecret: process.env.JWT_SECRET || 'secret'
     },
-    googleClientId:'599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com'
+    googleClientId:'599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com',
+    facebookAppId:'1079656656483027'
 };
 export default config
