@@ -14,7 +14,7 @@
                     </div>
                 </div>
             
-                <button @click="nextSlide()" class="carousel-control-prev" type="button" data-bs-slide="prev">
+                <button @click="prevSlide()" class="carousel-control-prev" type="button" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
                 </button>
