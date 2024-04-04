@@ -18,10 +18,17 @@
                     </button>
                     <ul  class="dropdown-menu dropdown-menu-end">
                         <li><router-link class="dropdown-item" to="/">Home</router-link> </li>
-                        <li><router-link class="dropdown-item" to="/about">About</router-link></li>
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li class="dropdown-submenu" @click="sottomenu($event)">
+                            <a class="dropdown-item" href="#">Categorie</a>
+                            <ul class="dropdown-menu1" v-show=isSubmenuVisible>
+                                <li><a class="dropdown-item" href="#" >Sottocategoria 1</a></li>
+                                <li><a class="dropdown-item" href="#" >Sottocategoria 2</a></li>
+                            </ul>
+                        </li>
+                        <li><a class="dropdown-item" href="#">I più visti</a></li>
+                        <li><a class="dropdown-item" href="#">I più amati</a></li>
+                        <li><a class="dropdown-item" href="#">Liste più seguite</a></li>
+                        <li><a class="dropdown-item" href="#">Top User</a></li>
                     </ul>
                 </div>
                 <div class="dropdown">
@@ -90,6 +97,11 @@ export default {
     name: 'GoogleLoginComponent',
     mounted(){
         this.initializeGoogle();
+        document.addEventListener('click', (e)=>{
+            if(!this.$el.contains(e.target) && !e.target.closest('.dropdown-submenu')){
+                this.isSubmenuVisible =false;
+            }
+        });
     },
     components:{
         GoogleSignInButton
@@ -105,10 +117,17 @@ export default {
             searchPar: '',
             logMail: '',
             logPass: '',
-            error: null,     
+            error: null, 
+            isSubmenuVisible: false,    
         }
     },
     methods:{
+        sottomenu(event){
+            event.preventDefault();
+            event.stopPropagation();
+            this.isSubmenuVisible=!this.isSubmenuVisible;
+            console.log("Stato isSubmenuVisible: ",this.isSubmenuVisible);
+        },
         initializeGoogle(){
             google.accounts.id.initialize({
             client_id: "599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com",
@@ -220,4 +239,16 @@ export default {
         background-color: whitesmoke;
         font-weight: bolder;
     }
+
+    .dropdown-menu1{
+        --bs-dropdown-bg: #{$menu-color};
+        --bs-dropdown-color: whitesmoke;
+        position: relative;
+    }
+
+    .dropdown-submenu .dropdown-menu1{
+        --bs-dropdown-bg: #{$menu-color};
+        --bs-dropdown-color: whitesmoke;
+    }
+
 </style>
