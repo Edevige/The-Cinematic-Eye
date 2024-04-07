@@ -21,8 +21,12 @@
                         <li class="dropdown-submenu" @click="sottomenu($event)">
                             <a class="dropdown-item" href="#">Categorie</a>
                             <ul class="dropdown-menu1" v-show=isSubmenuVisible>
-                                <li><a class="dropdown-item" href="#" >Sottocategoria 1</a></li>
-                                <li><a class="dropdown-item" href="#" >Sottocategoria 2</a></li>
+                                <li><router-link class="dropdown-item" to="/ActionFilm">Action</router-link> </li>
+                                <li><router-link class="dropdown-item" to="/AnimationFilm">Animation</router-link> </li>
+                                <li><router-link class="dropdown-item" to="/RomanceFilm">Romance</router-link> </li>
+                                <li><router-link class="dropdown-item" to="/HorrorFilm">Horror</router-link> </li>
+                                <li><router-link class="dropdown-item" to="/ComedyFilm">Comedy</router-link> </li>
+                                <li><router-link class="dropdown-item" to="/DramaFilm">Drama</router-link> </li>
                             </ul>
                         </li>
                         <li><a class="dropdown-item" href="#">I più visti</a></li>

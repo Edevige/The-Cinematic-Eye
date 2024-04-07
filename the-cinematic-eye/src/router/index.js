@@ -4,6 +4,12 @@ import FilmView from '../views/FilmView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import SearchView from '../views/SearchView.vue'
 import store from '@/services/store'
+import ActionView from '@/views/ActionView.vue'
+import AnimationView from '@/views/AnimationView.vue'
+import RomanceView from '@/views/RomanceView.vue'
+import HorrorView from '@/views/HorrorView.vue'
+import ComedyView from '@/views/ComedyView.vue'
+import DramaView from '@/views/DramaView.vue'
 const routes = [
   {
     path: '/',
@@ -46,7 +52,37 @@ const routes = [
     path: "/:pathMatch(.*)*",
     name: 'ErrorView',
     component: () => import('../components/Error.vue'),
-  }
+  },
+  {
+    path: '/ActionFilm',
+    name: 'Action',
+    component: ActionView
+  },
+  {
+    path: '/AnimationFilm',
+    name: 'Animation',
+    component: AnimationView
+  },
+  {
+    path: '/RomanceFilm',
+    name: 'Romance',
+    component: RomanceView
+  },
+  {
+    path: '/HorrorFilm',
+    name: 'Horror',
+    component: HorrorView
+  },
+  {
+    path: '/ComedyFilm',
+    name: 'Comedy',
+    component: ComedyView
+  },
+  {
+    path: '/DramaFilm',
+    name: 'Drama',
+    component: DramaView
+  },
 ]
 
 const router = createRouter({
