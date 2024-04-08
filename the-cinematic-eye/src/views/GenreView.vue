@@ -1,6 +1,7 @@
 <script setup>
 
 import FilmCarouselGenres from '@/components/FilmCarouselGenres.vue';
+import genresMapping from '@/services/genresMapping.js';
 
 </script>
 
