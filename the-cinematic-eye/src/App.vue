@@ -7,7 +7,7 @@ import FilmFooter from './components/FilmFooter.vue';
   <div id="mainApp">
     <FilmHeader/>
   
-    <router-view/>
+    <router-view :key="$route.path"/>
   </div>
   <FilmFooter/>
   
