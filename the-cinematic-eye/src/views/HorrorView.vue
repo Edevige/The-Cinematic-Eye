@@ -1,5 +1,29 @@
+<script setup>
+
+import FilmCarouselGenres from '@/components/FilmCarouselGenres.vue';
+</script>
+
 <template>
-    <div class="about">
-      <h1>This is the Horror page... SCARY!</h1>
+  <main>
+    <div class="wrapper">
+      <FilmCarouselGenres :prop-url="'discover/movie'" title="Horror" :genres_id="27"/>
     </div>
-  </template>
+
+  </main>
+</template>
+
+<style scoped>
+
+@media (min-width: 1024px) {
+  
+  main{
+    display: flex;
+    place-items: center;
+  }
+  main .wrapper {
+    display: flex;
+    place-items: center;
+    flex-wrap: wrap;
+  }
+}
+</style>

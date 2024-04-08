@@ -1,12 +1,12 @@
 <script setup>
 
-import FilmCarousel from '@/components/FilmCarousel.vue';
+import FilmCarouselGenres from '@/components/FilmCarouselGenres.vue';
 </script>
 
 <template>
   <main>
     <div class="wrapper">
-      <FilmCarousel :prop-url="'discover/movie'" title="Azione"/>
+      <FilmCarouselGenres :prop-url="'discover/movie'" title="Azione" :genres_id="28"/>
     </div>
 
   </main>
