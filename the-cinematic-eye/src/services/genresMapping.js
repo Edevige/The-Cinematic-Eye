@@ -1,7 +1,7 @@
 export default (
     id
 ) => {
-    genresMap={
+    const genresMap={
         28:'Azione',
         27:'Horror',
         16:'Animazione',

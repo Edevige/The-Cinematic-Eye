@@ -130,7 +130,6 @@ export default {
             event.preventDefault();
             event.stopPropagation();
             this.isSubmenuVisible=!this.isSubmenuVisible;
-            console.log("Stato isSubmenuVisible: ",this.isSubmenuVisible);
         },
         initializeGoogle(){
             google.accounts.id.initialize({

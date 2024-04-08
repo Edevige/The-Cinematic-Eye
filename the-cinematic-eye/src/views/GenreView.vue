@@ -1,14 +1,13 @@
 <script setup>
 
 import FilmCarouselGenres from '@/components/FilmCarouselGenres.vue';
-import genresMapping from '@/services/genresMapping.js';
 
 </script>
 
 <template>
   <main>
     <div class="wrapper">
-      <FilmCarouselGenres :prop-url="'discover/movie'" title="Azione" :genres_id="$route.params.id"/>
+      <FilmCarouselGenres propUrl="discover/movie" :genres_id="$route.params.id"></FilmCarouselGenres>
     </div>
 
   </main>

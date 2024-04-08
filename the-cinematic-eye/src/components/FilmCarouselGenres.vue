@@ -29,10 +29,10 @@
 
 <script>
     import TMdbApi from '@/services/TMdbApi';
+    import genresMapping from '@/services/genresMapping.js';
     export default {
         props:{
             propUrl: String,
-            title: String,
             genres_id: String
         },
         setup () {      
@@ -44,7 +44,8 @@
                 imgUrl: "https://image.tmdb.org/t/p/original",
                 activeFilm: [],
                 active:[0, 1, 2, 3],
-                genres_id: this.genres_id
+                genres_id: this.genres_id,
+                title: ''
             }
         },
         methods:{
@@ -81,6 +82,7 @@
         },
         mounted(){
             this.film = this.fetchFilm();
+            this.title=genresMapping(this.$route.params.id);
         }
     }
 </script>
