@@ -7,6 +7,7 @@ import SearchView from '../views/SearchView.vue'
 import store from '@/services/store'
 import GenreView from '@/views/GenreView.vue'
 import AdvancedSearchView from '@/views/AdvancedSearchView.vue'
+import AdvancedSearchReturnView from '@/views/AdvancedSearchReturnView.vue'
 const routes = [
   {
     path: '/',
@@ -51,9 +52,9 @@ const routes = [
     component: AdvancedSearchView
   },
   {
-    path: '/advancedSearchReturn/:sPar',
+    path:'/advancedSearchReturn',
     name: 'advancedSearchReturn',
-    component: AdvancedSearchReturnView
+    component:AdvancedSearchReturnView
   },
   {
     path: "/:pathMatch(.*)*",

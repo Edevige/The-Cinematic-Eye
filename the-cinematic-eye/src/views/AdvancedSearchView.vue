@@ -84,7 +84,7 @@ export default {
     },
     submitSearch() {
       console.log('Parametri di ricerca:', this.searchParams);
-      this.$router.push('/advancedSearch/'+ this.searchParams);
+      this.$router.push({path:'/advancedSearchReturn', query:this.searchParams});
     }
   },
   mounted() {

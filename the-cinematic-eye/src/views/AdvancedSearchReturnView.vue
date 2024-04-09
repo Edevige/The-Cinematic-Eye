@@ -15,11 +15,14 @@
 </template>
 
 <script>
+import TMdbApi from '@/services/TMdbApi';
 export default{
 
     data(){
         return{
             filmFound: [],
+            fetchParams: '/discover/movie',
+            par:this.$route.query,
             searchParams:{
                 include_adult: '',
                 primary_release_year: '',
@@ -34,14 +37,8 @@ export default{
     methods: {
     async fetchMovies() {
       try {
-        const response = await axios({
-          method: 'GET',
-          url: 'https://api.themoviedb.org/3/discover/movie',
-          params: this.searchParams, // Utilizza i searchParams aggiornati per la chiamata API
-          headers: {
-            accept: 'application/json',
-            Authorization: 'Bearer YOUR_ACCESS_TOKEN' // Sostituisci con il tuo vero token
-          }
+        const response = await TMdbApi().get(this.fetchParams, {
+          params:this.searchParams
         });
         this.filmFound = response.data.results; // Supponendo che la risposta abbia un campo 'results'
       } catch (error) {
@@ -50,18 +47,20 @@ export default{
     },
 
     // Chiamato quando l'utente invia i parametri di ricerca
-    updateSearchParams(newParams) {
-      this.searchParams = newParams;
+    updateSearchParams() {
+      this.searchParams.include_adult = this.par.adult;
+      this.searchParams.primary_release_year=this.par.releaseYear;
+      this.searchParams['vote_average.gte']=this.par.rating;
+      this.searchParams.with_genres=this.par.genreId;
+      this.searchParams.with_original_language=this.par.originalLanguage;
+      console.log('Parametri aggiornati', this.searchParams);
       this.fetchMovies();
     },
   },
   mounted() {
+    this.updateSearchParams();
     this.fetchMovies();
   },
-  created(){
-    const par = this.$route.params.sPar;
-    this.searchParameter = par;
-  }
 }
 
 </script>
