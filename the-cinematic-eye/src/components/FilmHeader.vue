@@ -10,6 +10,8 @@
                 <div class="d-flex">
                     <input v-if="!(search || $route.meta.nav)" class="form-control me-2" @keyup.enter="searchCall(searchPar)" v-model="searchPar" type="search" placeholder="Search" aria-label="Search">
                     <button v-if="!$route.meta.nav" class="btn btn-outline-success" @click="searchForm(searchPar)"><i class="bi bi-search"></i></button>
+                    <button v-if="!$route.meta.nav" class="btn btn-outline-success" @click="advancedSearch()"><i class="bi bi-search1">Ricerca Avanzata</i></button>
+
                 </div>
                 
                 <div class="dropdown">
@@ -144,6 +146,9 @@ export default {
         );
     
     },
+        advancedSearch(){
+            this.$router.push('/advancedSearch');
+        },
         searchForm(par){
             if (par == '') {
                 this.search = !this.search;
