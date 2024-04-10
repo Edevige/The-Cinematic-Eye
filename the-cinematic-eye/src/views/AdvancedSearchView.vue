@@ -42,10 +42,13 @@
       <div class="form-group">
         <label>Persona che ha lavorato al film: </label>
         <button @click="vaiAllaSelezionePersona()">Seleziona Persona</button>
-  <div v-if="personaSelezionata">
-    {{ personaSelezionata.name }}
-    <img :src="personaSelezionata.image" alt="Persona Selezionata">
-  </div>
+        <div></div>
+        <div v-if="personaSelezionata">
+        <label>Persona Selezionata:</label>
+        <img v-if="personaSelezionata.image != null" class="img img-fluid w-auto mt-4" :src="imgUrl + personaSelezionata.image" />
+        <img v-if="personaSelezionata.image == null" class="img img-fluid w-auto mt-4"
+        src="https://placehold.co/200x300?text=No\nposter " />
+      </div>
       </div>
 
       <button type="submit">Cerca</button>
@@ -55,12 +58,13 @@
 
 <script>
 import TMdbApi from '@/services/TMdbApi';
-import debounce from 'lodash/debounce';
 export default {
   data() {
     return {
-      personaSelezionata: null,
+      personaSelezionata:this.$route.query,
+      imgUrl: "https://image.tmdb.org/t/p/original",
       searchParams: {
+        personaSelezionata:this.$route.query.id,
         adult: '',
         originalLanguage: '',
         releaseYear: null,
@@ -77,11 +81,7 @@ export default {
     },
     async fetchLanguages() {
       try {
-        const response = await TMdbApi().get('configuration/languages', {
-          params:{
-            page:200
-          }
-        });
+        const response = await TMdbApi().get('configuration/languages');
         this.languages = response.data.sort((a, b) => {
           let fa = a.english_name.toLowerCase(),
               fb = b.english_name.toLowerCase();
@@ -110,15 +110,23 @@ export default {
     
     submitSearch() {
       console.log('Parametri di ricerca:', this.searchParams);
-      this.$router.push({path:'/advancedSearchReturn', query:this.searchParams});
+      this.$router.push({path: '/advancedSearchReturn', query:this.searchParams});
     },
   },
   mounted() {
     this.fetchLanguages();
     this.fetchGenres();
-    this.fetchPeople();
   },
-}
+  watch: {
+    '$route'(to, from) {
+      // Controlla se la route precedente è la view di selezione persona
+      if (from.name === 'PeopleView') {
+          this.personaSelezionata = this.$route.query;
+          this.searchParams.personaSelezionata=this.$route.query;
+        }
+      }
+    }
+  }
 </script>
 
 <style>

@@ -7,7 +7,7 @@
                     src="https://placehold.co/200x300?text=No\nposter " />
 
             </div>
-            <div class="col d-flex align-items-center " style="color:white"><div class="h4 m-4">{{ persona.name }}</div></div>
+            <div class="col d-flex align-items-center " style="color:white"><div class="h4 m-4">{{ persona.name + ' Ruolo: ' + persona.role }}</div></div>
         <button @click="selezionaEritorna(persona)">Seleziona</button>
       </div>
     </div>
@@ -24,34 +24,28 @@
     },
     methods: {
       selezionaEritorna(persona) {
-        this.$router.push({ name: 'RicercaAvanzata', params: { personaSelezionata: persona } });
+        this.$router.push( {name:'advancedSearch', query:persona});
       },
       async fetchPeople(){
       try {
         const response= await TMdbApi().get('person/popular');
-        const peopleData=response.data.results.map(async persona => {
-            try {
-                const imagesResponse= await TMdbApi().get(`person/${persona.id}/images`);
-                const immagine=imagesResponse.data.profiles[0].file_path;
+        const peopleResponse=response.data.results.map(async persona => {
                 return {
                     id: persona.id,
                     name: persona.name,
-                    image: immagine
+                    role: persona.known_for_department,
+                    image: persona.profile_path
                 };
-            } catch (error) {
-                
-            }
-          
         });
-        this.personeTotali=await Promise.all(peopleData);
-        console.log('Personeee:', this.personeTotali);
+        let people=await Promise.all(peopleResponse);
+        people.sort((a,b)=>a.name.localeCompare(b.name));
+        this.personeTotali=people;
       } catch (error) {
-        console.log('Errore con fetchPeople:', error);
+        console.error('Errore con fetchPeople: ',error);
       }
     },
     },
     created() {
-      // Carica le persone quando entri nella pagina
       this.fetchPeople();
     }
   };

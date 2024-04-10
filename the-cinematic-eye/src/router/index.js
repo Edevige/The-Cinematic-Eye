@@ -50,6 +50,7 @@ const routes = [
   {
     path:'/advancedSearch',
     name: 'advancedSearch',
+    props:true,
     component: AdvancedSearchView
   },
   {

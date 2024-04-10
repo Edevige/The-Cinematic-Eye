@@ -28,7 +28,8 @@ export default{
                 primary_release_year: '',
                 'vote_average.gte': '',
                 with_genres: '',
-                with_original_language: ''
+                with_original_language: '',
+                with_cast:''
             },
             imgUrl: "https://image.tmdb.org/t/p/original"
     };
@@ -48,11 +49,13 @@ export default{
 
     // Chiamato quando l'utente invia i parametri di ricerca
     updateSearchParams() {
+      console.log('Ciaoooo:',this.par);
       this.searchParams.include_adult = this.par.adult;
       this.searchParams.primary_release_year=this.par.releaseYear;
       this.searchParams['vote_average.gte']=this.par.rating;
       this.searchParams.with_genres=this.par.genreId;
       this.searchParams.with_original_language=this.par.originalLanguage;
+      this.searchParams.with_cast=this.par.personaSelezionata;
       console.log('Parametri aggiornati', this.searchParams);
       this.fetchMovies();
     },
