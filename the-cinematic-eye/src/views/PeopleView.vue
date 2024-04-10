@@ -19,35 +19,56 @@
     data() {
       return {
         personeTotali: [],
-        imgUrl: "https://image.tmdb.org/t/p/original"
+        nuovePersone:[],
+        imgUrl: "https://image.tmdb.org/t/p/original",
+        totalPages: null,
+        loadingAll: false,
+        currentPage:1,
+        loadingNumberPages:false
       };
     },
     methods: {
       selezionaEritorna(persona) {
         this.$router.push( {name:'advancedSearch', query:persona});
       },
+      async fetchTotalPages(){
+        try {
+          const response = await TMdbApi().get('person/popular');
+          this.totalPages = response.data.total_pages;
+          this.fetchPeople();
+        } catch (error) {
+          console.error('Errore durante il recupero del numero totale di pagine:', error);
+        }
+      },
       async fetchPeople(){
-      try {
-        const response= await TMdbApi().get('person/popular');
-        const peopleResponse=response.data.results.map(async persona => {
-                return {
-                    id: persona.id,
-                    name: persona.name,
-                    role: persona.known_for_department,
-                    image: persona.profile_path
-                };
-        });
-        let people=await Promise.all(peopleResponse);
-        people.sort((a,b)=>a.name.localeCompare(b.name));
-        this.personeTotali=people;
+        if(this.loadingAll) return;
+        this.loadingAll=true;
+        try {
+          while (this.currentPage <= this.totalPages) {
+          const response = await TMdbApi().get('person/popular', {
+            params: { page: this.currentPage }
+          });
+          const people = response.data.results.map(persona => ({
+            id: persona.id,
+            name: persona.name,
+            role: persona.known_for_department,
+            image: persona.profile_path
+          }));
+
+          this.personeTotali.push(...people);
+          this.currentPage++;
+        }
+        this.personeTotali.sort((a, b) => a.name.localeCompare(b.name));
       } catch (error) {
         console.error('Errore con fetchPeople: ',error);
+      } finally{
+        this.loadingAll=false;
       }
     },
     },
-    created() {
-      this.fetchPeople();
-    }
+    async created() {
+      await this.fetchTotalPages();
+    },
   };
   </script>
 
