@@ -54,14 +54,14 @@
             role: persona.known_for_department,
             image: persona.profile_path
           }));
-
+          this.personeTotali.sort((a, b) => a.name.localeCompare(b.name));
           this.personeTotali.push(...people);
           this.currentPage++;
         }
-        this.personeTotali.sort((a, b) => a.name.localeCompare(b.name));
       } catch (error) {
         console.error('Errore con fetchPeople: ',error);
       } finally{
+
         this.loadingAll=false;
       }
     },
