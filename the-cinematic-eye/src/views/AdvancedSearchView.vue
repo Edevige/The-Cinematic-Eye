@@ -39,6 +39,15 @@
         </select>
       </div>
 
+      <div class="form-group">
+        <label>Persona che ha lavorato al film: </label>
+        <button @click="vaiAllaSelezionePersona()">Seleziona Persona</button>
+  <div v-if="personaSelezionata">
+    {{ personaSelezionata.name }}
+    <img :src="personaSelezionata.image" alt="Persona Selezionata">
+  </div>
+      </div>
+
       <button type="submit">Cerca</button>
     </form>
   </div>
@@ -46,9 +55,11 @@
 
 <script>
 import TMdbApi from '@/services/TMdbApi';
+import debounce from 'lodash/debounce';
 export default {
   data() {
     return {
+      personaSelezionata: null,
       searchParams: {
         adult: '',
         originalLanguage: '',
@@ -61,10 +72,17 @@ export default {
     };
   },
   methods: {
+    vaiAllaSelezionePersona(){
+      this.$router.push('/PeopleView');
+    },
     async fetchLanguages() {
-      // Simulazione di una chiamata API per ottenere le lingue
-      const response = await TMdbApi().get('configuration/languages');
-      this.languages = response.data.sort((a, b) => {
+      try {
+        const response = await TMdbApi().get('configuration/languages', {
+          params:{
+            page:200
+          }
+        });
+        this.languages = response.data.sort((a, b) => {
           let fa = a.english_name.toLowerCase(),
               fb = b.english_name.toLowerCase();
 
@@ -76,21 +94,47 @@ export default {
           }
           return 0;
         });
+      } catch (error) {
+        console.log('Errore in fetchLanguages:', error);
+      }
     },
     async fetchGenres() {
-      // Simulazione di una chiamata API per ottenere i generi
-      const response = await TMdbApi().get('genre/movie/list');
-      this.genres = response.data.genres;
+      try {
+        const response = await TMdbApi().get('genre/movie/list');
+        this.genres = response.data.genres;
+      } catch (error) {
+        console.log('Errore in fetchGenres:', error);
+      }
+      
     },
+    
     submitSearch() {
       console.log('Parametri di ricerca:', this.searchParams);
       this.$router.push({path:'/advancedSearchReturn', query:this.searchParams});
-    }
+    },
   },
   mounted() {
     this.fetchLanguages();
     this.fetchGenres();
+    this.fetchPeople();
   },
-  
 }
 </script>
+
+<style>
+/* Aggiungi qui i tuoi stili se necessario */
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  padding: 0.5em;
+  cursor: pointer;
+}
+
+li:hover {
+  background-color: #eee;
+}
+</style>
