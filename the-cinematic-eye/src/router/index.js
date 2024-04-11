@@ -9,6 +9,7 @@ import GenreView from '@/views/GenreView.vue'
 import AdvancedSearchView from '@/views/AdvancedSearchView.vue'
 import AdvancedSearchReturnView from '@/views/AdvancedSearchReturnView.vue'
 import PeopleView from '@/views/PeopleView.vue'
+import PersonalAreaView from '@/views/PersonalAreaView.vue'
 const routes = [
   {
     path: '/',
@@ -72,6 +73,11 @@ const routes = [
     path: '/genre/:id',
     name: 'genres',
     component: GenreView
+  },
+  {
+    path:'/personalArea',
+    name: 'personalArea',
+    component: PersonalAreaView
   },
 ]
 

@@ -55,7 +55,7 @@
                                     </div>
                                 </div>
                             </li>
-                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><router-link class="dropdown-item" to="/personalArea">Area Personale</router-link></li>
                             <li><a class="dropdown-item" href="#">Another action</a></li>
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
                             <li><button type="button" @click="logout" class="btn btn-outline-light ms-5 me-auto">LogOut</button></li>
@@ -82,7 +82,6 @@
                                 <div class="d-flex justify-content-around">
                                     <button type="button" @click="$router.push('/register')" class="btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn">Sign Up</button>
                                     <div></div>
-                                    <button type="button" @click="$router.push('/register')" class="btn flex-fill me-2 ms-2 mt-2 pt-1 pb-1 register-btn">FB</button>
                                 </div>
                                  
                             </form>
