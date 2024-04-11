@@ -8,7 +8,9 @@
 
             </div>
             <div class="col d-flex align-items-center " style="color:white"><div class="h4 m-4">{{ persona.name + ' Ruolo: ' + persona.role }}</div></div>
-        <button @click="selezionaEritorna(persona)">Seleziona</button>
+        <button :disabled="isSelected(persona)" @click="selezionaPersona(persona)">Seleziona</button>
+        <button v-if="isSelected(persona)" @click="rimuoviPersona(persona)">Rimuovi</button>
+        <button v-if="!isEmpty() && isSelected(persona)" @click="concludiRicercaPersone(persona)">Concludi Ricerca Persone</button>
       </div>
       <nav aria-label="Page navigation example" class="mt-4">
     <ul class="pagination justify-content-center">
@@ -83,8 +85,26 @@
 
       return range;
       },
-      selezionaEritorna(persona) {
-        this.$router.push( {name:'advancedSearch', query:persona});
+      isSelected(persona){
+        return this.personeScelte.includes(persona);
+      },
+      concludiRicercaPersone(){
+        this.$router.push( {name:'advancedSearch', query:{personeScelte: JSON.stringify(this.personeScelte)}});
+      },
+      isEmpty(){
+        return this.personeScelte.length==0;
+      },
+      selezionaPersona(persona) {
+        if(!this.isSelected(persona)){
+          this.personeScelte.push(persona);     
+        }
+      },
+      rimuoviPersona(persona){
+        const index= this.personeScelte.indexOf(persona);
+        if(index!=-1){
+          this.personeScelte.splice(index,1);
+        }
+        console.log(this.personeScelte);
       },
       async fetchTotalPages(){
         try {

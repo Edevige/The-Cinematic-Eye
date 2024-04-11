@@ -54,7 +54,7 @@ export default{
       this.searchParams['vote_average.gte']=this.par.rating;
       this.searchParams.with_genres=this.par.genreId;
       this.searchParams.with_original_language=this.par.originalLanguage;
-      this.searchParams.with_cast=this.par.personaSelezionata;
+      this.searchParams.with_cast=this.par.personeScelteID;
       this.fetchMovies();
     },
   },

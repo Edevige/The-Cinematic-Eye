@@ -43,12 +43,6 @@
         <label>Persona che ha lavorato al film: </label>
         <button @click="vaiAllaSelezionePersona()">Seleziona Persona</button>
         <div></div>
-        <div v-if="personaSelezionata">
-        <label>Persona Selezionata:</label>
-        <img v-if="personaSelezionata.image != null" class="img img-fluid w-auto mt-4" :src="imgUrl + personaSelezionata.image" />
-        <img v-if="personaSelezionata.image == null" class="img img-fluid w-auto mt-4"
-        src="https://placehold.co/200x300?text=No\nposter " />
-      </div>
       </div>
 
       <button type="submit">Cerca</button>
@@ -61,10 +55,10 @@ import TMdbApi from '@/services/TMdbApi';
 export default {
   data() {
     return {
-      personaSelezionata:this.$route.query,
+      personeScelte:this.$route.query,
       imgUrl: "https://image.tmdb.org/t/p/original",
       searchParams: {
-        personaSelezionata:this.$route.query.id,
+        personeScelteID:'',
         adult: '',
         originalLanguage: '',
         releaseYear: null,
@@ -95,7 +89,7 @@ export default {
           return 0;
         });
       } catch (error) {
-        console.log('Errore in fetchLanguages:', error);
+        console.error('Errore in fetchLanguages:', error);
       }
     },
     async fetchGenres() {
@@ -103,26 +97,41 @@ export default {
         const response = await TMdbApi().get('genre/movie/list');
         this.genres = response.data.genres;
       } catch (error) {
-        console.log('Errore in fetchGenres:', error);
+        console.error('Errore in fetchGenres:', error);
       }
-      
     },
-    
+    uploadPersoneScelte(){
+      this.searchParams.personeScelteID='';
+      if(this.personeScelte && this.personeScelte.length >0){
+        for(let i=0; i<this.personeScelte.length; i++){
+          this.searchParams.personeScelteID=this.searchParams.personeScelteID+this.personeScelte[i].id+'||';
+        }
+      }
+    },
     submitSearch() {
-      console.log('Parametri di ricerca:', this.searchParams);
+      this.uploadPersoneScelte();
       this.$router.push({path: '/advancedSearchReturn', query:this.searchParams});
     },
   },
   mounted() {
     this.fetchLanguages();
     this.fetchGenres();
+    if (this.$route.query.personeScelte) {
+    try {
+      this.personeScelte = JSON.parse(this.$route.query.personeScelte);
+    } catch (e) {
+      console.error('Errore nel parsing di personeScelte:', e);
+    }
+  }
+
   },
-  watch: {
-    '$route'(to, from) {
+  watch:{
+    $route(to, from) {
       // Controlla se la route precedente è la view di selezione persona
       if (from.name === 'PeopleView') {
-          this.personaSelezionata = this.$route.query;
-          this.searchParams.personaSelezionata=this.$route.query;
+        console.log('Sono tornato da PeopleView');
+          this.personeScelte = to.query;
+          this.uploadPersoneScelte();
         }
       }
     }
