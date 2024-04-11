@@ -59,7 +59,7 @@ const routes = [
     component:AdvancedSearchReturnView
   },
   {
-    path:'/PeopleView',
+    path:'/PeopleView/:page',
     name:'PeopleView',
     component: PeopleView
   },

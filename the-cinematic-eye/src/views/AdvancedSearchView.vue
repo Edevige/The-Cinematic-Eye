@@ -77,7 +77,7 @@ export default {
   },
   methods: {
     vaiAllaSelezionePersona(){
-      this.$router.push('/PeopleView');
+      this.$router.push('/PeopleView/1');
     },
     async fetchLanguages() {
       try {
