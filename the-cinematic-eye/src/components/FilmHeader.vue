@@ -58,7 +58,7 @@
                             <li><router-link class="dropdown-item" to="/personalArea">Area Personale</router-link></li>
                             <li><a class="dropdown-item" href="#">Another action</a></li>
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            <li><button type="button" @click="logout" class="btn btn-outline-light ms-5 me-auto">LogOut</button></li>
+                            <li><button type="button" @click="logout" class="btn btn-outline-light ms-5 me-auto">Logout</button></li>
                         </div>
                         <div v-if="!logged">
                             <form>
