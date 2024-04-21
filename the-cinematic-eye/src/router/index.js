@@ -52,7 +52,10 @@ const routes = [
     path:'/advancedSearch',
     name: 'advancedSearch',
     props:true,
-    component: AdvancedSearchView
+    component: AdvancedSearchView,
+    meta:{
+      advSrc: true
+    }
   },
   {
     path:'/advancedSearchReturn',

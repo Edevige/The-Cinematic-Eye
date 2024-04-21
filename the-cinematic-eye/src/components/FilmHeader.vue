@@ -8,9 +8,13 @@
             
             <div class="d-flex">
                 <div class="d-flex">
-                    <input v-if="!(search || $route.meta.nav)" class="form-control me-2" @keyup.enter="searchCall(searchPar)" v-model="searchPar" type="search" placeholder="Search" aria-label="Search">
+                    <div  class="d-flex dropdown" @click="srcDrop()">
+                        <input v-if="!(search || $route.meta.nav)" class="form-control me-2" @Focus="srcDrop()"  @keyup.enter="searchCall(searchPar)" v-model="searchPar" type="search" placeholder="Search" aria-label="Search">
+                        <ul id="search" v-if="(searchPar != '') && !$route.meta.advSrc && !$route.meta.nav" style="display: block; top: 50px;" class="dropdown-menu dropdown-menu-end">
+                                <li><router-link class="dropdown-item" to="/advancedSearch">Ricerca avanzata</router-link> </li>
+                            </ul>
+                    </div>
                     <button v-if="!$route.meta.nav" class="btn btn-outline-success" @click="searchForm(searchPar)"><i class="bi bi-search"></i></button>
-                    <button v-if="!$route.meta.nav" class="btn btn-outline-success" @click="advancedSearch()"><i class="bi bi-search1">Ricerca Avanzata</i></button>
 
                 </div>
                 
@@ -44,18 +48,18 @@
                     <ul  class="dropdown-menu dropdown-menu-end">
                         <div v-if="logged">
                             <li>
-                                <div class="d-flex flex-row align-items-center usr-menu">
+                                <router-link to="/personalArea" class="d-flex flex-row align-items-center usr-menu">
                                     <div class=""> <i class="bi bi-person-fill"></i></div>
                                     <div class="flex-grow-1 p-2 d-flex flex-column">
                                         <div class="flex-grow-1 p-2 justify-content-evenly d-flex flex-row">
-                                            <div>123</div> 
-                                            <div>777</div>
+                                            <div>XXX</div> 
+                                            <div>XXX</div>
                                         </div> 
                                         <div class="text-center">{{this.$store.state.user.username}}</div>
                                     </div>
-                                </div>
+                                </router-link>
                             </li>
-                            <li><router-link class="dropdown-item" to="/personalArea">Area Personale</router-link></li>
+                            
                             <li><a class="dropdown-item" href="#">Another action</a></li>
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
                             <li><button type="button" @click="logout" class="btn btn-outline-light ms-5 me-auto">Logout</button></li>
@@ -118,12 +122,13 @@ export default {
     },
     data(){
         return{
-            search: false,
+            search: true,
             searchPar: '',
             logMail: '',
             logPass: '',
             error: null, 
-            isSubmenuVisible: false,    
+            isSubmenuVisible: false, 
+            test: false   
         }
     },
     methods:{
@@ -144,9 +149,12 @@ export default {
                 {type: 'icon', size: 'medium', shape: 'circle'}
         );
     
-    },
-        advancedSearch(){
-            this.$router.push('/advancedSearch');
+        },
+        srcDrop(){
+            this.test = !this.test;
+            //const srcDropMenu = document.getElementById("Search");
+            //srcDropMenu.dropdown("toggle");
+            
         },
         searchForm(par){
             if (par == '') {
@@ -217,7 +225,11 @@ export default {
         border-radius: 0.5rem;
        a, i{
         color: whitesmoke;
-       } 
+        &:hover{
+            color:rgb(26, 68, 67)
+        }
+       }
+       
     }
     .bi-person-fill{
         font-size: xx-large;
@@ -237,6 +249,7 @@ export default {
         }
     }
     .btn-usr{padding: 0;}
+    .usr-menu{text-decoration: none;}
     .dropdown-menu{
         --bs-dropdown-bg: #{$menu-color};
         --bs-dropdown-color: whitesmoke;
