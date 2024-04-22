@@ -41,21 +41,24 @@ export default {
               id : decode.id
             }
             });
-            var usrFav = [...user.favorites.favorites_id];
+            var usrFav = user.favorites;
+            if(!usrFav)usrFav = [];
             if (usrFav.length >= 3) {
                 res.send({msg: "Max number(3) of favorites already reached"});
                 
             } else {
-                if(!usrFav)usrFav = [];
-                usrFav.push(req.body.film_id);
+                if(usrFav.includes(req.body.film_id)){
+                    res.send({msg: "Favorite already added" });
+                }
+                else{
+                    usrFav.push(req.body.film_id);
+                    usrFav = [...usrFav];
 
-                user.favorites = {
-                    favorites_id: usrFav
-                  };
-                await user.save();
+                    await user.save();
+                    user.favorites = usrFav;
 
-                res.send({msg: "Favorite successfully added" });
-
+                    res.send({msg: "Favorite successfully added" });
+                }
             }
         }
         catch(e){

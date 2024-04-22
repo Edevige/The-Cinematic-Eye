@@ -51,7 +51,7 @@ export default function (sequelize, DataTypes) {
         type: DataTypes.TEXT,
       },
       favorites: {
-        type: DataTypes.JSON,
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
       }
 
 
