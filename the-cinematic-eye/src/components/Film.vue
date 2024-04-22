@@ -20,7 +20,8 @@
                             <div class="d-flex gap-2 justify-content-between">
                                 <button class="btn btn-outline-light flex-fill" type="button"><i class="bi bi-plus-lg"></i></button>
                                 <button class="btn btn-outline-light flex-fill" type="button"><i class="bi bi-eye-fill"></i></button>
-                                <button class="btn btn-outline-light flex-fill" type="button"><i class="bi bi-suit-heart-fill"></i></button>
+                                <button v-if="isFavorite" disabled class="btn btn-outline-light flex-fill" type="button"><i class="bi bi-heartbreak-fill"></i></button>
+                                <button v-else @click="addFav(this.filmObj.id)" class="btn btn-outline-light flex-fill" type="button"><i class="bi bi-suit-heart-fill"></i></button>
                             </div>
                             <button class="btn btn-outline-light" type="button"><i class="bi bi-pencil-square"></i> Write a review</button>
                         </div>
@@ -36,6 +37,7 @@
 
 <script>
 import axios from 'axios';
+import apiUtils from '@/services/apiUtils';
 export default {
    
     props:{
@@ -107,6 +109,23 @@ export default {
         });
        console.log(f.data);
        },
+
+       async addFav(id){
+        console.log("id: " + id );
+        console.log("token:" + this.$store.state.token);
+        try {
+                const response = await apiUtils.addFavorite({
+                    token: this.$store.state.token,
+                    film_id : id
+                });
+                console.log(response.data.msg)
+                this.$router.go()
+                
+            } catch (error) {
+                console.log(error); 
+            }
+        
+       }
             
     },
     mounted(){
@@ -116,6 +135,14 @@ export default {
     computed:{
         generes(){
             return this.getGenres(this.filmObj);
+        },
+        isFavorite(){
+  
+            if(this.$store.state.logged){
+                var usrFav = this.$store.state.user.favorites
+                var filmId = parseInt(this.filmObj.id)
+                return usrFav.includes(filmId)
+            }else return false;
         }
     }
 

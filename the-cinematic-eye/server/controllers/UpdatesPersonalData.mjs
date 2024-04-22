@@ -48,16 +48,17 @@ export default {
                 
             } else {
                 if(usrFav.includes(req.body.film_id)){
-                    res.send({msg: "Favorite already added" });
+                    res.status(200).send({msg: "Favorite already added" });
                 }
                 else{
                     usrFav.push(req.body.film_id);
                     usrFav = [...usrFav];
 
-                    await user.save();
+                    
                     user.favorites = usrFav;
+                    await user.save();
 
-                    res.send({msg: "Favorite successfully added" });
+                    res.status(200).send({msg: "Favorite successfully added", favArr: usrFav });
                 }
             }
         }
