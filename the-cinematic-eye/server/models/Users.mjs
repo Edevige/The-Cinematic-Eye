@@ -44,7 +44,17 @@ export default function (sequelize, DataTypes) {
       google_id:{
         type: DataTypes.STRING,
         allowNull: true
+      },
+
+
+      bio: {
+        type: DataTypes.TEXT,
+      },
+      favorites: {
+        type: DataTypes.JSON,
       }
+
+
     },
     {
       hooks: {
