@@ -3,7 +3,7 @@ import AuthenticationPolicy from "./controllers/AuthenticationPolicy.mjs";
 import Search from "./controllers/Search.mjs";
 import SearchPolicy from "./controllers/SearchPolicy.mjs";
 import UpdatesPersonalData from "./controllers/UpdatesPersonalData.mjs";
-import test from "./controllers/testSeqFunc.mjs/index.js";
+import test from "./controllers/testSeqFunc.mjs";
 
 export default function (app) {
   app.get("/", (_req, res) => {
