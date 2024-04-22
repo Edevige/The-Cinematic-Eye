@@ -16,4 +16,5 @@ export default function (app) {
   app.get("/usrSrc", SearchPolicy.usrSearch, Search.usrSearch);
   app.post("/updatePersonalData", UpdatesPersonalData.updatePersonalData);
   app.get("/testCount", test.test);
+  app.get("/testUpdatet", test.testJson);
 }
