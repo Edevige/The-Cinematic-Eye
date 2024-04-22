@@ -30,5 +30,40 @@ export default {
         }
         console.log("risposta: ", req.body.newName);
         
+    },
+    async addFavorite(req, res){
+        try{
+            var decode = jsonwebtoken.verify(req.body.token, config.authentication.jwtSecret);
+        
+            const user = await users.findOne({
+            where:
+            {
+              id : decode.id
+            }
+            });
+            var usrFav = [...user.favorites.favorites_id];
+            if (usrFav.length >= 3) {
+                res.send({msg: "Max number(3) of favorites already reached"});
+                
+            } else {
+                if(!usrFav)usrFav = [];
+                usrFav.push(req.body.film_id);
+
+                user.favorites = {
+                    favorites_id: usrFav
+                  };
+                await user.save();
+
+                res.send({msg: "Favorite successfully added" });
+
+            }
+        }
+        catch(e){
+            console.log("Error trying to add a favorite movie\n" + e );
+            res.status(500).send({
+                error: 'An unexpected error occured, conctat the system admin'
+            })
+        }
+        
     }
 }

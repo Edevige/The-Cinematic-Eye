@@ -15,6 +15,8 @@ export default function (app) {
   app.post("/loginWithGoogleToken", Authentication.loginWithGoogleToken);
   app.get("/usrSrc", SearchPolicy.usrSearch, Search.usrSearch);
   app.post("/updatePersonalData", UpdatesPersonalData.updatePersonalData);
+  app.post("/addFavorite", UpdatesPersonalData.addFavorite);
+
   app.get("/testCount", test.test);
   app.get("/testUpdatet", test.testJson);
 }
