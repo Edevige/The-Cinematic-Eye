@@ -60,7 +60,7 @@
                                 </router-link>
                             </li>
                             
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'watchlist', params: { id: this.$store.state.user.id }}">Watchlist</router-link></li>
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
                             <li><button type="button" @click="logout" class="btn btn-outline-light ms-5 me-auto">Logout</button></li>
                         </div>
@@ -100,6 +100,7 @@
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService';
+import WatchListView from '@/views/WatchListView.vue';
 import { GoogleSignInButton } from 'vue3-google-signin';
 
 export default {
