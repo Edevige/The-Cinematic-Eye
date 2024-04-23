@@ -39,7 +39,7 @@ export default {
             where:
             {
               id : decode.id
-            }
+            } 
             });
             var usrFav = user.favorites;
             if(!usrFav)usrFav = [];
@@ -51,14 +51,16 @@ export default {
                     res.status(200).send({msg: "Favorite already added" });
                 }
                 else{
-                    usrFav.push(req.body.film_id);
-                    usrFav = [...usrFav];
+                    var fav = usrFav.slice();
+                    fav.push(req.body.film_id);
+                    
 
                     
-                    user.favorites = usrFav;
-                    await user.save();
 
-                    res.status(200).send({msg: "Favorite successfully added", favArr: usrFav });
+                    await user.update({favorites: fav});
+
+
+                    res.status(200).send({msg: "Favorite successfully added", favArr: user.favorites });
                 }
             }
         }
@@ -69,5 +71,41 @@ export default {
             })
         }
         
+    },
+
+    async removeFavorite(req, res){
+        try {
+            var decode = jsonwebtoken.verify(req.body.token, config.authentication.jwtSecret);
+            const user = await users.findOne({
+                where:
+                {
+                  id : decode.id
+                } 
+            });
+            var usrFav = user.favorites;
+            if(!usrFav){res.status(406).send({msg: "Can't do"});}  
+            else{
+                var i = usrFav.indexOf(req.body.film_id);
+                if(i == -1) {res.status(406).send({msg: "Can't do"});}
+                else{
+                    
+                    
+                    var fav = usrFav.slice();
+
+                    fav.splice(i,1);          
+
+                    await user.update({favorites: fav});
+
+                    res.status(200).send({msg: "Favorite successfully removed", favArr: usrFav });
+
+                }
+            }
+
+        } catch (e) {
+            console.log("Error trying to remove a favorite movie\n" + e );
+            res.status(500).send({
+                error: 'An unexpected error occured, conctat the system admin'
+            }) 
+        }
     }
 }
