@@ -82,6 +82,11 @@ const routes = [
     name: 'personalArea',
     component: PersonalAreaView
   },
+  {
+    path:'/debug',
+    name: 'debug',
+    component: () => import('../views/DebugStoreView.vue')
+  },
 ]
 
 const router = createRouter({
