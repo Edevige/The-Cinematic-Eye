@@ -34,7 +34,9 @@
                                         class="bi bi-plus-lg"></i></button>
                                 <button class="btn btn-outline-light flex-fill" type="button"><i
                                         class="bi bi-eye-fill"></i></button>
-                                <button v-if="isFavorite" @click="rmFav(this.filmObj.id)"  class="btn btn-outline-light flex-fill" type="button"><i
+                                <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light flex-fill"
+                                    type="button"><i class="bi bi-suit-heart-fill"></i></button>
+                                <button v-else-if="isFavorite" @click="rmFav(this.filmObj.id)"  class="btn btn-outline-light flex-fill" type="button"><i
                                         class="bi bi-heartbreak-fill"></i></button>
                                 <button v-else @click="addFav(this.filmObj.id)" class="btn btn-outline-light flex-fill"
                                     type="button"><i class="bi bi-suit-heart-fill"></i></button>
@@ -144,7 +146,6 @@ export default {
                 this.$store.dispatch('setUser',userUpd);
 
                 console.log(response.data.msg)
-                this.$router.go()
 
             } catch (error) {
                 console.log(error);
@@ -165,7 +166,6 @@ export default {
                 this.$store.dispatch('setUser',userUpd);
 
                 console.log(response.data.msg)
-                this.$router.go()
 
             } catch (error) {
                 console.log(error);
