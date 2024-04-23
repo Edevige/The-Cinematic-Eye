@@ -10,6 +10,7 @@ import AdvancedSearchView from '@/views/AdvancedSearchView.vue'
 import AdvancedSearchReturnView from '@/views/AdvancedSearchReturnView.vue'
 import PeopleView from '@/views/PeopleView.vue'
 import PersonalAreaView from '@/views/PersonalAreaView.vue'
+import WatchListView from '@/views/WatchListView.vue'
 const routes = [
   {
     path: '/',
@@ -81,6 +82,11 @@ const routes = [
     path:'/personalArea',
     name: 'personalArea',
     component: PersonalAreaView
+  },
+  {
+    path:'/watchlist/:id',
+    name: 'watchlist',
+    component: WatchListView
   },
   {
     path:'/debug',
