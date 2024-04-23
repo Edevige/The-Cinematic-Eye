@@ -1,5 +1,6 @@
 import Authentication from "./controllers/Authentication.mjs";
 import AuthenticationPolicy from "./controllers/AuthenticationPolicy.mjs";
+import Lists from "./controllers/Lists.mjs";
 import Search from "./controllers/Search.mjs";
 import SearchPolicy from "./controllers/SearchPolicy.mjs";
 import UpdatesPersonalData from "./controllers/UpdatesPersonalData.mjs";
@@ -20,6 +21,8 @@ export default function (app) {
 
   app.post("/addFavorite", UpdatesPersonalData.addFavorite);
   app.post("/rmFavorite", UpdatesPersonalData.removeFavorite);
+
+  app.get("/watchlist", Lists.watchList);
 
   app.get("/testCount", test.test);
   app.get("/testUpdatet", test.testJson);
