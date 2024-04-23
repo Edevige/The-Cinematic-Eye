@@ -138,6 +138,11 @@ export default {
                     token: this.$store.state.token,
                     film_id: id
                 });
+                
+                var userUpd = this.$store.state.user;
+                userUpd.favorites = response.data.favArr;
+                this.$store.dispatch('setUser',userUpd);
+
                 console.log(response.data.msg)
                 this.$router.go()
 
@@ -154,6 +159,11 @@ export default {
                     token: this.$store.state.token,
                     film_id: id
                 });
+
+                var userUpd = this.$store.state.user;
+                userUpd.favorites = response.data.favArr;
+                this.$store.dispatch('setUser',userUpd);
+
                 console.log(response.data.msg)
                 this.$router.go()
 

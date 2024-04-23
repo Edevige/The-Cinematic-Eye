@@ -96,7 +96,7 @@ export default {
 
                     await user.update({favorites: fav});
 
-                    res.status(200).send({msg: "Favorite successfully removed", favArr: usrFav });
+                    res.status(200).send({msg: "Favorite successfully removed", favArr: user.favorites });
 
                 }
             }
