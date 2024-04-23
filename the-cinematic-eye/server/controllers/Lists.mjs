@@ -13,7 +13,7 @@ export default {
             });
             if(user == null){res.status(406)}
             else{
-                res.status(200).send({whatchlist: user.favorites})
+                res.status(200).send({list: user.favorites})
             }
         }
         else{res.status(406)}
