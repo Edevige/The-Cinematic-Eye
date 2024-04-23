@@ -43,10 +43,10 @@ export default {
             });
             var usrFav = user.favorites;
             if(!usrFav)usrFav = [];
-            if (usrFav.length >= 3) {
+            /*if (usrFav.length >= 3) {
                 res.send({msg: "Max number(3) of favorites already reached"});
                 
-            } else {
+            } else {*/
                 if(usrFav.includes(req.body.film_id)){
                     res.status(200).send({msg: "Favorite already added" });
                 }
@@ -62,7 +62,7 @@ export default {
 
                     res.status(200).send({msg: "Favorite successfully added", favArr: user.favorites });
                 }
-            }
+            //}
         }
         catch(e){
             console.log("Error trying to add a favorite movie\n" + e );
