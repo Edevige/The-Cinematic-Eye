@@ -20,7 +20,7 @@ export default{
 <template>
 
     <div class="wrapper container">
-      <List :prop-url="url" title="Watchlist"/>
+      <List :prop-url="url" title="Watchlist" :id="this.$route.params.id"/>
       
     </div>
 

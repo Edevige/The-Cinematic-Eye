@@ -6,10 +6,13 @@
             <p class="h1 p-2">{{title }}</p>
             <div class="position-relative ">
                 <div class=" row w-100 mx-auto"  >
-                    <div v-if="film.length > 0" v-for="(item, index) in film" class="col-4 col-sm-6 col-xs-12 mb-4 position-relative">
+                    <div v-if="film.length > 0" v-for="(item, index) in film" class="col-12 col-md-6 col-lg-4 mb-4 position-relative">
                         <router-link :to="'/film/'+item.id"><img :src=imgUrl+item.backdrop_path class="img-fluid mx-auto d-block" :alt=index ></router-link>
                         <div class="film-info">
                             <a class="h6 p-2">{{item.original_title}}</a>
+                        </div>
+                        <div v-if="owner" @click="remove(item.id)" class="remove-button">
+                            <i class="bi bi-dash-square-fill"></i>
                         </div>
                     </div>
                     <div v-else><div class="spinner-border" role="status">
@@ -23,12 +26,14 @@
 
 <script>
 import TMdbApi from '@/services/TMdbApi';
+import apiUtils from '@/services/apiUtils';
 import selfaApi from '@/services/selfaApi';
 
     export default {
         props:{
             propUrl: String,
-            title: String
+            title: String,
+            id: Number
         },
         setup () {      
         },
@@ -63,10 +68,40 @@ import selfaApi from '@/services/selfaApi';
                 } catch (e) {
                     console.log(e);
                 }
+            },
+            async remove(id){
+                console.log("id: " + id);
+                console.log("token:" + this.$store.state.token);
+                try {
+                    const response = await apiUtils.rmFavorites({
+                        token: this.$store.state.token,
+                        film_id: id
+                    });
+
+                    var userUpd = this.$store.state.user;
+                    userUpd.favorites = response.data.favArr;
+                    this.$store.dispatch('setUser',userUpd);
+
+                    console.log(response.data.msg)
+
+                    var i = this.list.indexOf(id);
+                    this.list.splice(i,1);
+                    this.film.splice(i,1);
+
+                } catch (error) {
+                    console.log(error);
+                }
             }
         },
         mounted(){
             this.getList();
+        },
+        computed:{
+            owner(){
+                if(this.$store.state.user == null) return false;
+                else if(this.$store.state.user.id == this.id) return true;
+                return false;
+            }
         }
     }
 </script>
@@ -97,6 +132,22 @@ import selfaApi from '@/services/selfaApi';
         color: whitesmoke;
         text-decoration: none;
         
+    }
+}
+
+.remove-button{
+    position: absolute;
+    top: 1rem;
+    right: 3rem;
+    text-align: center; 
+    cursor: pointer;
+
+    i{
+        color: whitesmoke;
+        font-size: xx-large;
+        &:hover{
+            color:black;
+        }
     }
 }
 
