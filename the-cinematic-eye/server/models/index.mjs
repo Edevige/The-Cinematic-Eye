@@ -12,13 +12,16 @@ const sequelize = new Sequelize(
     config.db.options
 )
 
-import Test from './Test.mjs';
-
-const test = Test(sequelize, DataTypes);
 
 import Users from './Users.mjs';
 
 const users = Users(sequelize, DataTypes);
+
+import Reviews from './Reviews.mjs';
+
+const reviews = Reviews(sequelize, DataTypes, users);
+
+
 const db = {
     
 }
@@ -26,5 +29,6 @@ const db = {
 export {
     db,
     sequelize,
-    users
+    users,
+    reviews
 }
