@@ -7,5 +7,11 @@ export default {
     },
     rmFavorites  (credentials) {
         return Api().post('/rmFavorite', credentials)
+    },
+    createReview (credentials) {
+        return Api().post('/addReview', credentials)
+    },
+    getReviews (credentials) {
+        return Api().post('/getReviews', credentials)
     }
 }

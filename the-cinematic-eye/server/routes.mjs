@@ -26,6 +26,7 @@ export default function (app) {
   app.get("/watchlist", Lists.watchList);
 
   app.post("/addReview", ReviewController.createReview);
+  app.post("/getReviews", ReviewController.getFilmReviews);
 
   app.get("/testCount", test.test);
   app.get("/testUpdatet", test.testJson);
