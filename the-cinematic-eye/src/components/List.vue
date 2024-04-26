@@ -49,7 +49,7 @@ import selfaApi from '@/services/selfaApi';
         methods:{
             async getList(){
                 const response = await selfaApi().get(this.listUrl);
-                console.log(response.data);
+                //console.log(response.data);
                 this.list = response.data.list;
                 this.getFilms();
             },
@@ -70,8 +70,8 @@ import selfaApi from '@/services/selfaApi';
                 }
             },
             async remove(id){
-                console.log("id: " + id);
-                console.log("token:" + this.$store.state.token);
+                //console.log("id: " + id);
+                //console.log("token:" + this.$store.state.token);
                 try {
                     const response = await apiUtils.rmFavorites({
                         token: this.$store.state.token,
@@ -82,7 +82,7 @@ import selfaApi from '@/services/selfaApi';
                     userUpd.favorites = response.data.favArr;
                     this.$store.dispatch('setUser',userUpd);
 
-                    console.log(response.data.msg)
+                    //console.log(response.data.msg)
 
                     var i = this.list.indexOf(id);
                     this.list.splice(i,1);

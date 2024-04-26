@@ -119,7 +119,7 @@ export default {
             this.fetchParam.url = this.baseUrl.replace('{movie_id}', id) + this.urlTrail;
             const f = await axios
                 .request(this.fetchParam);
-            console.log(f);
+            //console.log(f);
             let flag = true;
             f.data.results.forEach(vid => {
                 if (vid.site == 'YouTube' && vid.type == 'Trailer' && flag) {
@@ -129,12 +129,12 @@ export default {
                 }
 
             });
-            console.log(f.data);
+            //console.log(f.data);
         },
 
         async addFav(id) {
-            console.log("id: " + id);
-            console.log("token:" + this.$store.state.token);
+            //console.log("id: " + id);
+            //console.log("token:" + this.$store.state.token);
             try {
                 const response = await apiUtils.addFavorite({
                     token: this.$store.state.token,
@@ -145,7 +145,7 @@ export default {
                 userUpd.favorites = response.data.favArr;
                 this.$store.dispatch('setUser',userUpd);
 
-                console.log(response.data.msg)
+                //console.log(response.data.msg)
 
             } catch (error) {
                 console.log(error);
@@ -153,8 +153,8 @@ export default {
 
         },
         async rmFav(id) {
-            console.log("id: " + id);
-            console.log("token:" + this.$store.state.token);
+            //console.log("id: " + id);
+            //console.log("token:" + this.$store.state.token);
             try {
                 const response = await apiUtils.rmFavorites({
                     token: this.$store.state.token,
@@ -165,7 +165,7 @@ export default {
                 userUpd.favorites = response.data.favArr;
                 this.$store.dispatch('setUser',userUpd);
 
-                console.log(response.data.msg)
+                //console.log(response.data.msg)
 
             } catch (error) {
                 console.log(error);
