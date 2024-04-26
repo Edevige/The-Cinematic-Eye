@@ -1,6 +1,7 @@
 import Authentication from "./controllers/Authentication.mjs";
 import AuthenticationPolicy from "./controllers/AuthenticationPolicy.mjs";
 import Lists from "./controllers/Lists.mjs";
+import ReviewController from "./controllers/ReviewController.mjs";
 import Search from "./controllers/Search.mjs";
 import SearchPolicy from "./controllers/SearchPolicy.mjs";
 import UpdatesPersonalData from "./controllers/UpdatesPersonalData.mjs";
@@ -23,6 +24,8 @@ export default function (app) {
   app.post("/rmFavorite", UpdatesPersonalData.removeFavorite);
 
   app.get("/watchlist", Lists.watchList);
+
+  app.post("/addReview", ReviewController.createReview);
 
   app.get("/testCount", test.test);
   app.get("/testUpdatet", test.testJson);
