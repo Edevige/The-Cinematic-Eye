@@ -44,7 +44,7 @@ export default {
     <div v-if="films.length > 0" class="wrapper">
       <div  v-for="item in films">
         <Film :filmObj=item />
-        <FilmReviews />
+        <FilmReviews :filmID="filmId" />
       </div></div>
       <div v-else class="container">
         <div class="position-relative ">
