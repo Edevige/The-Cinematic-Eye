@@ -19,30 +19,42 @@
                 </div>
                 
                 <div class="dropdown">
-                    <button class="btn btn-usr" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-outline-success" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-list"></i>
                     </button>
-                    <ul  class="dropdown-menu dropdown-menu-end">
-                        <li><router-link class="dropdown-item" to="/">Home</router-link> </li>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><router-link class="dropdown-item" to="/">Home</router-link></li>
+
+                        <!-- Menu per utenti loggati -->
+                        <template v-if="logged">
+                        <li><router-link class="dropdown-item" to="/watchlist">Watchlist</router-link></li>
+                        <li><router-link class="dropdown-item" to="/le-tue-liste">Le tue liste</router-link></li>
+                        <li><router-link class="dropdown-item" to="/le-tue-recensioni">Le tue recensioni</router-link></li>
+                        <li><router-link class="dropdown-item" to="/film-gia-visti">Film già visti</router-link></li>
+                        </template>
+
                         <li class="dropdown-submenu" @click="sottomenu($event)">
                             <a class="dropdown-item" href="#">Categorie</a>
-                            <ul class="dropdown-menu1" v-show=isSubmenuVisible>
-                                <li><router-link class="dropdown-item" to="/genre/28">Action</router-link> </li>
-                                <li><router-link class="dropdown-item" to="/genre/16">Animation</router-link> </li>
-                                <li><router-link class="dropdown-item" to="/genre/10749">Romance</router-link> </li>
-                                <li><router-link class="dropdown-item" to="/genre/27">Horror</router-link> </li>
-                                <li><router-link class="dropdown-item" to="/genre/35">Comedy</router-link> </li>
-                                <li><router-link class="dropdown-item" to="/genre/18">Drama</router-link> </li>
+                            <ul class="dropdown-menu1" v-show="isSubmenuVisible">
+                            <li><router-link class="dropdown-item" to="/genre/28">Action</router-link></li>
+                            <li><router-link class="dropdown-item" to="/genre/16">Animation</router-link></li>
+                            <li><router-link class="dropdown-item" to="/genre/10749">Romance</router-link></li>
+                            <li><router-link class="dropdown-item" to="/genre/27">Horror</router-link></li>
+                            <li><router-link class="dropdown-item" to="/genre/35">Comedy</router-link></li>
+                            <li><router-link class="dropdown-item" to="/genre/18">Drama</router-link></li>
                             </ul>
                         </li>
                         <li><a class="dropdown-item" href="#">I più visti</a></li>
                         <li><a class="dropdown-item" href="#">I più amati</a></li>
                         <li><a class="dropdown-item" href="#">Liste più seguite</a></li>
                         <li><a class="dropdown-item" href="#">Top User</a></li>
+                        
                     </ul>
                 </div>
+
                 <div class="dropdown">
-                    <button class="btn btn-usr" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-outline-success" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-fill"></i>
                     </button>
                     <ul  class="dropdown-menu dropdown-menu-end">
@@ -227,19 +239,19 @@ export default {
        a, i{
         color: whitesmoke;
         &:hover{
-            color:rgb(26, 68, 67)
+            color:whitesmoke;
         }
        }
        
     }
     .bi-person-fill{
         font-size: xx-large;
-        margin: 0 15px;
+        margin: 0 5px;
         
     }
     .bi-list{
         font-size: xx-large;
-        margin-left: 15px;
+        margin: 0 5px;
         
     }
     .bi-google{
@@ -254,22 +266,58 @@ export default {
     .dropdown-menu{
         --bs-dropdown-bg: #{$menu-color};
         --bs-dropdown-color: whitesmoke;
+        text-align: center;
+        &:hover {
+            background-color: #{$menu-color}; // Mantiene il colore di sfondo durante hover
+            color: whitesmoke; // Mantiene il colore del testo bianco
+        }
+        
+    }
+    .dropdown-menu1{
+        --bs-dropdown-bg: #{$menu-color};
+        --bs-dropdown-color: whitesmoke;
+        position: relative;
+        text-align: center;
+        &:hover {
+            background-color: #{$menu-color}; // Mantiene il colore di sfondo durante hover
+            color: whitesmoke; // Mantiene il colore del testo bianco
+        }
+        
+    }
+    .dropdown-submenu {
+        --bs-dropdown-bg: #{$menu-color};
+        --bs-dropdown-color: whitesmoke;
+        text-align: center;
+        position: relative;
+        &:hover {
+            background-color: #{$menu-color}; // Mantiene il colore di sfondo durante hover
+            color: whitesmoke; // Mantiene il colore del testo bianco
+        }
+        
+    }
+    .dropdown-item {
+        --bs-dropdown-bg: #{$menu-color};
+        --bs-dropdown-color: whitesmoke;
+        position: relative;
+        display: block; /* Assicura che l'elemento occupi l'intera cella */
+        width: 100%;
+        &:hover {
+            background-color: #{$menu-color}; // Mantiene il colore di sfondo durante hover
+            color: whitesmoke; // Mantiene il colore del testo bianco
+        }
+        
+    }
+
+    .btn-outline-success {
+        border: none; 
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .register-btn{
         font-size: small;
         background-color: whitesmoke;
         font-weight: bolder;
     }
-
-    .dropdown-menu1{
-        --bs-dropdown-bg: #{$menu-color};
-        --bs-dropdown-color: whitesmoke;
-        position: relative;
-    }
-
-    .dropdown-submenu .dropdown-menu1{
-        --bs-dropdown-bg: #{$menu-color};
-        --bs-dropdown-color: whitesmoke;
-    }
-
 </style>
