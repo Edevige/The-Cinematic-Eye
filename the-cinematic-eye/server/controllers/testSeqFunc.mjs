@@ -26,9 +26,7 @@ export default {
             id : 1
           }
           });
-          user.favorites = {
-            favorites_id:[194, 837335, 313369]
-          }
+          user.favorites = NULL;
           await user.save();
           console.log('user fav updated');
           res.send(
