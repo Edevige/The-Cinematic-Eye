@@ -89,6 +89,21 @@ const routes = [
     component: WatchListView
   },
   {
+    path:'/letueliste/:id',
+    name: 'letueliste',
+    component: LeTueListeView
+  },
+  {
+    path:'/letuerecensioni/:id',
+    name: 'letuerecensioni',
+    component: LeTueRecensioniView
+  },
+  {
+    path:'/filemgiavisti/:id',
+    name: 'filmgiavisti',
+    component: FilmGiaVistiView
+  },
+  {
     path:'/debug',
     name: 'debug',
     component: () => import('../views/DebugStoreView.vue')

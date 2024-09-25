@@ -31,10 +31,10 @@
 
                         <!-- Menu per utenti loggati -->
                         <div v-if="logged">
-                        <li><router-link class="dropdown-item" to="/watchlist">Watchlist</router-link></li>
-                        <li><router-link class="dropdown-item" to="/LeTueListeView">Le tue liste</router-link></li>
-                        <li><router-link class="dropdown-item" to="/LeTueRecensioniView">Le tue recensioni</router-link></li>
-                        <li><router-link class="dropdown-item" to="/FilmGiaVistiView">Film già visti</router-link></li>
+                            <li><router-link class="dropdown-item" to="/watchlist/:id">Watchlist</router-link></li>
+                            <li><router-link class="dropdown-item" to="/LeTueListeView/:id">Le tue liste</router-link></li>
+                            <li><router-link class="dropdown-item" to="/LeTueRecensioniView/:id">Le tue recensioni</router-link></li>
+                            <li><router-link class="dropdown-item" to="/FilmGiaVistiView/:id">Film già visti</router-link></li>
                         </div>
 
                         <!-- Sottomenu per "Categorie" -->
@@ -121,9 +121,16 @@
 import AuthenticationService from '@/services/AuthenticationService';
 import WatchListView from '@/views/WatchListView.vue';
 import { GoogleSignInButton } from 'vue3-google-signin';
+import { mapState } from 'vuex';
 
 export default {
     name: 'GoogleLoginComponent',
+
+    computed: {
+        ...mapState({
+        userId: state => state.user.id // Recupera l'ID dell'utente dallo store
+        })
+    },
     mounted(){
         this.initializeGoogle();
 
