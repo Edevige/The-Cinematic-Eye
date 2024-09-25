@@ -11,6 +11,9 @@ import AdvancedSearchReturnView from '@/views/AdvancedSearchReturnView.vue'
 import PeopleView from '@/views/PeopleView.vue'
 import PersonalAreaView from '@/views/PersonalAreaView.vue'
 import WatchListView from '@/views/WatchListView.vue'
+import LeTueListeView from '@/views/LeTueListeView.vue'
+import LeTueRecensioniView from '@/views/LeTueRecensioniView.vue'
+import FilmGiaVistiView from '@/views/FilmGiaVistiView.vue'
 const routes = [
   {
     path: '/',
@@ -87,6 +90,21 @@ const routes = [
     path:'/watchlist/:id',
     name: 'watchlist',
     component: WatchListView
+  },
+  {
+    path:'/letueliste/:id',
+    name: 'letueliste',
+    component: LeTueListeView
+  },
+  {
+    path:'/letuerecensioni/:id',
+    name: 'letuerecensioni',
+    component: LeTueRecensioniView
+  },
+  {
+    path:'/filemgiavisti/:id',
+    name: 'filmgiavisti',
+    component: FilmGiaVistiView
   },
   {
     path:'/debug',

@@ -1,50 +1,68 @@
 <template>
     <nav class="navbar">
         <div class="container-fluid">
+            <!--logo e nome del sito-->
             <router-link class="navbar-brand" to="/">
                 <img src="@/assets/logo.png" alt="Logo" height="24" class="d-inline-block align-text-top invertColor">
                 The Cinematic Eye
             </router-link>
-            
+            <!--pulsanti lato destro-->
             <div class="d-flex">
+                <!--ricerca-->
                 <div class="d-flex">
-                    <div  class="d-flex dropdown" @click="srcDrop()">
+                    <div  class="d-flex dropdown" @click="srcDrop()" @click.self="closeSrc">
                         <input v-if="!(search || $route.meta.nav)" class="form-control me-2" @Focus="srcDrop()"  @keyup.enter="searchCall(searchPar)" v-model="searchPar" type="search" placeholder="Search" aria-label="Search">
-                        <ul id="search" v-if="(searchPar != '') && !$route.meta.advSrc && !$route.meta.nav" style="display: block; top: 50px;" class="dropdown-menu dropdown-menu-end">
-                                <li><router-link class="dropdown-item" to="/advancedSearch">Ricerca avanzata</router-link> </li>
-                            </ul>
+                        <ul id="search" v-if="!(search || $route.meta.nav)" style="display: block; top: 70px; width: 250px;" class="dropdown-menu dropdown-menu-end">
+                            <li><router-link class="dropdown-item" to="/advancedSearch">Ricerca avanzata</router-link> </li>
+                        </ul>
                     </div>
-                    <button v-if="!$route.meta.nav" class="btn btn-outline-success" @click="searchForm(searchPar)"><i class="bi bi-search"></i></button>
+                    <button class="btn btn-outline-success" @click="searchForm(searchPar)" ><i class="bi bi-search"></i></button>
 
                 </div>
-                
-                <div class="dropdown">
-                    <button class="btn btn-usr" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+                <!--menu a tenddina-->
+                <div class="dropdown" @click.self="closeSubmenu">
+                    <button class="btn btn-outline-success" type="button" data-bs-toggle="dropdown" aria-expanded="false" @click="closeAllMenus">
                         <i class="bi bi-list"></i>
                     </button>
-                    <ul  class="dropdown-menu dropdown-menu-end">
-                        <li><router-link class="dropdown-item" to="/">Home</router-link> </li>
-                        <li class="dropdown-submenu" @click="sottomenu($event)">
-                            <a class="dropdown-item" href="#">Categorie</a>
-                            <ul class="dropdown-menu1" v-show=isSubmenuVisible>
-                                <li><router-link class="dropdown-item" to="/genre/28">Action</router-link> </li>
-                                <li><router-link class="dropdown-item" to="/genre/16">Animation</router-link> </li>
-                                <li><router-link class="dropdown-item" to="/genre/10749">Romance</router-link> </li>
-                                <li><router-link class="dropdown-item" to="/genre/27">Horror</router-link> </li>
-                                <li><router-link class="dropdown-item" to="/genre/35">Comedy</router-link> </li>
-                                <li><router-link class="dropdown-item" to="/genre/18">Drama</router-link> </li>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><router-link class="dropdown-item" to="/">Home</router-link></li>
+
+                        <!-- Menu per utenti loggati -->
+                        <div v-if="logged">
+                            <li><router-link class="dropdown-item" to="/watchlist/:id">Watchlist</router-link></li>
+                            <li><router-link class="dropdown-item" to="/LeTueListeView/:id">Le tue liste</router-link></li>
+                            <li><router-link class="dropdown-item" to="/LeTueRecensioniView/:id">Le tue recensioni</router-link></li>
+                            <li><router-link class="dropdown-item" to="/FilmGiaVistiView/:id">Film già visti</router-link></li>
+                        </div>
+
+                        <!-- Sottomenu per "Categorie" -->
+                        <li class="dropdown-submenu" @click.stop="toggleSubmenu">
+                            <a class="dropdown-item" href="#">Categorie<span class="arrow">&#8250;</span> <!-- Freccia verso il basso --></a>                        
+                            <ul class="dropdown-menu1" v-show="isSubmenuVisible">
+                                <li><router-link class="dropdown-item" to="/genre/28">Action</router-link></li>
+                                <li><router-link class="dropdown-item" to="/genre/16">Animation</router-link></li>
+                                <li><router-link class="dropdown-item" to="/genre/10749">Romance</router-link></li>
+                                <li><router-link class="dropdown-item" to="/genre/27">Horror</router-link></li>
+                                <li><router-link class="dropdown-item" to="/genre/35">Comedy</router-link></li>
+                                <li><router-link class="dropdown-item" to="/genre/18">Drama</router-link></li>
                             </ul>
                         </li>
+
                         <li><a class="dropdown-item" href="#">I più visti</a></li>
                         <li><a class="dropdown-item" href="#">I più amati</a></li>
                         <li><a class="dropdown-item" href="#">Liste più seguite</a></li>
                         <li><a class="dropdown-item" href="#">Top User</a></li>
                     </ul>
                 </div>
+
+                <!--menu log in/out, sign in-->
                 <div class="dropdown">
-                    <button class="btn btn-usr" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-outline-success" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-fill"></i>
                     </button>
+                    <!--menu loggato-->
                     <ul  class="dropdown-menu dropdown-menu-end">
                         <div v-if="logged">
                             <li>
@@ -64,8 +82,9 @@
                             <li><a class="dropdown-item" href="#">Something else here</a></li>
                             <li><button type="button" @click="logout" class="btn btn-outline-light ms-5 me-auto">Logout</button></li>
                         </div>
+                        <!--menu non loggato-->
                         <div v-if="!logged">
-                            <form>
+                            <form style="display: block; top: 70px; width: 250px; padding: 0.5rem;">
                                 
                                 <div class="bt-3 mb-3 me-2 ms-2">
                                     <input type="email"  v-model="logMail" class="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Email/Username">
@@ -102,17 +121,43 @@
 import AuthenticationService from '@/services/AuthenticationService';
 import WatchListView from '@/views/WatchListView.vue';
 import { GoogleSignInButton } from 'vue3-google-signin';
+import { mapState } from 'vuex';
 
 export default {
     name: 'GoogleLoginComponent',
+
+    computed: {
+        ...mapState({
+        userId: state => state.user.id // Recupera l'ID dell'utente dallo store
+        })
+    },
     mounted(){
         this.initializeGoogle();
-        document.addEventListener('click', (e)=>{
-            if(!this.$el.contains(e.target) && !e.target.closest('.dropdown-submenu')){
-                this.isSubmenuVisible =false;
-            }
+
+        // Aggiunge un event listener per chiudere il sottomenu se il menu generale viene chiuso (opzionale)
+        document.addEventListener('hide.bs.dropdown', () => {
+        this.isSubmenuVisible = false;
         });
     },
+    beforeDestroy() {
+        // Rimuove l'event listener quando il componente viene distrutto
+        document.removeEventListener('hide.bs.dropdown', () => {
+        this.isSubmenuVisible = false;
+        });
+    },
+    
+    data() {
+        return {
+            isSubmenuVisible: false,  // Stato del sottomenu (di default chiuso)
+            search: true,
+            searchPar: '',
+            logMail: '',
+            logPass: '',
+            error: null, 
+            test: false   
+        };
+    },
+
     components:{
         GoogleSignInButton
     },
@@ -121,36 +166,26 @@ export default {
 
         return {}
     },
-    data(){
-        return{
-            search: true,
-            searchPar: '',
-            logMail: '',
-            logPass: '',
-            error: null, 
-            isSubmenuVisible: false, 
-            test: false   
-        }
-    },
-    methods:{
-        sottomenu(event){
-            event.preventDefault();
-            event.stopPropagation();
-            this.isSubmenuVisible=!this.isSubmenuVisible;
-        },
-        initializeGoogle(){
-            google.accounts.id.initialize({
-            client_id: "599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com",
-            callback: this.loginWithGoogle
-        });
-            
-            const parent= document.getElementById("googleButton");
-            google.accounts.id.renderButton(
-                parent,
-                {type: 'icon', size: 'medium', shape: 'circle'}
-        );
     
+    methods:{
+
+        // Metodo per aprire/chiudere il sottomenu
+        toggleSubmenu(event) {
+        this.isSubmenuVisible = !this.isSubmenuVisible;
         },
+
+        // Metodo per chiudere il sottomenu quando il menu generale si chiude o clicchi fuori
+        closeSubmenu(event) {
+        if (!this.$el.contains(event.target)) {
+            this.isSubmenuVisible = false; // Chiude il sottomenu se clicchi fuori
+        }
+        },
+
+        // Metodo per chiudere tutto (usato quando chiudi il menu principale)
+        closeAllMenus() {
+        this.isSubmenuVisible = false; // Assicurati che il sottomenu sia chiuso quando si chiude il menu principale
+        },
+
         srcDrop(){
             this.test = !this.test;
             //const srcDropMenu = document.getElementById("Search");
@@ -167,6 +202,20 @@ export default {
         } ,
         searchCall(par){
             this.$router.push('/s/'+ par);
+        },
+
+        initializeGoogle(){
+            google.accounts.id.initialize({
+            client_id: "599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com",
+            callback: this.loginWithGoogle
+        });
+            
+            const parent= document.getElementById("googleButton");
+            google.accounts.id.renderButton(
+                parent,
+                {type: 'icon', size: 'medium', shape: 'circle'}
+        );
+    
         },
         async login() {
             try {
@@ -191,19 +240,19 @@ export default {
             this.$store.commit('logout')
         },
 
-    //Login con Google
-    async loginWithGoogle(CredentialResponse){ 
-    const token_id = CredentialResponse.credential;
-    try {
-        const Gregister =await AuthenticationService.loginWithGoogleToken({"token_id":token_id});
-        this.$store.dispatch('setToken', Gregister.data.token);
-        this.$store.dispatch('setUser', Gregister.data.user);
-        this.$store.commit('login');
-    } catch (error) {
-        this.error = error.Gregister.data.error;
-    }
-        
-    },
+        //Login con Google
+        async loginWithGoogle(CredentialResponse){ 
+        const token_id = CredentialResponse.credential;
+        try {
+            const Gregister =await AuthenticationService.loginWithGoogleToken({"token_id":token_id});
+            this.$store.dispatch('setToken', Gregister.data.token);
+            this.$store.dispatch('setUser', Gregister.data.user);
+            this.$store.commit('login');
+        } catch (error) {
+            this.error = error.Gregister.data.error;
+        }
+            
+        },
         
     },
     computed:{
@@ -227,19 +276,19 @@ export default {
        a, i{
         color: whitesmoke;
         &:hover{
-            color:rgb(26, 68, 67)
+            color:whitesmoke;
         }
        }
        
     }
     .bi-person-fill{
         font-size: xx-large;
-        margin: 0 15px;
+        margin: 0 5px;
         
     }
     .bi-list{
         font-size: xx-large;
-        margin-left: 15px;
+        margin: 0 5px;
         
     }
     .bi-google{
@@ -254,22 +303,84 @@ export default {
     .dropdown-menu{
         --bs-dropdown-bg: #{$menu-color};
         --bs-dropdown-color: whitesmoke;
+        text-align: center;
+        padding: 0;
+        &:hover {
+            background-color: #{$menu-color}; // Mantiene il colore di sfondo durante hover
+            color: whitesmoke; // Mantiene il colore del testo bianco
+        }
+        
+    }
+    .dropdown-menu1{
+        --bs-dropdown-bg: #{$menu-color};
+        --bs-dropdown-color: whitesmoke;
+        position: relative;
+        text-align: justify;
+        padding: 0;
+        &:hover {
+            background-color: #{$menu-color}; // Mantiene il colore di sfondo durante hover
+            color: whitesmoke; // Mantiene il colore del testo bianco
+        }
+        
+    }
+    .dropdown-submenu {
+        --bs-dropdown-bg: #{$menu-color};
+        --bs-dropdown-color: whitesmoke;
+        text-align: center;
+        position: relative;
+        &:hover {
+            background-color: #{$menu-color}; // Mantiene il colore di sfondo durante hover
+            color: whitesmoke; // Mantiene il colore del testo bianco
+        }
+        
+    }
+    .dropdown-item {
+        --bs-dropdown-bg: #{$menu-color};
+        --bs-dropdown-color: whitesmoke;
+        position: relative;
+        display: block;
+        width: 100%;
+        padding: 1rem 2rem;
+        margin: 10;
+        border: 1;
+        
+        &:hover {
+            background-color: #{$menu-color}; // Mantiene il colore di sfondo durante hover
+            color: whitesmoke; // Mantiene il colore del testo bianco
+        }
+
+        &:focus, &:active {
+            background-color: #{$menu-color} !important; // Mantiene il colore di sfondo quando è selezionato o attivo
+            color: whitesmoke !important; // Mantiene il colore del testo bianco quando è selezionato o attivo
+            outline: none; // Rimuove il contorno standard che alcuni browser mostrano sul focus
+            box-shadow: none; // Rimuove eventuali effetti ombra di focus
+        }
+    }
+
+    li {
+        padding: 0;
+    }
+    .arrow {
+        margin-left: 8px; /* Distanza tra la scritta e la freccia */
+        font-size: 25px; /* Dimensione della freccia */
+        display: inline-block;
+        text-align: center;
+        rotate: 90deg;
+        line-height: 1; /* Assicura che la freccia non cambi l'altezza della riga */
+        transform: translateY(1px); /* Leggermente allineata verticalmente */
+        transform: translateX(3px);
+    }
+
+    .btn-outline-success {
+        border: none; 
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     .register-btn{
         font-size: small;
         background-color: whitesmoke;
         font-weight: bolder;
     }
-
-    .dropdown-menu1{
-        --bs-dropdown-bg: #{$menu-color};
-        --bs-dropdown-color: whitesmoke;
-        position: relative;
-    }
-
-    .dropdown-submenu .dropdown-menu1{
-        --bs-dropdown-bg: #{$menu-color};
-        --bs-dropdown-color: whitesmoke;
-    }
-
 </style>
