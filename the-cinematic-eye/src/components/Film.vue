@@ -182,14 +182,21 @@ export default {
         generes() {
             return this.getGenres(this.filmObj);
         },
+        
         isFavorite() {
 
             if (this.$store.state.logged) {
                 var usrFav = this.$store.state.user.favorites
                 var filmId = parseInt(this.filmObj.id)
-                return usrFav.includes(filmId)
+                // Controlla che usrFav esista ed è un array prima di usare includes
+                if (Array.isArray(usrFav)) {
+                    return usrFav.includes(filmId)
+                } else {
+                    return false; // Se usrFav non è un array, il film non è tra i favoriti
+                }
             } else return false;
         }
+        
     }
 
 }

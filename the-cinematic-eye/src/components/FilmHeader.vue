@@ -29,14 +29,6 @@
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><router-link class="dropdown-item" to="/">Home</router-link></li>
 
-                        <!-- Menu per utenti loggati -->
-                        <div v-if="logged">
-                            <li><router-link class="dropdown-item" to="/watchlist/:id">Watchlist</router-link></li>
-                            <li><router-link class="dropdown-item" to="/LeTueListeView/:id">Le tue liste</router-link></li>
-                            <li><router-link class="dropdown-item" to="/LeTueRecensioniView/:id">Le tue recensioni</router-link></li>
-                            <li><router-link class="dropdown-item" to="/FilmGiaVistiView/:id">Film già visti</router-link></li>
-                        </div>
-
                         <!-- Sottomenu per "Categorie" -->
                         <li class="dropdown-submenu" @click.stop="toggleSubmenu">
                             <a class="dropdown-item" href="#">Categorie<span class="arrow">&#8250;</span> <!-- Freccia verso il basso --></a>                        
@@ -63,31 +55,33 @@
                         <i class="bi bi-person-fill"></i>
                     </button>
                     <!--menu loggato-->
-                    <ul  class="dropdown-menu dropdown-menu-end">
+                    <ul  class="dropdown-menu dropdown-menu-end" style="padding: 0.5rem;">
                         <div v-if="logged">
                             <li>
                                 <router-link to="/personalArea" class="d-flex flex-row align-items-center usr-menu">
                                     <div class=""> <i class="bi bi-person-fill"></i></div>
                                     <div class="flex-grow-1 p-2 d-flex flex-column">
-                                        <div class="flex-grow-1 p-2 justify-content-evenly d-flex flex-row">
-                                            <div>XXX</div> 
-                                            <div>XXX</div>
-                                        </div> 
                                         <div class="text-center">{{this.$store.state.user.username}}</div>
+                                        <div class="flex-grow-1 p-2 justify-content-evenly d-flex flex-row">
+                                            <div>{{this.$store.state.user.name}}</div> 
+                                        </div> 
                                     </div>
                                 </router-link>
                             </li>
                             
                             <li><router-link class="dropdown-item" :to="{ name: 'watchlist', params: { id: this.$store.state.user.id }}">Watchlist</router-link></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            <li><button type="button" @click="logout" class="btn btn-outline-light ms-5 me-auto">Logout</button></li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'letueliste', params: { id: this.$store.state.user.id }}">Le Tue Liste</router-link></li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'letuerecensioni', params: { id: this.$store.state.user.id }}">Le Tue Recensioni</router-link></li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'filmgiavisti', params: { id: this.$store.state.user.id }}">Film Già Visti</router-link></li>
+
+                            <li><button type="button" @click="logout" class="btn btn-outline-light me-auto" style="width: 170px;">Logout</button></li>
                         </div>
                         <!--menu non loggato-->
                         <div v-if="!logged">
                             <form style="display: block; top: 70px; width: 250px; padding: 0.5rem;">
                                 
                                 <div class="bt-3 mb-3 me-2 ms-2">
-                                    <input type="email"  v-model="logMail" class="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Email/Username">
+                                    <input type="email"  v-model="logMail" class="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Email">
                                 </div>
                                 <div class="mb-3 me-2 ms-2">
                                     <input type="password" v-model="logPass" class="form-control" id="InputPassword" placeholder="Password">
@@ -95,7 +89,7 @@
                                 
                                 <div class="d-flex justify-content-around">
    
-                                        <div id="googleButton"></div>
+                                    <div v-if="!logged" id="googleButton"></div>
                                     
                                     <button type="button" @click="login" class="btn btn-outline-light ms-2">Login</button>
                                     
@@ -204,18 +198,22 @@ export default {
             this.$router.push('/s/'+ par);
         },
 
-        initializeGoogle(){
+        initializeGoogle() {
+            const parent = document.getElementById("googleButton");
+
+            if (parent) {
             google.accounts.id.initialize({
-            client_id: "599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com",
-            callback: this.loginWithGoogle
-        });
+                client_id: "599203859511-5f3c2e9dkgg7qjplu44f4qa1i57t1kf9.apps.googleusercontent.com",
+                callback: this.loginWithGoogle
+            });
             
-            const parent= document.getElementById("googleButton");
             google.accounts.id.renderButton(
                 parent,
-                {type: 'icon', size: 'medium', shape: 'circle'}
-        );
-    
+                { type: 'icon', size: 'medium', shape: 'circle' }
+            );
+            } else {
+            console.error("Elemento googleButton non trovato nel DOM.");
+            }
         },
         async login() {
             try {
@@ -238,6 +236,12 @@ export default {
             this.user = {};
             this.jwt = "";
             this.$store.commit('logout')
+
+            // Reinizializza il pulsante di Google Sign-In dopo il logout
+            // Usa nextTick per aspettare che l'elemento sia nel DOM
+            this.$nextTick(() => {
+                this.initializeGoogle();
+            });
         },
 
         //Login con Google
@@ -273,12 +277,9 @@ export default {
         right: 0;
         z-index: 2;
         border-radius: 0.5rem;
-       a, i{
-        color: whitesmoke;
-        &:hover{
-            color:whitesmoke;
+        a, i{
+            color: whitesmoke;
         }
-       }
        
     }
     .bi-person-fill{
@@ -347,18 +348,25 @@ export default {
         &:hover {
             background-color: #{$menu-color}; // Mantiene il colore di sfondo durante hover
             color: whitesmoke; // Mantiene il colore del testo bianco
+            text-decoration: underline;
         }
 
         &:focus, &:active {
-            background-color: #{$menu-color} !important; // Mantiene il colore di sfondo quando è selezionato o attivo
-            color: whitesmoke !important; // Mantiene il colore del testo bianco quando è selezionato o attivo
+            background-color: #{$menu-color} ; // Mantiene il colore di sfondo quando è selezionato o attivo
+            color: whitesmoke ; // Mantiene il colore del testo bianco quando è selezionato o attivo
             outline: none; // Rimuove il contorno standard che alcuni browser mostrano sul focus
             box-shadow: none; // Rimuove eventuali effetti ombra di focus
+            text-decoration: none;
         }
     }
 
     li {
         padding: 0;
+        &:hover {
+            background-color: #{$menu-color}; // Mantiene il colore di sfondo durante hover
+            color: whitesmoke; // Mantiene il colore del testo bianco
+            text-decoration: underline;
+        }
     }
     .arrow {
         margin-left: 8px; /* Distanza tra la scritta e la freccia */
@@ -383,4 +391,5 @@ export default {
         background-color: whitesmoke;
         font-weight: bolder;
     }
+    
 </style>

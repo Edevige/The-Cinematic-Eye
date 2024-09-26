@@ -1,26 +1,29 @@
 <script>
-
 import List from '@/components/List.vue';
 
-export default{
+export default {
     components: {
         List
     },
-    data(){
-
+    data() {
+        return {
+            watchlist: [],  // Variabile di stato iniziale per la watchlist
+            loading: true   // Variabile di stato per gestire il caricamento
+        };
     },
-    computed:{
-        url(){
-            return "watchlist?user="+this.$route.params.id
+    computed: {
+        url() {
+            return "watchlist?user=" + this.$route.params.id;
         }
     }
-}
+};
 </script>
+
 
 <template>
 
     <div class="wrapper container">
-      <List :prop-url="url" title="Watchlist" :id="this.$route.params.id"/>
+      <List :prop-url="url" title="Watchlist" :id="parseInt(this.$route.params.id)" />
       
     </div>
 
