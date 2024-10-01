@@ -22,7 +22,7 @@ export default {
 
 <template>
 
-    <div class="wrapper container">
+    <div class="wrapper container" style="padding: 2rem;">
       <List :prop-url="url" title="Watchlist" :id="parseInt(this.$route.params.id)" />
       
     </div>

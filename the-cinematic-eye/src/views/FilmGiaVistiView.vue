@@ -1,5 +1,5 @@
 <script>
-import List from '@/components/List.vue';
+import List from '@/components/ListFilmVisti.vue';
 
 export default {
     components: {
@@ -7,13 +7,13 @@ export default {
     },
     data() {
         return {
-            filmVisti: [],  // Variabile di stato iniziale per film già visti
+            filmgiavisti: [],  // Variabile di stato iniziale per film già visti
             loading: true   // Variabile di stato per gestire il caricamento
         };
     },
     computed: {
         url() {
-            return "filmVisti?user=" + this.$route.params.id;
+            return "filmgiavisti?user=" + this.$route.params.id;
         }
     }
 };
@@ -22,8 +22,8 @@ export default {
 
 <template>
 
-    <div class="wrapper container">
-      <List :prop-url="url" title="FilmGiaVisti" :id="parseInt(this.$route.params.id)" />
+    <div class="wrapper container" style="padding: 2rem;">
+      <List :prop-url="url" title="Filmgiavisti" :id="parseInt(this.$route.params.id)" />
       
     </div>
 

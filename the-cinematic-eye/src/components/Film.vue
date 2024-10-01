@@ -92,6 +92,7 @@ export default {
             trailerUrl: 'https://www.youtube.com/embed/'
         }
     },
+    
     methods: {
         async getDirector(id) {
             this.fetchParam.url = this.baseUrl.replace('{movie_id}', id) + this.urlDir;
@@ -224,7 +225,7 @@ export default {
     mounted() {
         this.getDirector(this.filmObj.id);
         this.getTrailer(this.filmObj.id);
-
+        console.log(this.isSeen);
     },
     computed: {
         generes() {
