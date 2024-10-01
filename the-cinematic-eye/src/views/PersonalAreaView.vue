@@ -29,10 +29,10 @@
 
       <div></div>
 
-      <div v-if="this.$store.state.user.birthday">
+      <div v-if="this.$store.state.user.birthdate">
       <label for="Birthday">Compleanno: {{ this.$store.state.user.birthday }}</label>
       </div>
-      <div v-if="!this.$store.state.user.birthday">
+      <div v-if="!this.$store.state.user.birthdate">
       <label for="Birthday">Non hai inserito il tuo Compleanno</label>
       </div>
       <button type="button" @click="updateBirthday()">Aggiorna Data</button>
@@ -93,7 +93,7 @@ export default {
     async confermaNome(newName){
       try {
         console.log('Nuovo Nome selezionato: ', newName);
-        AuthenticationService.updatePersonalData({'newName': newName, 'index': 0, 'oldName': this.$store.state.user.name});
+        AuthenticationService.updatePersonalData({'newName': newName, 'index': 0, 'oldName': this.$store.state.user.name, 'token':this.$store.state.token});
       } catch (error) {
         console.error('Errore con confermaNome: ', error);
       }
