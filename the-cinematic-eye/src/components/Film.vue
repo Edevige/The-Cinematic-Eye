@@ -32,8 +32,14 @@
                             <div class="d-flex gap-2 justify-content-between">
                                 <button class="btn btn-outline-light flex-fill" type="button"><i
                                         class="bi bi-plus-lg"></i></button>
-                                <button class="btn btn-outline-light flex-fill" type="button"><i
-                                        class="bi bi-eye-fill"></i></button>
+                                
+                                <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light flex-fill"
+                                    type="button"><i class="bi bi-eye-fill"></i></button>
+                                <button v-else-if="isSeen" @click="rmSeen(this.filmObj.id)"  class="btn btn-outline-light flex-fill" 
+                                    type="button"><i class="bi bi-eye-slash-fill"></i></button>
+                                <button v-else @click="addSeen(this.filmObj.id)" class="btn btn-outline-light flex-fill"
+                                    type="button"><i class="bi bi-eye-fill"></i></button>
+
                                 <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light flex-fill"
                                     type="button"><i class="bi bi-suit-heart-fill"></i></button>
                                 <button v-else-if="isFavorite" @click="rmFav(this.filmObj.id)"  class="btn btn-outline-light flex-fill" type="button"><i
@@ -171,12 +177,54 @@ export default {
                 console.log(error);
             }
 
-        }
+        },
+        //
+        async addSeen(id) {
+            //console.log("id: " + id);
+            //console.log("token:" + this.$store.state.token);
+            try {
+                const response = await apiUtils.addSeen({
+                    token: this.$store.state.token,
+                    film_id: id
+                });
+                
+                var userUpd = this.$store.state.user;
+                userUpd.seen = response.data.seenArr;
+                this.$store.dispatch('setUser',userUpd);
+
+                //console.log(response.data.msg)
+
+            } catch (error) {
+                console.log(error);
+            }
+
+        },
+        async rmSeen(id) {
+            //console.log("id: " + id);
+            //console.log("token:" + this.$store.state.token);
+            try {
+                const response = await apiUtils.rmSeen({
+                    token: this.$store.state.token,
+                    film_id: id
+                });
+
+                var userUpd = this.$store.state.user;
+                userUpd.seen = response.data.seenArr;
+                this.$store.dispatch('setUser',userUpd);
+
+                //console.log(response.data.msg)
+
+            } catch (error) {
+                console.log(error);
+            }
+
+        },
 
     },
     mounted() {
         this.getDirector(this.filmObj.id);
         this.getTrailer(this.filmObj.id);
+
     },
     computed: {
         generes() {
@@ -195,7 +243,21 @@ export default {
                     return false; // Se usrFav non è un array, il film non è tra i favoriti
                 }
             } else return false;
-        }
+        },
+
+        isSeen() {
+
+            if (this.$store.state.logged) {
+                var usrSeen = this.$store.state.user.seen
+                var filmId = parseInt(this.filmObj.id)
+                // Controlla che usrSeen esista ed è un array prima di usare includes
+                if (Array.isArray(usrSeen)) {
+                    return usrSeen.includes(filmId)
+                } else {
+                    return false; // Se usrSeen non è un array, il film non è tra i visti
+                }
+            } else return false;
+        },
         
     }
 

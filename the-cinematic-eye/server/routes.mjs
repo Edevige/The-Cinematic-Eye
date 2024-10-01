@@ -23,6 +23,9 @@ export default function (app) {
   app.post("/addFavorite", UpdatesPersonalData.addFavorite);
   app.post("/rmFavorite", UpdatesPersonalData.removeFavorite);
 
+  app.post("/addSeen", UpdatesPersonalData.addSeen);
+  app.post("/rmSeen", UpdatesPersonalData.removeSeen);
+
   app.get("/watchlist", Lists.watchList);
 
   app.post("/addReview", ReviewController.createReview);

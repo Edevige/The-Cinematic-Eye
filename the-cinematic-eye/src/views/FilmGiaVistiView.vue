@@ -1,29 +1,47 @@
-<template>
-    <div>
-      <!-- Questo è un semplice placeholder -->
-      <h1>Film Gia Visti</h1>
-      <p>Questa è la vista per i film già visti.</p>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    name: 'FilmGiaVistiView',
-    data() {
-      return {
-        // Puoi aggiungere qui i dati del componente se necessario
-      }
+<script>
+import List from '@/components/List.vue';
+
+export default {
+    components: {
+        List
     },
-    methods: {
-      // Puoi aggiungere qui i metodi del componente se necessario
+    data() {
+        return {
+            filmVisti: [],  // Variabile di stato iniziale per film già visti
+            loading: true   // Variabile di stato per gestire il caricamento
+        };
+    },
+    computed: {
+        url() {
+            return "filmVisti?user=" + this.$route.params.id;
+        }
     }
-  }
-  </script>
+};
+</script>
+
+
+<template>
+
+    <div class="wrapper container">
+      <List :prop-url="url" title="FilmGiaVisti" :id="parseInt(this.$route.params.id)" />
+      
+    </div>
+
+
+</template>
+
+<style scoped>
+
+@media (min-width: 1024px) {
   
-  <style scoped>
-  /* Aggiungi qui i tuoi stili personalizzati per il componente, se necessari */
-  h1 {
-    color: #333;
+  main{
+    display: flex;
+    place-items: center;
   }
-  </style>
-  
+  main .wrapper {
+    display: flex;
+    place-items: center;
+    flex-wrap: wrap;
+  }
+}
+</style>

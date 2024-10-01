@@ -107,5 +107,79 @@ export default {
                 error: 'An unexpected error occured, conctat the system admin'
             }) 
         }
+    },
+
+    async addSeen(req, res){
+        try{
+            var decode = jsonwebtoken.verify(req.body.token, config.authentication.jwtSecret);
+        
+            const user = await users.findOne({
+            where:
+            {
+              id : decode.id
+            } 
+            });
+            var usrSeen = user.seen;
+            if(!usrSeen)usrSeen = [];
+                if(usrSeen.includes(req.body.film_id)){
+                    res.status(200).send({msg: "Seen already added" });
+                }
+                else{
+                    var sn = usrSeen.slice();
+                    sn.push(req.body.film_id);
+                    
+
+                    
+
+                    await user.update({seen: sn});
+
+
+                    res.status(200).send({msg: "Seen successfully added", seenArr: user.seen });
+                }
+            //}
+        }
+        catch(e){
+            console.log("Error trying to add a seen movie\n" + e );
+            res.status(500).send({
+                error: 'An unexpected error occured, conctat the system admin'
+            })
+        }
+        
+    },
+
+    async removeSeen(req, res){
+        try {
+            var decode = jsonwebtoken.verify(req.body.token, config.authentication.jwtSecret);
+            const user = await users.findOne({
+                where:
+                {
+                  id : decode.id
+                } 
+            });
+            var usrSeen = user.seen;
+            if(!usrSeen){res.status(406).send({msg: "Can't do"});}  
+            else{
+                var i = usrSeen.indexOf(req.body.film_id);
+                if(i == -1) {res.status(406).send({msg: "Can't do"});}
+                else{
+                    
+                    
+                    var sn = usrSeen.slice();
+
+                    sn.splice(i,1);          
+
+                    await user.update({seen: sn});
+
+                    res.status(200).send({msg: "Seen successfully removed", seenArr: user.seen });
+
+                }
+            }
+
+        } catch (e) {
+            console.log("Error trying to remove a seen movie\n" + e );
+            res.status(500).send({
+                error: 'An unexpected error occured, conctat the system admin'
+            }) 
+        }
     }
 }

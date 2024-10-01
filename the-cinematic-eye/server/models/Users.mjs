@@ -52,6 +52,9 @@ export default function (sequelize, DataTypes) {
       },
       favorites: {
         type: DataTypes.ARRAY(DataTypes.INTEGER),
+      },
+      seen: {
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
       }
 
 

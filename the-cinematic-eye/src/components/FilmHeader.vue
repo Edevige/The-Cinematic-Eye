@@ -33,12 +33,12 @@
                         <li class="dropdown-submenu" @click.stop="toggleSubmenu">
                             <a class="dropdown-item" href="#">Categorie<span class="arrow">&#8250;</span> <!-- Freccia verso il basso --></a>                        
                             <ul class="dropdown-menu1" v-show="isSubmenuVisible">
-                                <li><router-link class="dropdown-item" to="/genre/28">Action</router-link></li>
-                                <li><router-link class="dropdown-item" to="/genre/16">Animation</router-link></li>
-                                <li><router-link class="dropdown-item" to="/genre/10749">Romance</router-link></li>
-                                <li><router-link class="dropdown-item" to="/genre/27">Horror</router-link></li>
-                                <li><router-link class="dropdown-item" to="/genre/35">Comedy</router-link></li>
-                                <li><router-link class="dropdown-item" to="/genre/18">Drama</router-link></li>
+                                <li><router-link class="dropdown-item" to="/genre/28" >Action</router-link></li>
+                                <li><router-link class="dropdown-item" to="/genre/16" >Animation</router-link></li>
+                                <li><router-link class="dropdown-item" to="/genre/10749" >Romance</router-link></li>
+                                <li><router-link class="dropdown-item" to="/genre/27" >Horror</router-link></li>
+                                <li><router-link class="dropdown-item" to="/genre/35" >Comedy</router-link></li>
+                                <li><router-link class="dropdown-item" to="/genre/18" >Drama</router-link></li>
                             </ul>
                         </li>
 
@@ -175,11 +175,7 @@ export default {
         }
         },
 
-        // Metodo per chiudere tutto (usato quando chiudi il menu principale)
-        closeAllMenus() {
-        this.isSubmenuVisible = false; // Assicurati che il sottomenu sia chiuso quando si chiude il menu principale
-        },
-
+        // Metodo per chiudere sia il sottomenu che il menu principale
         srcDrop(){
             this.test = !this.test;
             //const srcDropMenu = document.getElementById("Search");
@@ -365,7 +361,6 @@ export default {
         &:hover {
             background-color: #{$menu-color}; // Mantiene il colore di sfondo durante hover
             color: whitesmoke; // Mantiene il colore del testo bianco
-            text-decoration: underline;
         }
     }
     .arrow {
