@@ -15,7 +15,6 @@ export default {
     return Api().post('registerWithGoogleToken', credentials)
   },
   updatePersonalData(data){
-    console.log('Nome arrivato a AuthenticationService: ', data);
     return Api().post('updatePersonalData', data)
   }
 }
