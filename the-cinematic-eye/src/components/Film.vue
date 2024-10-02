@@ -15,16 +15,16 @@
                 <div class="flex-fill d-flex flex-row">
                     <div class="d-flex flex-column justify-content-around">
                         <div>
-                            <h4 class="text-start">GENRE: {{ generes }}</h4>
+                            <h4 class="text-start">GENERE: {{ generes }}</h4>
                         </div>
                         <div>
-                            <h4 class="text-start">RUNNING TIME: {{ filmObj.runtime }}min</h4>
+                            <h4 class="text-start">DURATA: {{ filmObj.runtime }}min</h4>
                         </div>
                         <div>
-                            <h4 class="text-start">DIRECTOR: {{ director }}</h4>
+                            <h4 class="text-start">REGISTA: {{ director }}</h4>
                         </div>
                         <div>
-                            <h4 class="text-start">CREW:</h4>
+                            <h4 class="text-start">CAST:</h4>
                         </div>
                     </div>
                     <div class="flex-fill">
@@ -47,11 +47,42 @@
                                 <button v-else @click="addFav(this.filmObj.id)" class="btn btn-outline-light flex-fill"
                                     type="button"><i class="bi bi-suit-heart-fill"></i></button>
                             </div>
-                            <button class="btn btn-outline-light" type="button"><i class="bi bi-pencil-square"></i> Write a
-                                review</button>
+                            <button class="btn btn-outline-light" @click="toggleReviewForm" type="button">
+                                <i class="bi bi-pencil-square"></i> Scrivi una recensione</button>
                         </div>
-                        <iframe width="560" height="315" :src="trailerUrl" title="YouTube video player" frameborder="0"
-                            allow="fullscreen"></iframe>
+
+                        <!-- Form per la recensione che appare quando showReviewForm è true -->
+                        <div v-if="showReviewForm" class="review-form mt-4">
+                            <form @submit.prevent="submitReview">
+                                <div class="mb-3">
+
+                                    <label for="reviewRating" class="form-label">Voto</label>
+                                    <input type="range"
+                                        id="rating"
+                                        v-model="review.rating"
+                                        min="0"
+                                        max="10"
+                                        step="0.5"
+                                        class="form-range">
+  
+                                    <p>Voto selezionato: {{ review.rating }}</p> 
+                                </div>
+                                <div class="mb-3">
+                                    <label for="reviewText" class="form-label">Recensione</label>
+                                    <textarea v-model="review.text" id="reviewText" class="form-control" rows="3" required></textarea>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="form-check">
+                                        <input v-model="review.spoiler" type="checkbox" id="spoilerCheck" class="form-check-input">
+                                        <label class="form-check-label" for="spoilerCheck">Contiene spoiler</label>
+                                    </div>
+                                    <button type="submit" class="btn btn-outline-light" style="margin-right: 20px; width: 120px;">Invia</button>
+                                </div>
+                            </form>
+                        </div>
+
+
+                        <iframe width="560" height="315" :src="trailerUrl" title="YouTube video player" frameborder="0" allow="fullscreen" ></iframe>
                     </div>
                 </div>
             </div>
@@ -62,6 +93,7 @@
 <script>
 import axios from 'axios';
 import apiUtils from '@/services/apiUtils';
+import StarRating from 'vue-star-rating'
 export default {
 
     props: {
@@ -70,10 +102,9 @@ export default {
     setup() {
 
         return {
-
-
         }
     },
+    
     data() {
         return {
             urlDir: '/credits',
@@ -89,7 +120,13 @@ export default {
             },
             director: "",
             imgUrl: "https://image.tmdb.org/t/p/original",
-            trailerUrl: 'https://www.youtube.com/embed/'
+            trailerUrl: 'https://www.youtube.com/embed/',
+            showReviewForm: false,
+            review: {
+                rating: 0,
+                text: '',
+                spoiler: false
+            },
         }
     },
     
@@ -221,6 +258,41 @@ export default {
 
         },
 
+        toggleReviewForm() {
+            this.showReviewForm = !this.showReviewForm;
+            this.review.text = '';
+            this.review.rating = 0;
+            this.review.spoiler = false;
+        },
+        
+        async submitReview() {
+            try {
+                const token = this.$store.state.token;
+                const reviewData = {
+                    film_id: this.filmObj.id, // ID del film corrente
+                    text: this.review.text,
+                    rating: this.review.rating,
+                    spoiler: this.review.spoiler,
+                    token: token 
+                };
+                
+                // Chiama l'API passando i dati correttamente
+                const response = await apiUtils.createReview(reviewData);
+
+                if (response.data && response.data.review) {
+                    console.log("Recensione salvata con successo!");
+                    // Puoi aggiornare la lista delle recensioni, o resettare il form, se necessario
+                    this.review.text = '';
+                    this.review.rating = 0;
+                    this.review.spoiler = false;
+                }
+            } catch (error) {
+                console.error("Errore nel salvare la recensione", error);
+                console.log("Si è verificato un errore nel salvare la recensione.");
+            }
+        },
+
+
     },
     mounted() {
         this.getDirector(this.filmObj.id);
@@ -266,6 +338,17 @@ export default {
 
 </script>
 
-<style lang="scss" scoped>.film-info {
-    color: whitesmoke
-}</style>
+<style lang="scss" scoped>
+    .film-info {
+        color: whitesmoke
+    };
+    .review-form{
+        background-color: rgb(26, 68, 67);
+        color: whitesmoke; 
+        margin-bottom: 2rem;
+        border-radius: 15px; 
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 0.7rem;
+    }
+    
+</style>

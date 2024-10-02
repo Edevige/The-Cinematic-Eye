@@ -9,7 +9,7 @@ export default{
             var decode = jsonwebtoken.verify(req.body.token, config.authentication.jwtSecret);
 
 
-            const review = await reviews.create({film_id: req.body.film_id, text: req.body.text, UserId: decode.id, spoiler: req.body.spoiler});
+            const review = await reviews.create({film_id: req.body.film_id, text: req.body.text, UserId: decode.id, spoiler: req.body.spoiler, rating: req.body.rating});
             res.send({
                 review: review.toJSON(),
             }

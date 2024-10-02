@@ -1,7 +1,6 @@
 import Authentication from "./controllers/Authentication.mjs";
 import AuthenticationPolicy from "./controllers/AuthenticationPolicy.mjs";
 import Lists from "./controllers/Lists.mjs";
-import ListsFilmVisti from "./controllers/ListsFilmVisti.mjs";
 import ReviewController from "./controllers/ReviewController.mjs";
 import Search from "./controllers/Search.mjs";
 import SearchPolicy from "./controllers/SearchPolicy.mjs";
@@ -28,7 +27,7 @@ export default function (app) {
   app.post("/rmSeen", UpdatesPersonalData.removeSeen);
 
   app.get("/watchlist", Lists.watchList);
-  app.get("/filmgiavisti", ListsFilmVisti.FilmVisti);
+  app.get("/filmgiavisti", Lists.FilmVisti);
 
   app.post("/addReview", ReviewController.createReview);
   app.post("/getReviews", ReviewController.getFilmReviews);

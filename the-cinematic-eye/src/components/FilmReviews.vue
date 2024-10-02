@@ -20,9 +20,17 @@
         <div class="position-relative ">
           <div class=" row w-100 mx-auto">
             <div>
-              <div class="mt-4 spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
-              </div>
+              <!-- Spinner durante il caricamento -->
+            <div v-if="loading">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            <!-- Messaggio quando la lista recensioni è vuota -->
+            <div v-else-if="reviews.length === 0">
+              <p class="lista-vuota" style="padding-top: 3rem; color: whitesmoke; font-size: 35px; margin-bottom: 0px;">Non ci sono ancora recensioni</p>
+              <p class="lista-vuota" style="color: whitesmoke; font-size: 20px;" >Lascia una recensione per primo per questo film</p>
+            </div>
             </div>
           </div>
         </div>
@@ -43,7 +51,8 @@ import apiUtils from '@/services/apiUtils';
         },
         data(){
             return{
-               reviews: [] 
+               reviews: [],
+               loading: false,
             }
             
         },

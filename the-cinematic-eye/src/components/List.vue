@@ -1,3 +1,5 @@
+<!--Lista per la watchlist-->
+
 <template>
     <!-- Spinner durante il caricamento -->
     <div v-if="loading">
