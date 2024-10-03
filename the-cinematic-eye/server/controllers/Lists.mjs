@@ -4,6 +4,7 @@ export default {
   async watchList(req, res) {
     try {
         var id = req.query.user
+        
         if(!(isNaN(id))){
             const user = await users.findOne({
                 where:{

@@ -21,12 +21,12 @@
                 </div>
 
                 <!--menu a tenddina-->
-                <div class="dropdown" @click.self="closeSubmenu">
-                    <button class="btn btn-outline-success" type="button" data-bs-toggle="dropdown" aria-expanded="false" @click="closeAllMenus">
-                        <i class="bi bi-list"></i>
+                <div class="dropdown">
+                    <button class="btn btn-outline-success" type="button" data-bs-toggle="dropdown" aria-expanded="false" >
+                        <i class="bi bi-list" ></i>
                     </button>
 
-                    <ul class="dropdown-menu dropdown-menu-end">
+                    <ul class="dropdown-menu dropdown-menu-end" >
                         <li><router-link class="dropdown-item" to="/">Home</router-link></li>
 
                         <!-- Sottomenu per "Categorie" -->
@@ -142,6 +142,7 @@ export default {
     
     data() {
         return {
+            isMenuVisible: false,
             isSubmenuVisible: false,  // Stato del sottomenu (di default chiuso)
             search: true,
             searchPar: '',
@@ -165,7 +166,14 @@ export default {
 
         // Metodo per aprire/chiudere il sottomenu
         toggleSubmenu(event) {
-        this.isSubmenuVisible = !this.isSubmenuVisible;
+            this.isSubmenuVisible = !this.isSubmenuVisible;
+        },
+        toggleMenu(event) {
+            this.isMenuVisible = !this.isMenuVisible;
+        },
+        toggleAllMenu(event) {
+            this.isSubmenuVisible = !this.isSubmenuVisible;
+            this.isMenuVisible = !this.isMenuVisible;
         },
 
         // Metodo per chiudere il sottomenu quando il menu generale si chiude o clicchi fuori

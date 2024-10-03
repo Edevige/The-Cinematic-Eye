@@ -1,29 +1,22 @@
 <template>
-    <div>
-      <!-- Questo è un semplice placeholder -->
-      <h1>Le tue recensioni</h1>
-      <p>Questa è la vista per le tue recensionni.</p>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    name: 'LeTuerecensioniView',
-    data() {
-      return {
-        // Puoi aggiungere qui i dati del componente se necessario
-      }
-    },
-    methods: {
-      // Puoi aggiungere qui i metodi del componente se necessario
-    }
-  }
-  </script>
-  
-  <style scoped>
-  /* Aggiungi qui i tuoi stili personalizzati per il componente, se necessari */
-  h1 {
-    color: #333;
-  }
-  </style>
-  
+  <div>
+    <UserReviews />
+  </div>
+</template>
+
+<script>
+import UserReviews from '@/components/UserReviews.vue';
+
+export default {
+  name: 'LeTueRecensioniView',
+  components: {
+    UserReviews,
+  },
+};
+</script>
+
+<style scoped>
+h1 {
+  margin-bottom: 20px;
+}
+</style>

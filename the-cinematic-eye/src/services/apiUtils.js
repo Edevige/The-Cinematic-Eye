@@ -19,5 +19,21 @@ export default {
     },
     getReviews (credentials) {
         return Api().post('/getReviews', credentials)
-    }
+    },
+    getUserReviews(credentials) {
+        return Api().get('/getUserReviews', credentials);
+    },
+    updateReview (reviewData, credentials) {
+        return Api().post('/updateReview', reviewData, credentials);
+    },
+    deleteReview (reviewId, headers) {
+        return Api().delete(`/deleteReview/${reviewId}`, headers);
+    },
+    likeReview(credentials) {
+        return Api().post('/likeReview', credentials);
+    },
+    dislikeReview(credentials) {
+        return Api().post('/dislikeReview', credentials);
+    },
+    
 }

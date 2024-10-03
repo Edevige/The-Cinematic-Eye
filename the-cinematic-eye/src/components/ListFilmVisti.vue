@@ -154,7 +154,7 @@ import selfaApi from '@/services/selfaApi';
     text-align: center;
     padding: 2rem;
     color: whitesmoke;
-    font-size: xx-large;
+    font-size: x-large;
 }
 .remove-button{
     position: absolute;

@@ -31,6 +31,12 @@ export default function (app) {
 
   app.post("/addReview", ReviewController.createReview);
   app.post("/getReviews", ReviewController.getFilmReviews);
+  app.get("/getUserReviews", ReviewController.getUserReviews);
+  app.post('/updateReview', ReviewController.updateReview);
+  app.delete('/deleteReview/:id', ReviewController.deleteReview);
+  app.post('/likeReview', ReviewController.likeReview);
+  app.post('/dislikeReview', ReviewController.dislikeReview);
+
 
   app.get("/testCount", test.test);
   app.get("/testUpdatet", test.testJson);

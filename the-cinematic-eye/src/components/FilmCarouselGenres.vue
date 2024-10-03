@@ -33,7 +33,6 @@
     export default {
         props:{
             propUrl: String,
-            genres_id: String
         },
         setup () {      
         },

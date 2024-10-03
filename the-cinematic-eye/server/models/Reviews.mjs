@@ -1,5 +1,3 @@
-
-
 export default function (sequelize, DataTypes, user) {
   const review = sequelize.define(
     "Reviews",

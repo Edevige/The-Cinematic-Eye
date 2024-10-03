@@ -93,7 +93,6 @@
 <script>
 import axios from 'axios';
 import apiUtils from '@/services/apiUtils';
-import StarRating from 'vue-star-rating'
 export default {
 
     props: {
@@ -282,6 +281,7 @@ export default {
                 if (response.data && response.data.review) {
                     console.log("Recensione salvata con successo!");
                     // Puoi aggiornare la lista delle recensioni, o resettare il form, se necessario
+                    this.showReviewForm = !this.showReviewForm;
                     this.review.text = '';
                     this.review.rating = 0;
                     this.review.spoiler = false;
@@ -297,7 +297,6 @@ export default {
     mounted() {
         this.getDirector(this.filmObj.id);
         this.getTrailer(this.filmObj.id);
-        console.log(this.isSeen);
     },
     computed: {
         generes() {
