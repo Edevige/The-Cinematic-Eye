@@ -4,37 +4,52 @@ import config from "../config/config.mjs";
 
 export default {
 
-    async updatePersonalData(req,res){
-        switch (req.body.index) {
-            case 0:
-                console.log('Token: ', req.body.token);
-                try {
-                    const match = await users.findOne({
-                        where: {
-                          token: req.body.token
-                        }
-                      });
-                    if(!match){
-                        res.status(403).send({ error: "NOP!" });
-                    }
-                    else{
-                        console.log('Match: ', match);
-                        console.log('MatchName: ', match.name);
-                        console.log('ReqNewName: ',req.body.newName);
-                    }
-                } catch (error) {
-                    console.error(error);
+    async updatePersonalData(req,res){    
+        try {
+            const match= await users.findOne({
+                where: {
+                    id: req.body.id
                 }
-                break;
-            case 1:
-
-                break;
-            default:
-                break;
+            });   
+        console.log(match);
+        if (!match) {
+            res.status(403).send({ error: "NOP!" });
+        } else {
+            switch (req.body.index) {
+                case 0:
+                    console.log('Caso cambio Name');      
+                    match.name=req.body.nuovoUpdate;
+                    match.save();
+                    break;
+                case 1:
+                    console.log('Caso cambio Username');
+                    match.username=req.body.nuovoUpdate;
+                    match.save();
+                    break;
+                case 2:
+                    console.log('Caso cambio Email');
+                    match.email=req.body.nuovoUpdate;
+                    match.save();
+                    break;
+                case 3:
+                    console.log('Caso cambio Password');
+                    match.password=req.body.nuovoUpdate;
+                    match.save();
+                    break;
+                case 4:
+                    console.log('Caso cambio birthday');
+                    match.birthday=req.body.nuovoUpdate;
+                    match.save();
+                default:
+                    break;
+            }
         }
-
-        
+        } catch (error) {
+            console.error(error);
+        }
     },
+
+
     async addFavorite(req, res){
         try{
             var decode = jsonwebtoken.verify(req.body.token, config.authentication.jwtSecret);
