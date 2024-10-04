@@ -15,6 +15,7 @@ export default {
         if (!match) {
             res.status(403).send({ error: "NOP!" });
         } else {
+            let controllo;
             switch (req.body.index) {
                 case 0:
                     console.log('Caso cambio Name');      
@@ -23,22 +24,48 @@ export default {
                     break;
                 case 1:
                     console.log('Caso cambio Username');
-                    match.username=req.body.nuovoUpdate;
-                    match.save();
+                    controllo= await users.findOne({
+                        where:{
+                            username: req.body.nuovoUpdate
+                        }
+                    })
+
+                    console.log('Controllo BE LIKE: ', controllo);
+                    
+                    if(controllo){
+                        console.error('Username già in uso!');
+                    }
+                    else{
+                        match.username=req.body.nuovoUpdate;
+                        match.save();}
                     break;
                 case 2:
                     console.log('Caso cambio Email');
-                    match.email=req.body.nuovoUpdate;
-                    match.save();
+                    controllo= await users.findOne({
+                        where: {
+                            email: req.body.nuovoUpdate
+                        }
+                    });
+                    console.log('Controllo BE LIKE: ', controllo);
+                    if(controllo){
+                        console.error('Email già in uso su un altro account!');
+                    }
+                    else{
+                        match.email=req.body.nuovoUpdate;
+                        match.save();}
                     break;
                 case 3:
                     console.log('Caso cambio Password');
+                    console.log('Match BE LIKE: ', match.password);
+                    console.log('NewPass BE LIKE: ', req.body.nuovoUpdate);
                     match.password=req.body.nuovoUpdate;
                     match.save();
                     break;
                 case 4:
                     console.log('Caso cambio birthday');
-                    match.birthday=req.body.nuovoUpdate;
+                    console.log(match.birthdate);
+                    console.log(req.body.birthdate);
+                    match.birthdate=req.body.nuovoUpdate;
                     match.save();
                 default:
                     break;
