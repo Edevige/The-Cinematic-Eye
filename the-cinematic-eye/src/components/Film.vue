@@ -69,7 +69,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="reviewText" class="form-label">Recensione</label>
-                                    <textarea v-model="review.text" id="reviewText" class="form-control" rows="3" required></textarea>
+                                    <textarea v-model="review.text" id="reviewText" class="form-control" rows="3" ></textarea>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <div class="form-check">

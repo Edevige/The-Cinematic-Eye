@@ -8,7 +8,6 @@ export default function (sequelize, DataTypes, user) {
       },
       text: {
         type: DataTypes.TEXT,
-        allowNull: false
       },
       spoiler: {
         type: DataTypes.BOOLEAN,
