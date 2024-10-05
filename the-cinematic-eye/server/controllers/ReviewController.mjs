@@ -1,4 +1,6 @@
 import { reviews } from "../models/index.mjs";
+import { uris as URIs } from "../models/index.mjs";
+import { reviews as Reviews } from "../models/index.mjs";
 import jsonwebtoken from "jsonwebtoken";
 import config from "../config/config.mjs";
 
@@ -82,39 +84,78 @@ export default{
           res.status(400).send({ error: 'Errore durante l\'eliminazione della recensione.' });
         }
     },
-    async likeReview(req, res) {
-        try {
-          const decode = jsonwebtoken.verify(req.body.token, config.authentication.jwtSecret);
-          const review = await reviews.findOne({ where: { id: req.body.review_id } });
-      
-          if (!review) {
-            return res.status(404).send({ error: 'Recensione non trovata.' });
+    
+    async toggleLikeDislike(req, res) {
+      try {
+          console.log("Dati ricevuti per toggleLikeDislike:", req.body);
+          const { token, review_id, like } = req.body;
+    
+          if (!token || !review_id) {
+              return res.status(400).send({ error: 'Parametri mancanti.' });
           }
-      
-          review.like += 1;
-          await review.save();
-      
-          res.send({ like: review.like });
-        } catch (e) {
-          res.status(400).send({ error: 'Errore durante il like della recensione.' });
-        }
-      },
-      async dislikeReview(req, res) {
-        try {
-          const decode = jsonwebtoken.verify(req.body.token, config.authentication.jwtSecret);
-          const review = await reviews.findOne({ where: { id: req.body.review_id } });
-      
+    
+          const decode = jsonwebtoken.verify(token, config.authentication.jwtSecret);
+          const userId = decode.id;
+          const reviewId = review_id;
+    
+          const review = await Reviews.findOne({ where: { id: reviewId } });
           if (!review) {
-            return res.status(404).send({ error: 'Recensione non trovata.' });
+              return res.status(404).send({ error: 'Recensione non trovata.' });
           }
-      
-          review.dislike += 1;
+    
+          let interaction = await URIs.findOne({ where: { UserId: userId, ReviewId: reviewId } });
+    
+          if (!interaction) {
+              interaction = await URIs.create({
+                  UserId: userId,
+                  ReviewId: reviewId,
+                  liked: like === true,
+                  disliked: like === false
+              });
+    
+              if (like) {
+                  review.like += 1;
+              } else {
+                  review.dislike += 1;
+              }
+          } else {
+              if (like) {
+                  if (interaction.liked) {
+                      interaction.liked = false;
+                      review.like -= 1;
+                  } else {
+                      interaction.liked = true;
+                      review.like += 1;
+                      if (interaction.disliked) {
+                          interaction.disliked = false;
+                          review.dislike -= 1;
+                      }
+                  }
+              } else {
+                  if (interaction.disliked) {
+                      interaction.disliked = false;
+                      review.dislike -= 1;
+                  } else {
+                      interaction.disliked = true;
+                      review.dislike += 1;
+                      if (interaction.liked) {
+                          interaction.liked = false;
+                          review.like -= 1;
+                      }
+                  }
+              }
+          }
+    
+          await interaction.save();
+          console.log("Interazione salvata:", interaction);
           await review.save();
-      
-          res.send({ dislike: review.dislike });
-        } catch (e) {
-          res.status(400).send({ error: 'Errore durante il dislike della recensione.' });
-        }
-      },
-      
+          console.log("Recensione aggiornata:", review);
+    
+          res.send({ like: review.like, dislike: review.dislike });
+      } catch (e) {
+          console.error("Errore durante toggleLikeDislike:", e);
+          //res.status(400).send({ error: 'Impossibile caricare like/dislike per questa recensione.' });
+      }
+    },
+
 }

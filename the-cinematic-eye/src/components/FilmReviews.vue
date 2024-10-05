@@ -1,6 +1,10 @@
 <template>
   <div v-if="reviews.length > 0">
-    <div v-for="item in reviews" :key="item.id" class="container">
+    <div class="media-voto">
+      Media dei voti: {{ mediaVoto.toFixed(1) }}
+    </div>
+    <!-- Filtro le recensioni con un testo non vuoto o composto solo da spazi -->
+    <div v-for="item in reviewsFiltrate" :key="item.id" class="container">
       <div class="position-relative">
         <div class="row w-100 mx-auto review-container">
           <div class="col-2">
@@ -15,12 +19,10 @@
         </div>
         <!-- Pulsanti Like e Dislike -->
         <div class="d-flex justify-content-start gap-2 mt-2">
-          <button @click="likeReview(item.id)" class="btn btn-outline-success">
-            👍 Like ({{ item.like }})
-          </button>
-          <button @click="dislikeReview(item.id)" class="btn btn-outline-danger">
-            👎 Dislike ({{ item.dislike }})
-          </button>
+            <div v-for="review in reviews" :key="review.id">
+              <button @click="handleLike(review.id)">Like</button> {{ review.like }}
+              <button @click="handleDislike(review.id)">Dislike</button> {{ review.dislike }}
+            </div>
         </div>
       </div>
     </div>
@@ -55,7 +57,7 @@ import apiUtils from '@/services/apiUtils';
 
 export default {
   props: {
-    filmID: Number,
+    filmID: Number
   },
   data() {
     return {
@@ -63,66 +65,89 @@ export default {
       loading: false,
     };
   },
+  computed: {
+    mediaVoto() {
+      // Filtra solo le recensioni con un rating valido (numero)
+      const reviewsConVoto = this.reviews.filter(review => typeof review.rating === 'number');
+      if (reviewsConVoto.length === 0) return 0; // Se non ci sono voti validi, ritorna 0
+      // Somma i rating validi
+      const sommaVoti = reviewsConVoto.reduce((total, review) => total + review.rating, 0);
+      // Calcola la media dividendo la somma per il numero di recensioni con un rating valido
+      return sommaVoti / reviewsConVoto.length;
+    },
+    reviewsFiltrate() {
+      // Ordina le recensioni dalla più recente alla meno recente in base alla data di creazione
+      const sortedReviews = this.reviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      
+      // Filtra le recensioni con testo non vuoto o con soli spazi
+      return sortedReviews.filter(review => review.text && review.text.trim() !== '');
+    },
+  },
   methods: {
+    
     async getReviews(id) {
       try {
         const response = await apiUtils.getReviews({ film_id: id });
-        this.reviews = response.data.reviews;
+        // Assicurati che tutte le recensioni abbiano like e dislike definiti
+        this.reviews = response.data.reviews.map(review => ({
+          ...review,
+          like: review.like || 0,  // Valore di default 0
+          dislike: review.dislike || 0,  // Valore di default 0
+          userLiked: false,
+          userDisliked: false
+        }));
       } catch (e) {
         console.log(e);
       }
     },
-    async likeReview(reviewId) {
+
+    async handleLike(reviewId) {
       try {
         const token = this.$store.state.token;
-        if (!token) {
-          throw new Error('Devi essere loggato per mettere like.');
-        }
-        const response = await apiUtils.likeReview({ review_id: reviewId, token: token });
+        const response = await apiUtils.toggleLikeDislike({
+          token,
+          review_id: reviewId,
+          like: true
+        });
+
+        // Aggiorna immediatamente i like/dislike sulla recensione
         const review = this.reviews.find(r => r.id === reviewId);
         if (review) {
           review.like = response.data.like;
           review.dislike = response.data.dislike;
         }
       } catch (error) {
-        if (error.response && error.response.data.error) {
-          console.error('Errore durante il like:', error.response.data.error);
-          alert(error.response.data.error);
-        } else {
-          console.error('Errore durante il like:', error);
-          alert(error.message);
-        }
+        console.error('Errore nel like:', error);
+        //alert('Impossibile caricare like/dislike per questa recensione.');
       }
     },
-    async dislikeReview(reviewId) {
+    async handleDislike(reviewId) {
       try {
         const token = this.$store.state.token;
-        if (!token) {
-          throw new Error('Devi essere loggato per mettere dislike.');
-        }
-        const response = await apiUtils.dislikeReview({ review_id: reviewId, token: token });
+        const response = await apiUtils.toggleLikeDislike({
+          token,
+          review_id: reviewId,
+          like: false
+        });
+
+        // Aggiorna immediatamente i like/dislike sulla recensione
         const review = this.reviews.find(r => r.id === reviewId);
         if (review) {
           review.like = response.data.like;
           review.dislike = response.data.dislike;
         }
       } catch (error) {
-        if (error.response && error.response.data.error) {
-          console.error('Errore durante il dislike:', error.response.data.error);
-          alert(error.response.data.error);
-        } else {
-          console.error('Errore durante il dislike:', error);
-          alert(error.message);
-        }
+        console.error('Errore nel dislike:', error);
+        //alert('Impossibile caricare like/dislike per questa recensione.');
       }
     },
+
   },
   mounted() {
     this.getReviews(this.filmID);
-  },
+  }
 };
 </script>
-
 
 
 <style lang="scss" scoped>

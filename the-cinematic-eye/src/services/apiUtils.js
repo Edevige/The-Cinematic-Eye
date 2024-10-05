@@ -29,11 +29,8 @@ export default {
     deleteReview (reviewId, headers) {
         return Api().delete(`/deleteReview/${reviewId}`, headers);
     },
-    likeReview(credentials) {
-        return Api().post('/likeReview', credentials);
-    },
-    dislikeReview(credentials) {
-        return Api().post('/dislikeReview', credentials);
+    toggleLikeDislike(credentials) {
+        return Api().post('/toggleLikeDislike', credentials);
     },
     
 }

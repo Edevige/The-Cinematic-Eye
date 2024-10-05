@@ -8,6 +8,7 @@ export default function (sequelize, DataTypes, user) {
       },
       text: {
         type: DataTypes.TEXT,
+        allowNull: true
       },
       spoiler: {
         type: DataTypes.BOOLEAN,
@@ -19,9 +20,11 @@ export default function (sequelize, DataTypes, user) {
       },
       like: {
         type: DataTypes.INTEGER,
+        defaultValue: 0
       },
       dislike: {
         type: DataTypes.INTEGER,
+        defaultValue: 0
       },
     }
   );
