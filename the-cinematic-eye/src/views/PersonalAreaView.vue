@@ -39,6 +39,7 @@
 
       <div v-if="this.$store.state.user.birthdate">
       <label for="Birthday">Compleanno: {{ this.$store.state.user.birthday }}</label>
+      <button type="button" @click="update(4)">Aggiorna Data</button>
       </div>
       <div v-if="!this.$store.state.user.birthdate">
       <label for="Birthday">Non hai inserito il tuo Compleanno</label>
