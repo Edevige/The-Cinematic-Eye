@@ -6,19 +6,33 @@ import config from "../config/config.mjs";
 
 export default{
 
-    async createReview(req, res){
+    async createReview(req, res) {
         try {
-            var decode = jsonwebtoken.verify(req.body.token, config.authentication.jwtSecret);
-
-
-            const review = await reviews.create({film_id: req.body.film_id, text: req.body.text, UserId: decode.id, spoiler: req.body.spoiler, rating: req.body.rating});
-            res.send({
-                review: review.toJSON(),
+            const decoded = jsonwebtoken.verify(req.body.token, config.authentication.jwtSecret);
+            const userId = decoded.id;
+            const { film_id, text, rating, spoiler } = req.body;
+    
+            // Controlla se esiste già una recensione dello stesso utente per lo stesso film
+            const existingReview = await reviews.findOne({ where: { film_id, UserId: userId } });
+            
+            if (existingReview) {
+                // Se la recensione esiste, restituisci un errore chiaro
+                return res.status(400).send({ error: 'Hai già scritto una recensione per questo film.' });
             }
-                ) 
-        } catch (e) { 
+    
+            // Crea la nuova recensione se non esiste
+            const review = await reviews.create({
+                film_id,
+                text,
+                UserId: userId,
+                spoiler,
+                rating
+            });
+            
+            res.send({ review: review.toJSON() });
+        } catch (e) {
             console.log(e);
-            res.status(400).send({error: 'Unexpected error conctat the system admin'})   
+            res.status(400).send({ error: 'Errore inatteso. Contatta l’amministratore di sistema.' });
         }
     },
     async getFilmReviews(req, res){
@@ -157,5 +171,6 @@ export default{
           //res.status(400).send({ error: 'Impossibile caricare like/dislike per questa recensione.' });
       }
     },
+    
 
 }

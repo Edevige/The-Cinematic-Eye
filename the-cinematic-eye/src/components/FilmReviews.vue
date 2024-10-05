@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div v-if="reviews.length > 0">
     <div class="media-voto">
       Media dei voti: {{ mediaVoto.toFixed(1) }}
@@ -19,16 +19,14 @@
         </div>
         <!-- Pulsanti Like e Dislike -->
         <div class="d-flex justify-content-start gap-2 mt-2">
-            <div v-for="review in reviews" :key="review.id">
-              <button @click="handleLike(review.id)">Like</button> {{ review.like }}
-              <button @click="handleDislike(review.id)">Dislike</button> {{ review.dislike }}
-            </div>
+          <button @click="handleLike(item.id)">Like</button> {{ item.like }}
+          <button @click="handleDislike(item.id)">Dislike</button> {{ item.dislike }}
         </div>
       </div>
     </div>
   </div>
   <div v-else class="container">
-    <div class="position-relative ">
+    <div class="position-relative">
       <div class="row w-100 mx-auto">
         <div>
           <!-- Spinner durante il caricamento -->

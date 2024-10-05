@@ -55,7 +55,6 @@
                         <div v-if="showReviewForm" class="review-form mt-4">
                             <form @submit.prevent="submitReview">
                                 <div class="mb-3">
-
                                     <label for="reviewRating" class="form-label">Voto</label>
                                     <input type="range"
                                         id="rating"
@@ -64,7 +63,6 @@
                                         max="10"
                                         step="0.5"
                                         class="form-range">
-  
                                     <p>Voto selezionato: {{ review.rating }}</p> 
                                 </div>
                                 <div class="mb-3">
@@ -78,8 +76,13 @@
                                     </div>
                                     <button type="submit" class="btn btn-outline-light" style="margin-right: 20px; width: 120px;">Invia</button>
                                 </div>
+                                <!-- Messaggio di errore, visualizzato solo quando errorMessage è settato -->
+                                <div v-if="errorMessage" class="alert alert-danger">
+                                    {{ errorMessage }}
+                                </div>
                             </form>
                         </div>
+
 
 
                         <iframe width="560" height="315" :src="trailerUrl" title="YouTube video player" frameborder="0" allow="fullscreen" ></iframe>
@@ -126,6 +129,7 @@ export default {
                 text: '',
                 spoiler: false
             },
+            errorMessage: '',
         }
     },
     
@@ -274,24 +278,38 @@ export default {
                     spoiler: this.review.spoiler,
                     token: token 
                 };
-                
+
                 // Chiama l'API passando i dati correttamente
                 const response = await apiUtils.createReview(reviewData);
 
                 if (response.data && response.data.review) {
                     console.log("Recensione salvata con successo!");
-                    // Puoi aggiornare la lista delle recensioni, o resettare il form, se necessario
-                    this.showReviewForm = !this.showReviewForm;
+                    // Reset form
+                    this.showReviewForm = false;
                     this.review.text = '';
                     this.review.rating = 0;
                     this.review.spoiler = false;
+                    this.errorMessage = ''; // Rimuove il messaggio di errore se presente
                 }
             } catch (error) {
                 console.error("Errore nel salvare la recensione", error);
-                console.log("Si è verificato un errore nel salvare la recensione.");
+
+                // Gestisci il messaggio di errore nel form
+                if (error.response) {
+                    if (error.response.status === 400) {
+                        if (error.response.data && error.response.data.error === 'Hai già scritto una recensione per questo film.') {
+                            this.errorMessage = 'Hai già scritto una recensione per questo film.';
+                        } else {
+                            this.errorMessage = 'Errore: ' + (error.response.data.error || 'Richiesta non valida.');
+                        }
+                    } else {
+                        this.errorMessage = 'Errore di rete. Riprova più tardi.';
+                    }
+                } else {
+                    this.errorMessage = 'Errore di rete o problema con il server. Riprova più tardi.';
+                }
             }
         },
-
 
     },
     mounted() {
@@ -318,7 +336,6 @@ export default {
         },
 
         isSeen() {
-
             if (this.$store.state.logged) {
                 var usrSeen = this.$store.state.user.seen
                 var filmId = parseInt(this.filmObj.id)
@@ -330,9 +347,7 @@ export default {
                 }
             } else return false;
         },
-        
     }
-
 }
 
 </script>
