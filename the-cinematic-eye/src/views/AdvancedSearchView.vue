@@ -22,7 +22,7 @@
 
       <div class="form-group">
         <label>Anno di Rilascio:</label>
-        <input type="number" v-model="searchParams.releaseYear" min="1800" max="new Date().getFullYear()">
+        <input type="number" v-model="searchParams.releaseYear" min="1890" max="new Date().getFullYear()">
       </div>
 
       <div class="form-group">
@@ -40,9 +40,32 @@
       </div>
 
       <div class="form-group">
-        <label>Persona che ha lavorato al film: </label>
-        <button @click="vaiAllaSelezionePersona()">Seleziona Persona</button>
+        <label>Persona che ha lavorato al film (Attore/Regista): </label>
+        <input type="text" v-model="searchParams.personSearch" @input="fetchPeopleSuggestions" placeholder="Inzia qui la ricerca della persona..."/>
+        <ul v-if="peopleSuggestions.length">
+          <li v-for="person in peopleSuggestions" :key="person.id" @click="selectPerson(person)">
+            {{ person.name }}
+          </li>
+        </ul>
         <div></div>
+        <div v-if="selectedPeople.length" class="selected-people">
+          <ul>
+            <li v-for="(person, index) in selectedPeople" :key="person.id">
+              {{ person.name }}
+              <button type="button" @click="removePerson(index)">Rimuovi</button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="form-group">
+          <label>Modalità di Ricerca:</label>
+          <select v-model="searchParams.personSearchMode">
+            <option value="OR">Almeno una di queste persone deve essere presente nel film</option>
+            <option value="AND">Tutte le persone devono essere presenti nel film</option>
+          </select>
+        </div>
+
+
       </div>
 
       <button type="submit">Cerca</button>
@@ -59,17 +82,57 @@ export default {
       imgUrl: "https://image.tmdb.org/t/p/original",
       searchParams: {
         personeScelteID:'',
+        personSearch:'',
         adult: '',
         originalLanguage: '',
         releaseYear: null,
         rating: 5,  // Inizializzato a metà del range
-        genreId: ''
+        genreId: '',
+        personSearchMode: 'OR',
       },
       languages: [],
-      genres: []
+      genres: [],
+      peopleSuggestions:[], //Memorizza i suggerimenti delle persone
+      selectedPeople:[] 
     };
   },
   methods: {
+    async fetchPeopleSuggestions(){
+      if(this.searchParams.personSearch.length>3){
+        try {
+          const response=await TMdbApi().get('search/person', {
+            params: { query: this.searchParams.personSearch}
+          });
+          this.peopleSuggestions = response.data.results;
+        } catch (error) {
+          console.error('Errore nella ricerca delle persone:', error);
+        }
+      } else{
+        this.peopleSuggestions = []; 
+      }
+    },
+
+    selectPerson(person) {
+      // Controlla se la persona è già selezionata per evitare duplicati
+      if (!this.selectedPeople.some(p => p.id === person.id)) {
+        this.selectedPeople.push(person);  // Aggiungi la persona selezionata all'array
+        this.searchParams.personSearch = '';  // Resetta il campo di input
+        this.peopleSuggestions = [];  // Svuota i suggerimenti
+      }
+    },
+
+    removePerson(index) {
+      this.selectedPeople.splice(index, 1);  // Rimuovi la persona dall'array
+    },
+    uploadPersoneScelte() {
+      // Costruisce una stringa con tutti gli ID delle persone selezionate
+      if(this.searchParams.personSearchMode=='OR'){
+        this.searchParams.personeScelteID = this.selectedPeople.map(person => person.id).join('|');
+      } else{
+        this.searchParams.personeScelteID = this.selectedPeople.map(person => person.id).join(',');
+      }
+    },
+
     vaiAllaSelezionePersona(){
       this.$router.push('/PeopleView/1');
     },
@@ -100,14 +163,6 @@ export default {
         console.error('Errore in fetchGenres:', error);
       }
     },
-    uploadPersoneScelte(){
-      this.searchParams.personeScelteID='';
-      if(this.personeScelte && this.personeScelte.length >0){
-        for(let i=0; i<this.personeScelte.length; i++){
-          this.searchParams.personeScelteID=this.searchParams.personeScelteID+this.personeScelte[i].id+'||';
-        }
-      }
-    },
     submitSearch() {
       this.uploadPersoneScelte();
       this.$router.push({path: '/advancedSearchReturn', query:this.searchParams});
@@ -123,19 +178,9 @@ export default {
       console.error('Errore nel parsing di personeScelte:', e);
     }
   }
-
   },
-  watch:{
-    $route(to, from) {
-      // Controlla se la route precedente è la view di selezione persona
-      if (from.name === 'PeopleView') {
-        console.log('Sono tornato da PeopleView');
-          this.personeScelte = to.query;
-          this.uploadPersoneScelte();
-        }
-      }
-    }
-  }
+
+}
 </script>
 
 <style>
