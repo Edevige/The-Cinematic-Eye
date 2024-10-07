@@ -284,6 +284,7 @@ export default {
 
                 if (response.data && response.data.review) {
                     console.log("Recensione salvata con successo!");
+                    this.$emit('reviewUpdate');
                     // Reset form
                     this.showReviewForm = false;
                     this.review.text = '';

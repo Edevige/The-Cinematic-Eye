@@ -13,7 +13,8 @@ export default {
     return {
       fetchParam: 'movie/',
       films: [],
-      filmId: Number
+      filmId: Number,
+      reviewUpdateHelper: false
     }
   },
   methods: {
@@ -23,6 +24,10 @@ export default {
       const f = await TMdbApi().get(this.fetchParam);
       //console.log(f);
       this.films[0] = f.data
+    },
+
+    handleReviewUpdate(){//metodo di supporto per aggiornare le recensioni una volta inserita una nuova
+      this.reviewUpdateHelper = !this.reviewUpdateHelper;
     }
   },
   created() {
@@ -43,8 +48,8 @@ export default {
   <main>
     <div v-if="films.length > 0" class="wrapper">
       <div  v-for="item in films">
-        <Film :filmObj=item />
-        <FilmReviews :filmID="filmId" />
+        <Film :filmObj=item @reviewUpdate="handleReviewUpdate" />
+        <FilmReviews :filmID="filmId" :key="reviewUpdateHelper" />
       </div></div>
       <div v-else class="container">
         <div class="position-relative ">
