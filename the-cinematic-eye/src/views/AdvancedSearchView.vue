@@ -133,9 +133,6 @@ export default {
       }
     },
 
-    vaiAllaSelezionePersona(){
-      this.$router.push('/PeopleView/1');
-    },
     async fetchLanguages() {
       try {
         const response = await TMdbApi().get('configuration/languages');

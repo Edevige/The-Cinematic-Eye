@@ -8,7 +8,6 @@ import store from '@/services/store'
 import GenreView from '@/views/GenreView.vue'
 import AdvancedSearchView from '@/views/AdvancedSearchView.vue'
 import AdvancedSearchReturnView from '@/views/AdvancedSearchReturnView.vue'
-import PeopleView from '@/views/PeopleView.vue'
 import PersonalAreaView from '@/views/PersonalAreaView.vue'
 import WatchListView from '@/views/WatchListView.vue'
 import LeTueListeView from '@/views/LeTueListeView.vue'
@@ -65,11 +64,6 @@ const routes = [
     path:'/advancedSearchReturn',
     name: 'advancedSearchReturn',
     component:AdvancedSearchReturnView
-  },
-  {
-    path:'/PeopleView/:page',
-    name:'PeopleView',
-    component: PeopleView
   },
   {
     path: "/:pathMatch(.*)*",
