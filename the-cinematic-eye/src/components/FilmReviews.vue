@@ -11,7 +11,19 @@
             {{ item.UserId }}
           </div>
           <div class="col-9">
-            {{ item.text }}
+            <div v-if="item.spoiler && !spoilerRevealed">
+              <div class="alert alert-warning">
+                ⚠️ Allerta Spoiler!
+              </div>
+              <button @click="toggleSpoiler(index)" class="btn btn-primary">
+                Mostra recensione
+              </button>
+            </div>
+            <div v-else>
+              {{ item.text }}
+              <button @click="handleLike(item.id)">Like</button> {{ item.like }}
+              <button @click="handleDislike(item.id)">Dislike</button> {{ item.dislike }}
+            </div>
           </div>
           <div class="col-1">
             {{ item.spoiler }}
@@ -19,8 +31,7 @@
         </div>
         <!-- Pulsanti Like e Dislike -->
         <div class="d-flex justify-content-start gap-2 mt-2">
-          <button @click="handleLike(item.id)">Like</button> {{ item.like }}
-          <button @click="handleDislike(item.id)">Dislike</button> {{ item.dislike }}
+          
         </div>
       </div>
     </div>
@@ -61,6 +72,7 @@ export default {
     return {
       reviews: [],
       loading: false,
+      spoilerRevealed:false,
     };
   },
   computed: {
@@ -97,6 +109,11 @@ export default {
       } catch (e) {
         console.log(e);
       }
+    },
+
+    toggleSpoiler(index){
+      // Cambia lo stato di visibilità dello spoiler
+      this.spoilerRevealed=true;
     },
 
     async handleLike(reviewId) {
