@@ -47,12 +47,21 @@
                                 <button v-else @click="addFav(this.filmObj.id)" class="btn btn-outline-light flex-fill"
                                     type="button"><i class="bi bi-suit-heart-fill"></i></button>
                             </div>
-                            <div v-if="showListForm" class="review-form mt-4">
+                            <div v-if="showListForm" class="review-form mt-4" style="margin-bottom: 1rem; margin-top: 1rem;">
                                 <div>
                                     <button v-for="list in userLists" :key="list.id" @click="addFilmList(list)">
                                     Aggiungi a {{ list.title }}
                                     </button>
                                 </div>
+                            </div>
+
+                            <!-- Messaggio di successo, visualizzato solo quando successMessageList è settato -->
+                            <div v-if="successMessageList" class="alert alert-success" style="margin-top: 0px;">
+                                {{ successMessageList }}
+                            </div>
+
+                            <div v-if="errorMessageList" class="alert alert-danger">
+                                    {{ errorMessageList }}
                             </div>
 
                             <button class="btn btn-outline-light" @click="toggleReviewForm" type="button">
@@ -88,9 +97,14 @@
                                 <div v-if="errorMessage" class="alert alert-danger">
                                     {{ errorMessage }}
                                 </div>
+                                
                             </form>
-                        </div>
 
+                        </div>
+                        <!-- Messaggio di successo, visualizzato solo quando successMessage è settato -->
+                        <div v-if="successMessage" class="alert alert-success">
+                            {{ successMessage }}
+                        </div>
 
 
                         <iframe width="560" height="315" :src="trailerUrl" title="YouTube video player" frameborder="0" allow="fullscreen" ></iframe>
@@ -138,8 +152,11 @@ export default {
                 text: '',
                 spoiler: false
             },
-            errorMessage: '',
             userLists: [],
+            errorMessage: '',
+            successMessage: '', 
+            successMessageList: '',
+            errorMessageList: '',
         }
     },
     
@@ -285,30 +302,36 @@ export default {
             try {
                 const token = this.$store.state.token;
                 const reviewData = {
-                    film_id: this.filmObj.id, // ID del film corrente
+                    film_id: this.filmObj.id, 
                     text: this.review.text,
                     rating: this.review.rating,
                     spoiler: this.review.spoiler,
                     token: token 
                 };
 
-                // Chiama l'API passando i dati correttamente
                 const response = await apiUtils.createReview(reviewData);
 
                 if (response.data && response.data.review) {
                     console.log("Recensione salvata con successo!");
                     this.$emit('reviewUpdate');
+                    
                     // Reset form
                     this.showReviewForm = false;
                     this.review.text = '';
                     this.review.rating = 0;
                     this.review.spoiler = false;
-                    this.errorMessage = ''; // Rimuove il messaggio di errore se presente
+                    this.successMessage = 'Recensione inviata con successo!'; // Messaggio di successo
+
+                    // Mostra il messaggio per 3 secondi
+                    setTimeout(() => {
+                        this.successMessage = ''; // Rimuove il messaggio dopo 3 secondi
+                    }, 2500);
                 }
+                console.log(this.successMessage, this.errorMessage);
+
             } catch (error) {
                 console.error("Errore nel salvare la recensione", error);
 
-                // Gestisci il messaggio di errore nel form
                 if (error.response) {
                     if (error.response.status === 400) {
                         if (error.response.data && error.response.data.error === 'Hai già scritto una recensione per questo film.') {
@@ -324,6 +347,7 @@ export default {
                 }
             }
         },
+
 
         async fetchUserLists() {
             try {
@@ -344,25 +368,37 @@ export default {
 
             } catch (error) {
                 console.error('Errore nel recupero delle liste:', error);
+                
             }
         },
 
         async addFilmList(list) {
             try {
-                // Usa l'oggetto lista direttamente per ottenere il suo ID
                 const response = await apiUtils.addFilmToList({
-                token: this.$store.state.token,
-                listId: list.id, // ID della lista
-                filmId: this.filmObj.id // ID del film
+                    token: this.$store.state.token,
+                    listId: list.id, 
+                    filmId: this.filmObj.id
                 });
 
                 if (response.data.success) {
-                console.log(response.data.message);
+                    this.successMessageList = 'Film aggiunto alla lista con successo!'; // Messaggio di successo
+                    setTimeout(() => {
+                        this.successMessageList = ''; 
+                    }, 2500);
                 }
             } catch (error) {
-                console.error('Errore nell\'aggiunta del film alla lista:', error);
+                if (error.response && error.response.status === 400) {
+                    this.errorMessageList = error.response.data.error || 'Errore sconosciuto.';
+                } else {
+                    this.errorMessageList = 'Errore di rete o problema con il server. Riprova più tardi.';
+                }
+
+                setTimeout(() => {
+                    this.errorMessageList = ''; // Rimuove il messaggio dopo 3 secondi
+                }, 2500);
             }
-        },
+        }
+
 
 
     },
@@ -418,6 +454,20 @@ export default {
         border-radius: 15px; 
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
         padding: 0.7rem;
+    }
+    .alert {
+        padding: 1rem;
+        margin-top: 1rem;
+        border-radius: 0.5rem;
+        text-align: center;
+    }
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
     }
     
 </style>

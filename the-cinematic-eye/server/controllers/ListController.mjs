@@ -33,15 +33,15 @@ export default {
       // Crea una copia dell'array e aggiungi l'ID del film se non è già presente
       const filmList = list.film.slice();
       if (!filmList.includes(filmId)) {
-        filmList.push(filmId);
-        
-        // Aggiorna l'array 'film' della lista
-        await list.update({ film: filmList });
-  
-        res.status(200).send({ success: true, message: 'Film aggiunto alla lista con successo', filmList });
+          filmList.push(filmId);
+          
+          await list.update({ film: filmList });
+      
+          res.status(200).send({ success: true, message: 'Film aggiunto alla lista con successo', filmList });
       } else {
-        res.status(200).send({ message: 'Il film è già presente nella lista.' });
+          res.status(400).send({ error: 'Il film è già presente nella lista.' });
       }
+    
   
     } catch (error) {
       console.log('Errore nell\'aggiunta del film alla lista:', error);
