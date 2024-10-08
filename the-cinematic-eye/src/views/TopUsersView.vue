@@ -2,16 +2,14 @@
   <div class="d-flex flex-column">
       <div v-for="item in userFound">
           <router-link class="d-flex flex-row" :to="'/user/'+item.id" style="appearance: none !important; text-decoration: none;">
-          <div class="col d-flex align-items-center " style="color:white"><div class="h4 m-4">{{ item.username }}</div></div>
+          <div class="col d-flex align-items-center " style="color:white"><div class="h4 m-4">{{ item.Username }}</div></div>
           </router-link>
       </div>
   </div>
 </template>
 
 <script>
-
-import Users from '../../server/models/Users.mjs'
-
+import Utils from '../services/apiUtils'
 export default{
 
   data(){
@@ -19,12 +17,13 @@ export default{
       userFound:[]
     }
   },
-  /*methods: {
+  methods: {
     async fetchUser(){
       try {
-        const response= await Users.findAll();
-        this.userFound=response.data;
-        console.log(response);
+        const response= await Utils.getUsers();
+        response.data.forEach((i) => {
+        this.userFound.push({Username: i.Username, id: i.id});
+      });
       } catch (error) {
         console.error(error);
       }
@@ -32,7 +31,7 @@ export default{
   },
   mounted(){
     this.fetchUser();
-  }*/
+  }
 }
 
 </script>

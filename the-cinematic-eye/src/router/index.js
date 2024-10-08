@@ -13,6 +13,7 @@ import WatchListView from '@/views/WatchListView.vue'
 import LeTueListeView from '@/views/LeTueListeView.vue'
 import LeTueRecensioniView from '@/views/LeTueRecensioniView.vue'
 import FilmGiaVistiView from '@/views/FilmGiaVistiView.vue'
+import TopUsersView from '@/views/TopUsersView.vue'
 const routes = [
   {
     path: '/',
@@ -99,6 +100,11 @@ const routes = [
     path:'/filemgiavisti/:id',
     name: 'filmgiavisti',
     component: FilmGiaVistiView
+  },
+  {
+    path:'/topUsers',
+    name:'topUsers',
+    component: TopUsersView,
   },
   {
     path:'/debug',

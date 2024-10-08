@@ -32,5 +32,8 @@ export default {
     toggleLikeDislike(credentials) {
         return Api().post('/toggleLikeDislike', credentials);
     },
+    getUsers(credentials){
+        return Api().get('/getUsers', credentials);
+    }
     
 }
