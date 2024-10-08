@@ -6,6 +6,7 @@ import Search from "./controllers/Search.mjs";
 import SearchPolicy from "./controllers/SearchPolicy.mjs";
 import UpdatesPersonalData from "./controllers/UpdatesPersonalData.mjs";
 import test from "./controllers/testSeqFunc.mjs";
+import ListController from "./controllers/ListController.mjs";
 
 export default function (app) {
   app.get("/", (_req, res) => {
@@ -29,6 +30,9 @@ export default function (app) {
   app.get("/watchlist", Lists.watchList);
   app.get("/filmgiavisti", Lists.FilmVisti);
 
+  app.get("/getUserLists", ListController.getUserLists);
+  app.post('/addFilmToList', ListController.addFilmToList);
+
   app.post("/addReview", ReviewController.createReview);
   app.post("/getReviews", ReviewController.getFilmReviews);
   app.get("/getUserReviews", ReviewController.getUserReviews);
@@ -36,7 +40,7 @@ export default function (app) {
   app.delete('/deleteReview/:id', ReviewController.deleteReview);
   app.post('/toggleLikeDislike', ReviewController.toggleLikeDislike);
 
-
   app.get("/testCount", test.test);
   app.get("/testUpdatet", test.testJson);
 }
+

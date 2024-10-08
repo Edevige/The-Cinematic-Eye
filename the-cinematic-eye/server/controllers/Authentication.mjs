@@ -1,4 +1,4 @@
-import {users} from "../models/index.mjs"
+import {users, listfilms} from "../models/index.mjs"
 import jsonwebtoken from "jsonwebtoken"
 import config from "../config/config.mjs";
 import { OAuth2Client } from "google-auth-library";
@@ -32,6 +32,16 @@ export default {
     async register(req, res){
         try {
             const user = await users.create(req.body);
+
+            // Crea le 3 liste predefinite per l'utente appena creato
+            const listNames = ["Lista 1", "Lista 2", "Lista 3"];
+            for (let listName of listNames) {
+                await listfilms.create({
+                    title: listName,
+                    film: [], // Lista vuota di film
+                    UserId: user.id // Associa la lista all'utente
+                });
+            }
             res.send({
                 user: user.toJSON(),
                 token: jwtTokenGen(user.toJSON())
