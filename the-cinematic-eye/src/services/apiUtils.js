@@ -40,6 +40,9 @@ export default {
     },
     getUsers(credentials) {
         return Api().get('/getUsers', credentials);
+    },
+    getUserById(id){
+        return Api().get(`/getUserById/${id}`);
     }
     
 }

@@ -14,6 +14,7 @@ import LeTueListeView from '@/views/LeTueListeView.vue'
 import LeTueRecensioniView from '@/views/LeTueRecensioniView.vue'
 import FilmGiaVistiView from '@/views/FilmGiaVistiView.vue'
 import TopUsersView from '@/views/TopUsersView.vue'
+import UserView from '@/views/UserView.vue'
 const routes = [
   {
     path: '/',
@@ -105,6 +106,12 @@ const routes = [
     path:'/topUsers',
     name:'topUsers',
     component: TopUsersView,
+  },
+  {
+    path:'/user/:id',
+    name:'user',
+    component: UserView,
+    props: true,
   },
   {
     path:'/debug',

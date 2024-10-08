@@ -21,9 +21,10 @@ export default{
     async fetchUser(){
       try {
         const response= await Utils.getUsers();
-        response.data.forEach((i) => {
-        this.userFound.push({Username: i.Username, id: i.id});
-      });
+        this.userFound = response.data.map(user => ({
+          Username: user.Username,  // Assicurati che corrisponda al nome del campo corretto
+          id: user.id
+        }));
       } catch (error) {
         console.error(error);
       }
@@ -35,3 +36,10 @@ export default{
 }
 
 </script>
+
+<style>
+.no-style {
+  appearance: none !important;
+  text-decoration: none;
+}
+</style>
