@@ -30,7 +30,7 @@
                     <div class="flex-fill">
                         <div class="d-grid gap-2 ps-5 pe-5 pt-2 pb-2 btn-div">
                             <div class="d-flex gap-2 justify-content-between">
-                                <button class="btn btn-outline-light flex-fill" type="button"><i
+                                <button class="btn btn-outline-light flex-fill" @click="toggleListForm" type="button"><i
                                         class="bi bi-plus-lg"></i></button>
                                 
                                 <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light flex-fill"
@@ -47,6 +47,14 @@
                                 <button v-else @click="addFav(this.filmObj.id)" class="btn btn-outline-light flex-fill"
                                     type="button"><i class="bi bi-suit-heart-fill"></i></button>
                             </div>
+                            <div v-if="showListForm" class="review-form mt-4">
+                                <div>
+                                    <button v-for="list in userLists" :key="list.id" @click="addFilmList(list)">
+                                    Aggiungi a {{ list.title }}
+                                    </button>
+                                </div>
+                            </div>
+
                             <button class="btn btn-outline-light" @click="toggleReviewForm" type="button">
                                 <i class="bi bi-pencil-square"></i> Scrivi una recensione</button>
                         </div>
@@ -124,12 +132,14 @@ export default {
             imgUrl: "https://image.tmdb.org/t/p/original",
             trailerUrl: 'https://www.youtube.com/embed/',
             showReviewForm: false,
+            showListForm: false,
             review: {
                 rating: 0,
                 text: '',
                 spoiler: false
             },
             errorMessage: '',
+            userLists: [],
         }
     },
     
@@ -267,6 +277,9 @@ export default {
             this.review.rating = 0;
             this.review.spoiler = false;
         },
+        toggleListForm() {
+            this.showListForm = !this.showListForm;
+        },
         
         async submitReview() {
             try {
@@ -312,10 +325,51 @@ export default {
             }
         },
 
+        async fetchUserLists() {
+            try {
+                const token = this.$store.state.token;
+                if (!token) {
+                console.error('Token non trovato.');
+                return;
+                }
+                
+                const response = await apiUtils.getUserLists({
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                });
+                
+                // Salva l'intera lista di oggetti listfilms (titoli e ID)
+                this.userLists = response.data.listfilms;
+
+            } catch (error) {
+                console.error('Errore nel recupero delle liste:', error);
+            }
+        },
+
+        async addFilmList(list) {
+            try {
+                // Usa l'oggetto lista direttamente per ottenere il suo ID
+                const response = await apiUtils.addFilmToList({
+                token: this.$store.state.token,
+                listId: list.id, // ID della lista
+                filmId: this.filmObj.id // ID del film
+                });
+
+                if (response.data.success) {
+                console.log(response.data.message);
+                }
+            } catch (error) {
+                console.error('Errore nell\'aggiunta del film alla lista:', error);
+            }
+        },
+
+
     },
     mounted() {
         this.getDirector(this.filmObj.id);
         this.getTrailer(this.filmObj.id);
+        this.fetchUserLists();
     },
     computed: {
         generes() {

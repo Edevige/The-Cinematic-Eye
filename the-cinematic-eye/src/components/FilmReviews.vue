@@ -166,7 +166,7 @@ export default {
 
 
 <style lang="scss" scoped>
-.spinner-border{
+  .spinner-border{
     color: whitesmoke;
     --bs-spinner-width: 5rem;
     --bs-spinner-height: 5rem;

@@ -56,6 +56,9 @@ export default function (sequelize, DataTypes) {
       seen: {
         type: DataTypes.ARRAY(DataTypes.INTEGER),
       },
+      lists: {
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
+      },
 
     },
     {

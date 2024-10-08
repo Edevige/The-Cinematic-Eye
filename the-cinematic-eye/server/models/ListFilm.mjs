@@ -8,6 +8,14 @@ export default function (sequelize, DataTypes, user) {
             film: {
                 type: DataTypes.ARRAY(DataTypes.INTEGER),
             },
+            visible: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false, // Default a false
+            },
+            follower: {
+                type: DataTypes.INTEGER,
+                defaultValue: 0
+            }
         }
     );
 

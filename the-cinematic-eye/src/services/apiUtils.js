@@ -26,13 +26,19 @@ export default {
     updateReview (reviewData, credentials) {
         return Api().post('/updateReview', reviewData, credentials);
     },
-    deleteReview (reviewId, headers) {
-        return Api().delete(`/deleteReview/${reviewId}`, headers);
+    deleteReview (reviewId, credentials) {
+        return Api().delete(`/deleteReview/${reviewId}`, credentials);
     },
     toggleLikeDislike(credentials) {
         return Api().post('/toggleLikeDislike', credentials);
     },
-    getUsers(credentials){
+    getUserLists(credentials) {
+        return Api().get('/getUserLists', credentials);
+    },
+    addFilmToList(credentials) {
+        return Api().post('/addFilmToList', credentials);
+    },
+    getUsers(credentials) {
         return Api().get('/getUsers', credentials);
     },
     getUserById(id){

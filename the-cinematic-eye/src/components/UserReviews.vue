@@ -1,6 +1,11 @@
 <template>
   <div>
-    <div v-if="reviews.length">
+    <div v-if="loading">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <div v-else-if="reviews.length">
       <div v-for="review in reviews" :key="review.id" class="review-card">
         <div class="row">
           <!-- Colonna per l'immagine del film -->
@@ -67,6 +72,7 @@ export default {
   name: 'UserReviews',
   data() {
     return {
+      loading: true,
       reviews: [],
       selectedReview: null,
       imgUrl: 'https://image.tmdb.org/t/p/original/', // URL base per le immagini dei film
@@ -100,8 +106,10 @@ export default {
         );
         
         this.reviews = reviewsWithFilms;
+        this.loading = false;
       } catch (error) {
         console.error('Errore nel recupero delle recensioni:', error);
+        this.loading = false;
       }
     },
 
@@ -125,39 +133,38 @@ export default {
     },
 
     async submitEdit() {
-  try {
-    const token = this.$store.state.token;
-    const updatedReview = {
-      id: this.selectedReview.id,
-      rating: this.editForm.rating,
-      text: this.editForm.text,
-      spoiler: this.editForm.spoiler,
-    };
-    const response = await apiUtils.updateReview(updatedReview, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      try {
+        const token = this.$store.state.token;
+        const updatedReview = {
+          id: this.selectedReview.id,
+          rating: this.editForm.rating,
+          text: this.editForm.text,
+          spoiler: this.editForm.spoiler,
+        };
+        const response = await apiUtils.updateReview(updatedReview, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-    // Trova l'indice della recensione aggiornata
-    const index = this.reviews.findIndex(r => r.id === this.selectedReview.id);
-    if (index !== -1) {
-      // Mantieni intatti i dettagli del film originale
-      const updatedReviewWithFilm = {
-        ...response.data.review,
-        film: this.reviews[index].film, // Mantieni il film
-      };
-      
-      // Aggiorna la recensione nell'array
-      this.reviews.splice(index, 1, updatedReviewWithFilm);
-    }
+        // Trova l'indice della recensione aggiornata
+        const index = this.reviews.findIndex(r => r.id === this.selectedReview.id);
+        if (index !== -1) {
+          // Mantieni intatti i dettagli del film originale
+          const updatedReviewWithFilm = {
+            ...response.data.review,
+            film: this.reviews[index].film, // Mantieni il film
+          };
+          
+          // Aggiorna la recensione nell'array
+          this.reviews.splice(index, 1, updatedReviewWithFilm);
+        }
 
-    this.selectedReview = null; // Chiudi il form
-  } catch (error) {
-    console.error('Errore nella modifica della recensione:', error);
-  }
-}
-,
+        this.selectedReview = null; // Chiudi il form
+      } catch (error) {
+        console.error('Errore nella modifica della recensione:', error);
+      }
+    },
 
     async deleteReview(reviewId) {
       try {
@@ -184,6 +191,12 @@ export default {
 </script>
 
 <style scoped>
+.spinner-border{
+    color: whitesmoke;
+    --bs-spinner-width: 5rem;
+    --bs-spinner-height: 5rem;
+    --bs-spinner-border-width: 1em;
+}
 .lista-vuota {
   text-align: center;
   padding: 2rem;
