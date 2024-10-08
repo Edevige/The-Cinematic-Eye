@@ -16,5 +16,11 @@ export default {
   },
   updatePersonalData(data){
     return Api().post('updatePersonalData', data)
-  }
+  },
+  emailCheck(credentials){
+    return Api().post('emailCheck', credentials)
+  },
+  resetPassword(credentials){
+    return Api().post('resetPassword', credentials)
+  },
 }

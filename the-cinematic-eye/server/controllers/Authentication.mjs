@@ -115,4 +115,20 @@ export default {
             });
         }
     },
+    async emailCheck(req, res){
+        
+        
+        try {
+            const response=await users.findOne({
+                where:{
+                    email:req.body.email
+                }
+            });
+            if (response){
+                res.send(true);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    },
 }

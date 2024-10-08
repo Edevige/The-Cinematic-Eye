@@ -15,6 +15,8 @@ import LeTueRecensioniView from '@/views/LeTueRecensioniView.vue'
 import FilmGiaVistiView from '@/views/FilmGiaVistiView.vue'
 import TopUsersView from '@/views/TopUsersView.vue'
 import UserView from '@/views/UserView.vue'
+import ForgotPassword from '@/views/ForgotPassword.vue';
+import ResetPassword from '@/views/ResetPassword.vue'
 const routes = [
   {
     path: '/',
@@ -28,6 +30,18 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+  },
+  {
+    path: '/forgot-password',
+    name: 'forgotPassword',
+    component: ForgotPassword,
+    meta: { guest: true }
+  },
+  {
+    path: '/reset-password',
+    name: 'resetPassword',
+    component: ResetPassword,
+    meta: { guest: true }
   },
   {
     path: '/terms',
