@@ -17,6 +17,8 @@ export default function (app) {
   app.post("/loginWithGoogleToken", Authentication.loginWithGoogleToken);
 
   app.get("/usrSrc", SearchPolicy.usrSearch, Search.usrSearch);
+  app.get('/getUsers', Search.getUser);
+  app.get('/getUserById/:id', Search.getUserById);
 
   app.post("/updatePersonalData", UpdatesPersonalData.updatePersonalData);
 
@@ -35,7 +37,7 @@ export default function (app) {
   app.post('/updateReview', ReviewController.updateReview);
   app.delete('/deleteReview/:id', ReviewController.deleteReview);
   app.post('/toggleLikeDislike', ReviewController.toggleLikeDislike);
-  app.get('/getUsers', Search.getUser)
+  
 
 
   app.get("/testCount", test.test);
