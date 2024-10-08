@@ -45,7 +45,7 @@
                         <li><a class="dropdown-item" href="#">I più visti</a></li>
                         <li><a class="dropdown-item" href="#">I più amati</a></li>
                         <li><a class="dropdown-item" href="#">Liste più seguite</a></li>
-                        <li><a class="dropdown-item" href="#">Top User</a></li>
+                        <li><RouterLink class="dropdown-item" to="/topUsers">Top User</RouterLink></li>
                     </ul>
                 </div>
 
@@ -114,6 +114,7 @@
 <script>
 import AuthenticationService from '@/services/AuthenticationService';
 import WatchListView from '@/views/WatchListView.vue';
+import { RouterLink } from 'vue-router';
 import { GoogleSignInButton } from 'vue3-google-signin';
 import { mapState } from 'vuex';
 

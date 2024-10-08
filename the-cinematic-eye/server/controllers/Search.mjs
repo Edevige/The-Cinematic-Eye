@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 import { users } from "../models/index.mjs";
 
 export default {
@@ -17,8 +17,24 @@ export default {
       });
       res.send(found);
     } catch (e) {
-      console.log(e);
+      console.error(e);
       res.status(400).send({ error: e });
     }
   },
+  async getUser(req, res){
+    try {
+      const user= await users.findAll();
+      const found=[]
+      console.log('UTENTI TROVATI: ', user);
+      
+      user.forEach((i) => {
+        found.push({Username: i.username, id: i.id});
+      });
+      console.log('HO TROVATO: ', found);
+      res.send(found);
+    } catch (error) {
+      console.log(e);
+      res.status(400).send({ error: e });
+    }
+  }
 };

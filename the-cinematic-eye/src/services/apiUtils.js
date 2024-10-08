@@ -37,6 +37,9 @@ export default {
     },
     addFilmToList(credentials) {
         return Api().post('/addFilmToList', credentials);
+    },
+    getUsers(credentials) {
+        return Api().get('/getUsers', credentials);
     }
     
 }
