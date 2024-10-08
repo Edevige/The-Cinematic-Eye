@@ -123,6 +123,12 @@ import selfaApi from '@/services/selfaApi';
 </script>
 
 <style lang="scss" scoped>
+.spinner-border{
+    color: whitesmoke;
+    --bs-spinner-width: 5rem;
+    --bs-spinner-height: 5rem;
+    --bs-spinner-border-width: 1em;
+  }
 .carousel-control-next, .carousel-control-prev{
     width: 5%;
     border-radius: 2em;
