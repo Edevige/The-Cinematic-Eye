@@ -15,6 +15,7 @@ import LeTueRecensioniView from '@/views/LeTueRecensioniView.vue'
 import FilmGiaVistiView from '@/views/FilmGiaVistiView.vue'
 import TopUsersView from '@/views/TopUsersView.vue'
 import UserView from '@/views/UserView.vue'
+import ListaFilm from '@/components/ListaFilm.vue'
 const routes = [
   {
     path: '/',
@@ -91,6 +92,11 @@ const routes = [
     path:'/letueliste/:id',
     name: 'letueliste',
     component: LeTueListeView
+  },
+  {
+    path: '/lista/:id',
+    name: 'ListaFilm',
+    component: ListaFilm,
   },
   {
     path:'/letuerecensioni/:id',
