@@ -8,12 +8,12 @@
       <div class="mb-3">
         <label class="form-label" for="passInput">Password*</label>
         <input class="form-control text-center" id="passInput" type="password" placeholder="password" v-model="password"
-          autocomplete="new-password">
+          autocomplete="new-password" @paste.prevent @copy.prevent>
       </div>
       <div class="mb-3">
         <label class="form-label" for="cpassInput">Confirm Password*</label>
-        <input class="form-control text-center" id="cpassInput" type="password" placeholder="password"
-          v-model="cpassword">
+        <input class="form-control text-center" id="cpassInput" type="password" placeholder="password" v-model="cpassword"
+        @paste.prevent @copy.prevent>
       </div>
       <div class="mb-3">
         <label class="form-label" for="userInput">Username*</label>
