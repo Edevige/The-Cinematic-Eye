@@ -2,6 +2,7 @@ import {users, listfilms} from "../models/index.mjs"
 import jsonwebtoken from "jsonwebtoken"
 import config from "../config/config.mjs";
 import { OAuth2Client } from "google-auth-library";
+import { where } from "sequelize";
 
 function jwtTokenGen(user){
     const ONE_WEEK = 60 * 60 * 24 * 7;
@@ -131,4 +132,29 @@ export default {
             console.error(error);
         }
     },
+    async deleteAccount(req, res){
+        try {
+            // Assumendo che req.user.id contenga l'ID dell'utente autenticato
+            
+            console.log("Ciaooooooooooooooooooooooo", req)
+    
+            // Trova l'utente nel database
+            const user = await users.findOne({
+                where: {
+                    id: req
+                }
+            })
+            if (!user) {
+                return res.status(404).send({ message: 'Utente non trovato' });
+            }
+    
+            // Elimina l'utente dal database
+            await user.destroy();
+    
+            return res.status(200).send({ message: 'Account eliminato con successo' });
+        } catch (error) {
+            console.error('Errore durante l’eliminazione dell’account:', error);
+            return res.status(500).send({ message: 'Errore del server. Riprova più tardi.' });
+        }
+    }
 }

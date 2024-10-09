@@ -47,5 +47,6 @@ export default function (app) {
   app.get("/testUpdatet", test.testJson);
 
   app.post("/emailCheck", Authentication.emailCheck);
+  app.post("/deleteAccount", Authentication.deleteAccount);
 }
 
