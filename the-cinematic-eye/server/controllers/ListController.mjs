@@ -48,7 +48,61 @@ export default {
       res.status(500).send({ error: 'Errore inatteso, riprova più tardi.' });
     }
   },
+  async getList(req, res) {
+    try {
+      const listId = req.params.id;
+      const list = await listfilms.findOne({ where: { id: listId } });
+      
+      if (!list) {
+        return res.status(404).send({ error: 'Lista non trovata.' });
+      }
   
+      res.send(list);
+    } catch (error) {
+      console.error('Errore nel recupero della lista:', error);
+      res.status(500).send({ error: 'Errore del server.' });
+    }
+  },
+  async removeFilmFromList(req, res) {
+    try {
+        const { listId, filmId } = req.body;
+        const list = await listfilms.findOne({ where: { id: listId } });
+        
+        if (!list) {
+            return res.status(404).send({ error: 'Lista non trovata.' });
+        }
+        
+        // Rimuovi il film dalla lista
+        const updatedFilmList = list.film.filter(id => id !== filmId);
+        await list.update({ film: updatedFilmList });
+        
+        res.status(200).send({ success: true, filmList: updatedFilmList });
+    } catch (error) {
+        console.error('Errore nella rimozione del film:', error);
+        res.status(500).send({ error: 'Errore del server.' });
+    }
+  },
+  async updateList(req, res) {
+    try {
+        const { title, visible } = req.body;
+        const listId = req.params.listId;
+
+        const list = await listfilms.findOne({ where: { id: listId } });
+        
+        if (!list) {
+            return res.status(404).send({ error: 'Lista non trovata.' });
+        }
+
+        // Aggiorna il titolo e la visibilità
+        await list.update({ title: title, visible: visible });
+        
+        res.status(200).send({ success: true, list });
+    } catch (error) {
+        console.error('Errore nell\'aggiornamento della lista:', error);
+        res.status(500).send({ error: 'Errore del server.' });
+    }
+  },
+
   
 }
 

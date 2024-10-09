@@ -34,6 +34,9 @@ export default function (app) {
 
   app.get("/getUserLists", ListController.getUserLists);
   app.post('/addFilmToList', ListController.addFilmToList);
+  app.get('/getList/:id', ListController.getList);
+  app.post('/removeFilmFromList', ListController.removeFilmFromList);
+  app.put('/updateList/:listId', ListController.updateList);
 
   app.post("/addReview", ReviewController.createReview);
   app.post("/getReviews", ReviewController.getFilmReviews);
@@ -42,7 +45,6 @@ export default function (app) {
   app.delete('/deleteReview/:id', ReviewController.deleteReview);
   app.post('/toggleLikeDislike', ReviewController.toggleLikeDislike);
   
-
   app.get("/testCount", test.test);
   app.get("/testUpdatet", test.testJson);
 

@@ -6,11 +6,6 @@
   </div>
   <div v-else>
     <div v-for="list in userLists" :key="list.id" class="list-group-item">
-      <p><strong>Follower:</strong> {{ list.follower }}</p>
-      <p><strong>Film IDs:</strong> {{ list.film.join(', ') }}</p> <!-- Mostra gli ID dei film -->
-      <p v-if="list.visible"><strong>Visibile a tutti</strong></p>
-      <p v-else><strong>Lista privata</strong></p>
-
       <!-- Carosello di film basato sugli ID -->
       <div class="wrapper">
         <!-- Aggiungiamo l'ID della lista come prop -->
@@ -65,8 +60,6 @@ export default {
 };
 </script>
 
-
-
 <style scoped>
 .spinner-border{
     color: whitesmoke;
@@ -74,6 +67,4 @@ export default {
     --bs-spinner-height: 5rem;
     --bs-spinner-border-width: 1em;
 }
-
-
 </style>

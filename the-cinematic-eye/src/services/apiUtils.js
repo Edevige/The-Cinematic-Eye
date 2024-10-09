@@ -43,6 +43,16 @@ export default {
     },
     getUserById(id){
         return Api().get(`/getUserById/${id}`);
-    }
+    },
+    getList(listId) {
+        return Api().get(`/getList/${listId}`); 
+    },
+    removeFilmFromList(credentials) {
+        return Api().post('/removeFilmFromList', credentials);
+    },
+    updateList(listId, data) {
+        return Api().put(`/updateList/${listId}`, data); // PUT request per aggiornare la lista
+    },
+      
     
 }

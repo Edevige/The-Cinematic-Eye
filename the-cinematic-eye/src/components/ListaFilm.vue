@@ -1,120 +1,221 @@
 <template>
     <!-- Spinner durante il caricamento -->
     <div v-if="loading">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
-    <!-- Messaggio quando la lista film visti è vuota -->
-    <div v-else-if="list.length === 0">
-      <p class="lista-vuota">Questa lista non contiene ancora nessun film</p>
-    </div>
-  
-    <!-- Mostra i film se la lista non è vuota -->
-    <div v-else>
-      <div class="row w-100 mx-auto">
-        <div v-for="(item, index) in film" class="col-12 col-md-6 col-lg-4 mb-4 position-relative">
-          <router-link :to="'/film/'+item.id"><img :src="imgUrl + item.backdrop_path" class="img-fluid mx-auto d-block" :alt="index" ></router-link>
-          <div class="film-info">
-            <a class="h6 p-2">{{ item.original_title }}</a>
-          </div>
-          <div v-if="owner" @click="remove(item.id)" class="remove-button">
-            <i class="bi bi-dash-square-fill"></i>
-          </div>
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
-      </div>
     </div>
-  </template>
-  
-  <script>
-  import TMdbApi from '@/services/TMdbApi';
-  import apiUtils from '@/services/apiUtils';
-  import selfaApi from '@/services/selfaApi';
-  
-  export default {
-    props:{
-      id: Number // L'ID della lista viene passato come prop
-    },
+    
+    <!-- Mostra i film se la lista non è vuota -->
+    <div v-else-if="listData && listData.film.length > 0">
+        <!-- Contenitore flessibile per il titolo e il pulsante di modifica -->
+        <div class="d-flex justify-content-between align-items-center" style="padding-top: 2rem; padding-bottom: 1rem;">
+            <!-- Titolo della lista -->
+            <h2 style="color: whitesmoke;">
+                {{ listData.title }}
+            </h2>
+            <!-- Pulsante di modifica allineato a destra -->
+            <button class="btn btn-outline-light" @click="toggleEditMode">
+                <i class="bi bi-pencil-square"></i> Modifica Lista
+            </button>
+        </div>
+
+        <!-- Dati della visibilità e follower della lista -->
+        <div style="color: whitesmoke; text-align: center; padding-bottom: 1rem;">
+            <span v-if="listData.visible">Visibile al pubblico</span>
+            <span v-else>Privata</span> | 
+            <span>{{ listData.follower }} Follower</span>
+        </div>
+
+        <!-- Form per modificare il titolo e la visibilità della lista -->
+        <div v-if="isEditing" class="edit-form review-form">
+            <form @submit.prevent="saveChanges" class="text-center">
+                <div class="form-group">
+                    <label for="listTitle" class="form-label">Titolo della Lista</label>
+                    <input id="listTitle" v-model="editedTitle" type="text" class="form-control text-center" style="width: 60%; margin: 0 auto;">
+                </div>
+
+                <div class="form-group" style="padding-top: 1rem;">
+                    <label for="listVisibility" class="form-label">Lista Visibile?</label>
+                    <input id="listVisibility" type="checkbox" v-model="editedVisibility" class="form-check-input" style="margin-left: 20px;">
+                    <span style="margin-left: 5px;">{{ editedVisibility ? 'Pubblica' : 'Privata' }}</span>
+                </div>
+
+                <!-- Pulsanti posizionati sulla stessa linea, distanziati -->
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="submit" class="btn btn-outline-light mx-3" style="width: 120px;">Salva</button>
+                    <button type="button" @click="toggleEditMode" class="btn btn-secondary mx-3" style="width: 120px;">Annulla</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista dei film -->
+        <div class="row w-100 mx-auto">
+            <div v-for="(filmId, index) in listData.film" :key="index" class="col-12 col-md-6 col-lg-4 mb-4 position-relative">
+                <router-link :to="'/film/' + filmId">
+                    <img v-if="filmDetails[filmId]" :src="imgUrl + filmDetails[filmId].backdrop_path" class="img-fluid mx-auto d-block" :alt="filmDetails[filmId].title">
+                    <div v-else>Caricamento...</div>
+                </router-link>
+                <div class="film-info">
+                    <a class="h6 p-2">{{ filmDetails[filmId]?.title || 'Titolo non disponibile' }}</a>
+                </div>
+                <!-- Pulsante per rimuovere il film dalla lista -->
+                <div v-if="owner" @click="remove(filmId)" class="remove-button">
+                    <i class="bi bi-dash-square-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div v-else>
+        <p>Questa lista non contiene ancora nessun film</p>
+    </div>
+</template>
+
+<script>
+import TMdbApi from '@/services/TMdbApi';
+import apiUtils from '@/services/apiUtils';
+
+export default {
     data() {
-      return {
-        listUrl: `/getList/${this.id}`,
-        film: [],
-        list: [],
-        imgUrl: "https://image.tmdb.org/t/p/original",
-        loading: true
-      };
-    },
-    methods: {
-      async getFilms() {
-        try {
-          for (const i in this.list) {
-            if (Object.hasOwnProperty.call(this.list, i)) {
-              const element = this.list[i];
-              const url = 'movie/' + element;
-              const response = await TMdbApi().get(url);
-              console.log("Film ricevuto: ", response.data);  // Verifica i dati del film
-              this.film.push(response.data);
-            }
-          }
-          this.loading = false;  // Imposta loading a false una volta completato
-        } catch (e) {
-          console.log("Errore nel caricamento dei film: ", e);
-          this.loading = false;  // Imposta loading a false in caso di errore
-        }
-      },
-      async getList() {
-  try {
-    // Verifica l'URL costruito
-    console.log("URL della richiesta: ", this.listUrl);  // Log dell'URL usato
-    const response = await selfaApi().get(this.listUrl);
-    console.log("Lista ricevuta: ", response.data);  // Verifica l'intera risposta
-    this.list = response.data && response.data.list ? response.data.list : [];
-    if (this.list.length > 0) {
-      this.getFilms();
-    } else {
-      console.log("Lista vuota o non valida.");
-      this.loading = false;  // Ferma il caricamento se la lista è vuota
-    }
-  } catch (error) {
-    console.error("Errore nel caricamento della lista: ", error);
-    this.loading = false;  // Ferma il caricamento in caso di errore
-  }
-}
-,
-      async remove(id) {
-        try {
-          const response = await apiUtils.rmSeen({
-            token: this.$store.state.token,
-            film_id: id
-          });
-  
-          var userUpd = this.$store.state.user;
-          userUpd.seen = response.data.seenArr;
-          this.$store.dispatch('setUser', userUpd);
-  
-          var i = this.list.indexOf(id);
-          this.list.splice(i, 1);
-          this.film.splice(i, 1);
-        } catch (error) {
-          console.log(error);
-        }
-      }
+        return {
+            listId: null,
+            listData: null,
+            filmDetails: {},
+            imgUrl: "https://image.tmdb.org/t/p/original",
+            loading: true,
+            isEditing: false,  // Stato per mostrare/nascondere il form di modifica
+            editedTitle: '',   // Stato per il titolo modificato
+            editedVisibility: true // Stato per la visibilità modificata
+        };
     },
     mounted() {
-      this.loading = true;
-      this.getList();
+        this.listId = this.$route.params.id;
+        this.getList();
+    },
+    methods: {
+        async getList() {
+            try {
+                const response = await apiUtils.getList(this.listId);
+                this.listData = response.data;
+                this.editedTitle = this.listData.title;
+                this.editedVisibility = this.listData.visible; // Booleano
+                if (this.listData.film.length > 0) {
+                    this.getFilmDetails();
+                }
+                this.loading = false;
+            } catch (error) {
+                console.error('Errore nel caricamento della lista:', error);
+                this.loading = false;
+            }
+        },
+        async getFilmDetails() {
+            try {
+                for (const filmId of this.listData.film) {
+                    const response = await TMdbApi().get(`movie/${filmId}`);
+                    this.filmDetails[filmId] = response.data;
+                }
+            } catch (e) {
+                console.error('Errore nel caricamento dei dettagli del film:', e);
+            }
+        },
+        toggleEditMode() {
+            this.isEditing = !this.isEditing;
+        },
+        async saveChanges() {
+            try {
+                const updatedData = {
+                    title: this.editedTitle,
+                    visible: this.editedVisibility, // Booleano già aggiornato dal checkbox
+                };
+                await apiUtils.updateList(this.listId, updatedData);
+
+                // Aggiorna i dati della lista dopo la modifica
+                this.listData.title = updatedData.title;
+                this.listData.visible = updatedData.visible;
+                this.toggleEditMode();
+            } catch (error) {
+                console.error('Errore nell\'aggiornamento della lista:', error);
+            }
+        },
+        async remove(filmId) {
+            try {
+                const response = await apiUtils.removeFilmFromList({
+                    token: this.$store.state.token,
+                    listId: this.listId,
+                    filmId: filmId
+                });
+                
+                this.listData.film = this.listData.film.filter(id => id !== filmId);
+                delete this.filmDetails[filmId];
+            } catch (error) {
+                console.error('Errore nella rimozione del film dalla lista:', error);
+            }
+        }
     },
     computed: {
-      owner() {
-        if (this.$store.state.user == null) return false;
-        else if (this.$store.state.user.id == this.id) return true;
-        return false;
-      }
+        owner() {
+            return this.$store.state.user && this.$store.state.user.id === this.listData.UserId;
+        }
     }
-  };
-  </script>
-  
-  <style lang="scss" scoped>
-  /* Stili simili a quelli forniti per il carosello precedente */
-  </style>
-  
+};
+</script>
+
+<style lang="scss" scoped>
+.spinner-border {
+    color: whitesmoke;
+    --bs-spinner-width: 5rem;
+    --bs-spinner-height: 5rem;
+    --bs-spinner-border-width: 1em;
+}
+.film-info {
+    position: absolute;
+    bottom: 1rem;
+    left: 0;
+    right: 0;
+    text-align: center;
+    .h6 {
+        background-color: darkslategray;
+        border-radius: 0.5rem;
+        color: whitesmoke;
+        text-decoration: none;
+    }
+}
+.remove-button {
+    position: absolute;
+    top: 1rem;
+    right: 3rem;
+    cursor: pointer;
+    i {
+        color: whitesmoke;
+        font-size: xx-large;
+        &:hover {
+            color: black;
+        }
+    }
+}
+.edit-button {
+    cursor: pointer;
+    color: whitesmoke;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-size: large;
+}
+.edit-form {
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: whitesmoke;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+.review-form {
+    background-color: rgb(26, 68, 67);
+    color: whitesmoke; 
+    margin-bottom: 2rem;
+    border-radius: 15px; 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 0.7rem;
+}
+</style>
