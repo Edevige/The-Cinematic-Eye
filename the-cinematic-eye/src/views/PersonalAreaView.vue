@@ -68,6 +68,12 @@
         <div></div>
         <button type="button" @click="logout()">Logout</button>
     </div>
+
+    <button type="button" @click="handleDeleteAccount()">
+        Elimina Account
+    </button>
+
+    
 </div>
       
 </template>
@@ -165,6 +171,26 @@ export default {
         default:
           break;
       }
+    },
+    async handleDeleteAccount(){
+        // Richiesta al backend per eliminare l'account
+        const confirmDelete = window.confirm("Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile!");
+        if (confirmDelete) {
+            try {
+                console.log(this.id)
+                const response = await AuthenticationService.deleteAccount({"userId":this.id});
+                
+                if (response.ok) {
+                    alert('Il tuo account è stato eliminato con successo.');
+                    navigate('/logout');  // Reindirizza alla pagina di logout o home
+                } else {
+                    alert('Si è verificato un problema nell’eliminazione dell’account.');
+                }
+            } catch (error) {
+                console.error('Errore durante l’eliminazione dell’account:', error);
+                alert('Errore di connessione. Riprova più tardi.');
+            }
+        }
     },
     async confermaModifica(nuovoUpdate, index){
       try {

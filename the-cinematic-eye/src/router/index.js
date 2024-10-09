@@ -18,6 +18,7 @@ import UserView from '@/views/UserView.vue'
 import ForgotPassword from '@/views/ForgotPassword.vue';
 import ResetPassword from '@/views/ResetPassword.vue'
 import ListaFilm from '@/components/ListaFilm.vue'
+import DiscoverFilmView from '@/views/DiscoverFilmView.vue'
 const routes = [
   {
     path: '/',
@@ -132,6 +133,11 @@ const routes = [
     name:'user',
     component: UserView,
     props: true,
+  },
+  {
+    path:'/discoverFilm',
+    name:'discoverFilm',
+    component: DiscoverFilmView
   },
   {
     path:'/debug',
