@@ -45,6 +45,7 @@
                         <li><a class="dropdown-item" href="#">I più visti</a></li>
                         <li><a class="dropdown-item" href="#">I più amati</a></li>
                         <li><a class="dropdown-item" href="#">Liste più seguite</a></li>
+                        <li><RouterLink class="dropdown-item" to="/discoverFilm">Trova Film</RouterLink></li>
                         <li><RouterLink class="dropdown-item" to="/topUsers">Top User</RouterLink></li>
                     </ul>
                 </div>
