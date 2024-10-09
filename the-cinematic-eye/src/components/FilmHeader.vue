@@ -51,8 +51,8 @@
                 </div>
 
                 <!--menu log in/out, sign in-->
-                <div class="dropdown">
-                    <button class="btn btn-outline-success" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="dropdown" data-bs-auto-close="outside">
+                    <button class="btn btn-outline-success" type="button" data-bs-toggle="dropdown" aria-expanded="false" ref="loginDropdown">
                         <i class="bi bi-person-fill"></i>
                     </button>
                     <!--menu loggato-->
@@ -90,15 +90,16 @@
                                 <div class="mb-3 me-2 ms-2">
                                     <input type="password" v-model="logPass" class="form-control" id="InputPassword" placeholder="Password">
                                 </div>
-                                
+                                <div v-if="error" class="alert alert-danger">{{ error }}</div>
+
                                 <div class="d-flex justify-content-around">
    
                                     <div v-if="!logged" id="googleButton"></div>
                                     
-                                    <button type="button" @click="login" class="btn btn-outline-light ms-2">Login</button>
+                                    <button type="button" @click.prevent="login($event)" class="btn btn-outline-light ms-2">Login</button>
                                     
                                 </div>
-
+                                <div style="padding: 0.5rem;"></div>
                                 <!-- Altre parti del template -->
                                 <router-link to="/forgot-password">Password dimenticata?</router-link>
 
@@ -172,7 +173,6 @@ export default {
     },
     
     methods:{
-
         // Metodo per aprire/chiudere il sottomenu
         toggleSubmenu(event) {
             this.isSubmenuVisible = !this.isSubmenuVisible;
@@ -228,27 +228,49 @@ export default {
             console.error("Elemento googleButton non trovato nel DOM.");
             }
         },
-        async login() {
+        async login(event) {
+            // Impedisci la chiusura del dropdown a meno che il login non abbia successo
+            event.stopPropagation();
+
+            // Verifica che l'email e la password siano stati inseriti
+            if (!this.logMail || !this.logPass) {
+                this.error = 'Per favore, inserisci sia l\'email che la password.';
+                return;
+            }
+
             try {
                 const response = await AuthenticationService.login({
                     email: this.logMail,
                     password: this.logPass
                 });
-                this.$store.dispatch('setToken',response.data.token)
-                this.$store.dispatch('setUser',response.data.user)
-                this.$store.commit('login')
-
+                
+                this.$store.dispatch('setToken', response.data.token);
+                this.$store.dispatch('setUser', response.data.user);
+                this.$store.commit('login');
+                
                 this.logMail = '';
                 this.logPass = '';
-                
+                this.error = null; // Resetta gli errori in caso di successo
+
+                // Chiudi il menu a tendina manualmente dopo il successo del login
+                const dropdownElement = this.$refs.loginDropdown;
+                const dropdownInstance = bootstrap.Dropdown.getInstance(dropdownElement);
+                if (dropdownInstance) {
+                    dropdownInstance.hide();
+                }
+
             } catch (error) {
-                this.error = error.response.data.error
+                this.error = error.response.data.error;
+                // Mantieni il dropdown aperto in caso di errore
             }
         },
         logout(){
             this.user = {};
             this.jwt = "";
             this.$store.commit('logout')
+
+            // Reindirizza alla homepage
+            this.$router.push('/');
 
             // Reinizializza il pulsante di Google Sign-In dopo il logout
             // Usa nextTick per aspettare che l'elemento sia nel DOM
@@ -313,7 +335,14 @@ export default {
         }
     }
     .btn-usr{padding: 0;}
-    .usr-menu{text-decoration: none;}
+    .usr-menu{
+        text-decoration: none;
+        &:hover {
+            background-color: #{$menu-color}; // Mantiene il colore di sfondo durante hover
+            color: whitesmoke; // Mantiene il colore del testo bianco
+            text-decoration: underline;
+        }
+    }
     .dropdown-menu{
         --bs-dropdown-bg: #{$menu-color};
         --bs-dropdown-color: whitesmoke;
