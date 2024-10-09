@@ -45,5 +45,7 @@ export default function (app) {
 
   app.get("/testCount", test.test);
   app.get("/testUpdatet", test.testJson);
+
+  app.post("/emailCheck", Authentication.emailCheck);
 }
 

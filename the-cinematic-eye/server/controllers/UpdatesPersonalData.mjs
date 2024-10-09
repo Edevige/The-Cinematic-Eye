@@ -4,78 +4,82 @@ import config from "../config/config.mjs";
 
 export default {
 
-    async updatePersonalData(req,res){    
+    async updatePersonalData(req, res) {    
         try {
-            const match= await users.findOne({
+            const match = await users.findOne({
                 where: {
                     id: req.body.id
                 }
-            });   
-        console.log(match);
-        if (!match) {
-            res.status(403).send({ error: "NOP!" });
-        } else {
-            let controllo;
-            switch (req.body.index) {
-                case 0:
-                    console.log('Caso cambio Name');      
-                    match.name=req.body.nuovoUpdate;
-                    match.save();
-                    break;
-                case 1:
-                    console.log('Caso cambio Username');
-                    controllo= await users.findOne({
-                        where:{
-                            username: req.body.nuovoUpdate
-                        }
-                    })
-
-                    console.log('Controllo BE LIKE: ', controllo);
+            });
+    
+            if (!match) {
+                return res.status(403).send({ error: "NOP!" });
+            } else {
+                let controllo;
+                switch (req.body.index) {
+                    case 0:
+                        console.log('Caso cambio Name');      
+                        match.name = req.body.nuovoUpdate;
+                        await match.save();
+                        return res.send({ message: "Nome aggiornato con successo!", status:true});
                     
-                    if(controllo){
-                        console.error('Username già in uso!');
-                    }
-                    else{
-                        match.username=req.body.nuovoUpdate;
-                        match.save();}
-                    break;
-                case 2:
-                    console.log('Caso cambio Email');
-                    controllo= await users.findOne({
-                        where: {
-                            email: req.body.nuovoUpdate
+                    case 1:
+                        console.log('Caso cambio Username');
+                        controllo = await users.findOne({
+                            where: {
+                                username: req.body.nuovoUpdate
+                            }
+                        });
+    
+                        if (controllo) {
+                            console.error('Username già in uso!');
+                            return res.status(400).send({ error: 'Username già in uso!' });
+                        } else {
+                            match.username = req.body.nuovoUpdate;
+                            await match.save();
+                            return res.send({ message: "Username aggiornato con successo!", status:true });
                         }
-                    });
-                    console.log('Controllo BE LIKE: ', controllo);
-                    if(controllo){
-                        console.error('Email già in uso su un altro account!');
-                    }
-                    else{
-                        match.email=req.body.nuovoUpdate;
-                        match.save();}
-                    break;
-                case 3:
-                    console.log('Caso cambio Password');
-                    console.log('Match BE LIKE: ', match.password);
-                    console.log('NewPass BE LIKE: ', req.body.nuovoUpdate);
-                    match.password=req.body.nuovoUpdate;
-                    match.save();
-                    break;
-                case 4:
-                    console.log('Caso cambio birthday');
-                    console.log(match.birthdate);
-                    console.log(req.body.birthdate);
-                    match.birthdate=req.body.nuovoUpdate;
-                    match.save();
-                default:
-                    break;
+    
+                    case 2:
+                        console.log('Caso cambio Email');
+                        controllo = await users.findOne({
+                            where: {
+                                email: req.body.nuovoUpdate
+                            }
+                        });
+    
+                        if (controllo) {
+                            console.error('Email già in uso su un altro account!');
+                            return res.status(400).send({ error: 'Email già in uso!' });
+                        } else {
+                            match.email = req.body.nuovoUpdate;
+                            await match.save();
+                            return res.send({ message: "Email aggiornata con successo!" , status:true });
+                        }
+    
+                    case 3:
+                        console.log('Caso cambio Password');
+                        match.password = req.body.nuovoUpdate;
+                        await match.save();
+                        return res.status(200).send({ message: "Password aggiornata con successo!" , status:true });
+    
+                    case 4:
+                        console.log('Caso cambio Birthday');
+                        match.birthdate = req.body.nuovoUpdate;
+                        await match.save();
+                        return res.send({ message: "Data di nascita aggiornata con successo!" , status:true });
+    
+                    default:
+                        return res.status(400).send({ error: "Richiesta non valida!" });
+                }
             }
-        }
         } catch (error) {
             console.error(error);
+            return res.status(500).send({ error: 'Si è verificato un errore interno del server.' });
         }
     },
 
+    
 
     async addFavorite(req, res){
         try{

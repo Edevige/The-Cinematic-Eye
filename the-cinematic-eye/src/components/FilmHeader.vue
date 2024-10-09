@@ -79,6 +79,9 @@
                         <!--menu non loggato-->
                         <div v-if="!logged">
                             <form style="display: block; top: 70px; width: 250px; padding: 0.5rem;">
+
+                                
+
                                 
                                 <div class="bt-3 mb-3 me-2 ms-2">
                                     <input type="email"  v-model="logMail" class="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Email">
@@ -94,6 +97,10 @@
                                     <button type="button" @click="login" class="btn btn-outline-light ms-2">Login</button>
                                     
                                 </div>
+
+                                <!-- Altre parti del template -->
+                                <router-link to="/forgot-password">Password dimenticata?</router-link>
+
                                 <hr/>
                                 <p class="mb-1 text-center" style="font-size: smaller;">If you're not registered</p>
                                 <div class="d-flex justify-content-around">
