@@ -53,6 +53,8 @@ export default {
     updateList(listId, data) {
         return Api().put(`/updateList/${listId}`, data); // PUT request per aggiornare la lista
     },
-      
+    getUserByUsername(username) {
+        return Api().get(`/getUserByUsername/${username}`);
+    },
     
 }

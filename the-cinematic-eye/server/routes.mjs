@@ -23,6 +23,8 @@ export default function (app) {
 
   app.post("/updatePersonalData", UpdatesPersonalData.updatePersonalData);
 
+  app.get('/getUserByUsername/:username', Authentication.getUserByUsername);
+
   app.post("/addFavorite", UpdatesPersonalData.addFavorite);
   app.post("/rmFavorite", UpdatesPersonalData.removeFavorite);
 

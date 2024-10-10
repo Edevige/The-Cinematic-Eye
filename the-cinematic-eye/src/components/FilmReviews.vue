@@ -1,40 +1,57 @@
-<template> 
+<template>
   <div v-if="reviews.length > 0">
     <div class="media-voto">
-      Media dei voti: {{ mediaVoto.toFixed(1) }}
+      Media Voti: {{ mediaVoto.toFixed(1) }}
     </div>
-    <!-- Filtro le recensioni con un testo non vuoto o composto solo da spazi -->
-    <div v-for="item in reviewsFiltrate" :key="item.id" class="container">
-      <div class="position-relative">
-        <div class="row w-100 mx-auto review-container">
-          <div class="col-2">
-            {{ item.UserId }}
-          </div>
-          <div class="col-9">
-            <div v-if="item.spoiler && !spoilerRevealed">
-              <div class="alert alert-warning">
-                ⚠️ Allerta Spoiler!
+    <div class="recensioni-titolo">
+      Recensioni:
+    </div>
+    <div class="full-recensioni">
+    <!-- Aggiungi il contenitore con scorrimento -->
+    <div class="recensioni-container">
+      <!-- Filtro le recensioni con un testo non vuoto o composto solo da spazi -->
+      <div v-for="item in reviewsFiltrate" :key="item.id" class="container">
+      <div @click="goToUserArea(item.User.username)">
+      <div class="nome-utente">{{ item.User.username }}</div>
+      </div>
+        <div class="position-relative">
+          <div class="row w-100 mx-auto review-container">
+            <div class="col-3">
+              Voto: {{ item.rating }}/10
+            </div>
+            <div class="col-6">
+              <div v-if="item.spoiler && !spoilerRevealed">
+                <div class="alert alert-warning">
+                  ⚠️ Allerta Spoiler!
+                </div>
+                <button @click="toggleSpoiler(index)" class="btn btn-primary">
+                  Mostra recensione
+                </button>
               </div>
-              <button @click="toggleSpoiler(index)" class="btn btn-primary">
-                Mostra recensione
-              </button>
+              <div v-else>
+                {{ item.text }}
+              </div>
+              <hr>
             </div>
-            <div v-else>
-              {{ item.text }}
-              <button @click="handleLike(item.id)">Like</button> {{ item.like }}
-              <button @click="handleDislike(item.id)">Dislike</button> {{ item.dislike }}
+            <div class="col-3">
+              <div>
+                <!-- Pulsante Like con icona di pollice in su -->
+                <button @click="handleLike(item.id)" class="icon-btn">
+                  <i class="bi bi-hand-thumbs-up"></i>
+                </button>
+                {{ item.like }}
+                <!-- Pulsante Dislike con icona di pollice in giù -->
+                <button @click="handleDislike(item.id)" class="icon-btn" style="margin-left: 15px;">
+                  <i class="bi bi-hand-thumbs-down"></i>
+                </button>
+                {{ item.dislike }}
+              </div>
             </div>
           </div>
-          <div class="col-1">
-            {{ item.spoiler }}
-          </div>
-        </div>
-        <!-- Pulsanti Like e Dislike -->
-        <div class="d-flex justify-content-start gap-2 mt-2">
-          
         </div>
       </div>
     </div>
+  </div>
   </div>
   <div v-else class="container">
     <div class="position-relative">
@@ -61,6 +78,7 @@
   </div>
 </template>
 
+
 <script>
 import apiUtils from '@/services/apiUtils';
 
@@ -73,6 +91,7 @@ export default {
       reviews: [],
       loading: false,
       spoilerRevealed:false,
+      loggedInUsername: this.$store.state.user.username,
     };
   },
   computed: {
@@ -94,7 +113,16 @@ export default {
     },
   },
   methods: {
-    
+    goToUserArea(username) {
+      // Controlla se l'utente cliccato è lo stesso dell'utente loggato
+      if (username === this.loggedInUsername) {
+        // Reindirizza alla pagina personale
+        this.$router.push({ name: 'personalArea' });
+      } else {
+        // Reindirizza alla pagina dell'altro utente
+        this.$router.push({ name: 'OtherUser', params: { username: username } });
+      }
+    },
     async getReviews(id) {
       try {
         const response = await apiUtils.getReviews({ film_id: id });
@@ -166,14 +194,63 @@ export default {
 
 
 <style lang="scss" scoped>
-  .spinner-border{
-    color: whitesmoke;
-    --bs-spinner-width: 5rem;
-    --bs-spinner-height: 5rem;
-    --bs-spinner-border-width: 1em;
-  }
-  .review-container{
-    color: whitesmoke;
-    font-size: large;
-  }
+.spinner-border{
+  color: whitesmoke;
+  --bs-spinner-width: 5rem;
+  --bs-spinner-height: 5rem;
+  --bs-spinner-border-width: 1em;
+}
+.full-recensioni{
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid whitesmoke;
+  border-radius: 10px;
+}
+.review-container{
+  color: whitesmoke;
+  font-size: large;
+  padding-bottom: 1rem;
+}
+.media-voto{
+  color: whitesmoke;
+  font-size: xx-large;
+  padding-top: 2rem;
+  padding-bottom: 1rem;
+}
+.recensioni-titolo{
+  color: whitesmoke;
+  font-size: xx-large;
+  padding-bottom: 1rem;
+}
+.nome-utente{
+  color: whitesmoke;
+  font-size: large;
+  padding-bottom: 0.5rem;
+  cursor: pointer;
+}
+.icon-btn {
+  background: none;  /* Nessuno sfondo */
+  border: none;      /* Nessun bordo */
+  padding: 0;        /* Rimuove padding */
+  cursor: pointer;   /* Cambia il cursore per indicare che è cliccabile */
+  font-size: 24px;   /* Dimensione dell'icona */
+}
+.icon-btn i {
+  color: whitesmoke;       
+}
+
+.icon-btn:hover i {
+  color: #007bff;    
+}
+.recensioni-container {
+  max-height: 400px; /* Altezza massima per il contenitore delle recensioni */
+  overflow-y: auto;  /* Aggiunge una barra di scorrimento verticale quando necessario */
+  padding-right: 15px; /* Spazio per la barra di scorrimento */
+}
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+}
+
 </style>

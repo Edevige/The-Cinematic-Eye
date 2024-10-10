@@ -3,6 +3,7 @@ import { uris as URIs } from "../models/index.mjs";
 import { reviews as Reviews } from "../models/index.mjs";
 import jsonwebtoken from "jsonwebtoken";
 import config from "../config/config.mjs";
+import { users } from "../models/index.mjs";
 
 export default{
 
@@ -35,18 +36,22 @@ export default{
             res.status(400).send({ error: 'Errore inatteso. Contatta l’amministratore di sistema.' });
         }
     },
-    async getFilmReviews(req, res){
+    async getFilmReviews(req, res) {
         try {
-
-            const found = await reviews.findAll({where: {film_id: req.body.film_id}})
-
+            const found = await reviews.findAll({
+                where: { film_id: req.body.film_id },
+                include: [{
+                    model: users,  // Includi il modello Users
+                    attributes: ['username']  // Recupera solo il campo username
+                }]
+            });
+    
             res.send({
                 reviews: found
-            }
-                ) 
-        } catch (e) { 
+            });
+        } catch (e) {
             console.log(e);
-            res.status(400).send({error: 'Unexpected error conctat the system admin'})   
+            res.status(400).send({ error: 'Errore inatteso, contatta l’amministratore di sistema' });
         }
     },
     async getUserReviews(req, res) {

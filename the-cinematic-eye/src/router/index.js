@@ -19,6 +19,7 @@ import ForgotPassword from '@/views/ForgotPassword.vue';
 import ResetPassword from '@/views/ResetPassword.vue'
 import ListaFilm from '@/components/ListaFilm.vue'
 import DiscoverFilmView from '@/views/DiscoverFilmView.vue'
+import OtherUserView from '@/views/OtherUserView.vue'
 const routes = [
   {
     path: '/',
@@ -97,6 +98,12 @@ const routes = [
     path:'/personalArea',
     name: 'personalArea',
     component: PersonalAreaView
+  },
+  {
+    path: '/OtherUser/:username',
+    name: 'OtherUser',
+    component: OtherUserView,
+    props: true 
   },
   {
     path:'/watchlist/:id',

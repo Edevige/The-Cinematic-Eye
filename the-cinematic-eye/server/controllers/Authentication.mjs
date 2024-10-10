@@ -156,5 +156,23 @@ export default {
             console.error('Errore durante l’eliminazione dell’account:', error);
             return res.status(500).send({ message: 'Errore del server. Riprova più tardi.' });
         }
-    }
+    },
+    async getUserByUsername(req, res) {
+        try {
+          const user = await users.findOne({
+            where: { username: req.params.username },
+            attributes: ['username', 'email', 'name', 'birthdate', 'bio', 'favorites', 'seen', 'lists', 'seguiti']
+          });
+          
+          if (!user) {
+            return res.status(404).send({ error: 'Utente non trovato' });
+          }
+      
+          res.send(user);
+        } catch (error) {
+          console.error('Errore nel recupero dati utente:', error);
+          res.status(500).send({ error: 'Errore del server' });
+        }
+    },
+      
 }
