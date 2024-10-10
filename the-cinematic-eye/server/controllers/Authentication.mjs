@@ -74,7 +74,7 @@ export default {
                     token: jwtTokenGen(match.toJSON()),
                     message: "General "+req.body.email });
                 } else {
-                    res.status(403).send({ error: "Email o Password errate!" });
+                    res.status(403).send({ error: "Credenziali errate!" });
             }}
           } catch (err) {
             res.status(500).send({
