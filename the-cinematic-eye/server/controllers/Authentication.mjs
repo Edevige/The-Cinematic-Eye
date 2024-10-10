@@ -64,7 +64,7 @@ export default {
                 }
               });
             if(!match){
-                res.status(403).send({ error: "NOP!" });
+                res.status(403).send({ error: "Credenziali errate!" });
             }
             else {
                 const isEqual = await match.comparePass(req.body.password);
@@ -74,7 +74,7 @@ export default {
                     token: jwtTokenGen(match.toJSON()),
                     message: "General "+req.body.email });
                 } else {
-                    res.status(403).send({ error: "NOP!" });
+                    res.status(403).send({ error: "Email o Password errate!" });
             }}
           } catch (err) {
             res.status(500).send({

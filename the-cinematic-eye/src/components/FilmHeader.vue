@@ -233,8 +233,12 @@ export default {
             event.stopPropagation();
 
             // Verifica che l'email e la password siano stati inseriti
-            if (!this.logMail || !this.logPass) {
-                this.error = 'Per favore, inserisci sia l\'email che la password.';
+            if (!this.logMail) {
+                this.error = 'Per favore, inserisci l\'email.';
+                return;
+            }
+            if (!this.logPass) {
+                this.error = 'Per favore, inserisci la password.';
                 return;
             }
 
