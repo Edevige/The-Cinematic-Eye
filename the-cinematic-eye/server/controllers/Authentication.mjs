@@ -82,40 +82,44 @@ export default {
             })
           }
     },
-    async loginWithGoogleToken(req, res){
+    async loginWithGoogleToken(req, res) {
         const id_token = req.body.token_id;
         try {
             const payload = await verifyGoogleToken(id_token);
             const google_id = payload['sub'];
-
-            let user= await users.findOne({where:{google_id}});
-            if(!user){
+    
+            let user = await users.findOne({ where: { google_id } });
+            
+            if (!user) {
                 user = await users.create({
-                    email: payload.email, 
-                    password: 'REGISTERED_VIA_GOOGLE', 
+                    email: payload.email,
+                    password: 'REGISTERED_VIA_GOOGLE',
                     username: payload.email.split('@')[0],
-                    name: payload.name, 
-                    birthdate: null, 
-                    subscribed: false, 
-                    google_id: google_id 
+                    name: payload.name,
+                    birthdate: null,
+                    subscribed: false,
+                    google_id: google_id
                 });
-
+    
+                // Invia risposta per utente appena creato e termina la funzione
                 const token = jwtTokenGen(user.toJSON());
-                res.status(200).send({user: user.toJSON(), token});
-
+                return res.status(200).send({ user: user.toJSON(), token });
             }
-
-            res.status(200).send({ 
+    
+            // Invia risposta per utente esistente
+            return res.status(200).send({ 
                 user: user,
                 token: jwtTokenGen(user.toJSON())
             });
         } catch (error) {
             console.error(error);
-            res.status(500).send({
+            // Gestisce gli errori e invia risposta solo una volta
+            return res.status(500).send({
                 error: 'Errore nella verifica del token ID di Google o nella creazione utente'
             });
         }
     },
+    
     async emailCheck(req, res){
         
         
