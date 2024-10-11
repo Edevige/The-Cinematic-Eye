@@ -51,10 +51,20 @@ export default {
         return Api().post('/removeFilmFromList', credentials);
     },
     updateList(listId, data) {
-        return Api().put(`/updateList/${listId}`, data); // PUT request per aggiornare la lista
+        return Api().put(`/updateList/${listId}`, data); 
     },
     getUserByUsername(username) {
         return Api().get(`/getUserByUsername/${username}`);
     },
+    toggleFollowUser(username, action, token) {
+        return Api().post('/toggleFollowUser', {
+          username: username,
+          action: action
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+      }
     
 }

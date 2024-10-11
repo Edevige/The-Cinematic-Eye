@@ -61,6 +61,11 @@ export default function (sequelize, DataTypes) {
       },
       seguiti: {
         type: DataTypes.ARRAY(DataTypes.INTEGER),
+        defaultValue: [],
+      },
+      private: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       }
 
     },
