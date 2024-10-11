@@ -231,5 +231,82 @@ export default {
                 error: 'An unexpected error occured, conctat the system admin'
             }) 
         }
-    }
+    },
+
+    async addFollow(req, res){
+        try{
+            var decode = jsonwebtoken.verify(req.body.token, config.authentication.jwtSecret);
+        
+            const user = await users.findOne({
+            where:
+            {
+              id : decode.id
+            } 
+            });
+            var usrSeguiti = user.seguiti;
+            console.log("Followed User ID:", req.body.follow_id);
+
+            if(!usrSeguiti)usrSeguiti = [];
+                if(usrSeguiti.includes(req.body.follow_id)){
+                    res.status(200).send({msg: "Follow already added" });
+                }
+                else{
+                    var fl = usrSeguiti.slice();
+                    fl.push(req.body.follow_id);
+                    
+
+                    
+
+                    await user.update({seguiti: fl});
+
+
+                    res.status(200).send({msg: "Follow successfully added", followArr: user.seguiti });
+                }
+                console.log("User's seguiti after update:", user.seguiti);
+            //}
+        }
+        catch(e){
+            console.log("Error trying to add a follow\n" + e );
+            res.status(500).send({
+                error: 'An unexpected error occured, conctat the system admin'
+            })
+        }
+        
+    },
+
+    async removeFollow(req, res){
+        try {
+            var decode = jsonwebtoken.verify(req.body.token, config.authentication.jwtSecret);
+            const user = await users.findOne({
+                where:
+                {
+                  id : decode.id
+                } 
+            });
+            var usrSeguiti = user.seguiti;
+            if(!usrSeguiti){res.status(406).send({msg: "Can't do"});}  
+            else{
+                var i = usrSeguiti.indexOf(req.body.follow_id);
+                if(i == -1) {res.status(406).send({msg: "Can't do"});}
+                else{
+                    
+                    
+                    var fl = usrSeguiti.slice();
+
+                    fl.splice(i,1);          
+
+                    await user.update({seguiti: fl});
+
+                    res.status(200).send({msg: "Follow successfully removed", followArr: user.seguiti });
+
+                }
+            }
+
+        } catch (e) {
+            console.log("Error trying to remove a follow\n" + e );
+            res.status(500).send({
+                error: 'An unexpected error occured, conctat the system admin'
+            }) 
+        }
+    },
 }

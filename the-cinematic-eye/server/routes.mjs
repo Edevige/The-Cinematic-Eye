@@ -7,7 +7,6 @@ import SearchPolicy from "./controllers/SearchPolicy.mjs";
 import UpdatesPersonalData from "./controllers/UpdatesPersonalData.mjs";
 import test from "./controllers/testSeqFunc.mjs";
 import ListController from "./controllers/ListController.mjs";
-import OtherUsers from "./controllers/OtherUsers.mjs";
 
 export default function (app) {
   app.get("/", (_req, res) => {
@@ -25,8 +24,8 @@ export default function (app) {
   app.post("/updatePersonalData", UpdatesPersonalData.updatePersonalData);
 
   app.get('/getUserByUsername/:username', Authentication.getUserByUsername);
-  app.post('/toggleFollowUser', OtherUsers.toggleFollowUser);
-
+  app.post("/addFollow", UpdatesPersonalData.addFollow);
+  app.post("/rmFollow", UpdatesPersonalData.removeFollow);
 
   app.post("/addFavorite", UpdatesPersonalData.addFavorite);
   app.post("/rmFavorite", UpdatesPersonalData.removeFavorite);

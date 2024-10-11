@@ -7,12 +7,14 @@
         <h1>Profilo di {{ user.username }}</h1>
 
         <!-- Pulsante Segui/Non Segui -->
-        <button @click="toggleFollow">
-          {{ isFollowing ? 'Non Seguire' : 'Segui' }}
-        </button>
+        <button v-if="isFollowing" @click="rmFollow(this.user.id)"  class="btn btn-outline-light flex-fill" 
+            type="button"><i class="bi bi-heartbreak-fill"> Smetti di seguire</i></button>
+        <button v-else @click="addFollow(this.user.id)" class="btn btn-outline-light flex-fill"
+            type="button"><i class="bi bi-suit-heart-fill"> Segui</i></button>
         
         <!-- Mostra i dati dell'utente -->
         <div class="user-info">
+          <p><strong>ID:</strong> {{ user.id || 'Non specificato' }}</p>
           <p><strong>Nome:</strong> {{ user.name || 'Non specificato' }}</p>
           <p><strong>Data di nascita:</strong> {{ formatDate(user.birthdate) }}</p>
           <p><strong>Biografia:</strong> {{ user.bio || 'Nessuna biografia disponibile' }}</p>
@@ -65,7 +67,6 @@
     data() {
       return {
         user: null,
-        isFollowing: false,  // Stato per sapere se stai già seguendo l'utente
       };
     },
     methods: {
@@ -85,32 +86,46 @@
         }
       },
 
-      async toggleFollow() {
+      async addFollow(id) {
+        //console.log("id: " + id);
+        //console.log("token:" + this.$store.state.token);
         try {
-          const action = this.isFollowing ? 'unfollow' : 'follow';
-          const token = this.$store.state.token;
+            const response = await apiUtils.addFollow({
+                token: this.$store.state.token,
+                follow_id: this.user.id
+            });
+            
+            var userUpd = this.$store.state.user;
+            userUpd.seguiti = response.data.followArr;
+            this.$store.dispatch('setUser',userUpd);
 
-          // Chiamata API per seguire/smettere di seguire l'utente
-          const response = await apiUtils.toggleFollowUser(this.username, action, token);
+            console.log(this.user.id)
 
-          if (response.data) {
-            // Aggiorna lo stato locale solo se l'azione è andata a buon fine
-            this.isFollowing = !this.isFollowing;
-
-            // Aggiorna anche i dati dell'utente loggato
-            const loggedUser = await apiUtils.getUserById(this.$store.state.user.id);
-            this.$store.commit('updateUser', loggedUser.data);  // Supponendo che tu abbia un metodo di mutazione per aggiornare i dati utente
-          }
         } catch (error) {
-          console.error('Errore nel seguire/non seguire l\'utente:', error);
-
-          // Gestione degli errori di follow doppio
-          if (error.response && error.response.status === 400 && error.response.data.error === 'Utente già seguito.') {
-            this.errorMessage = 'Stai già seguendo questo utente.';
-          }
+            console.log(error);
         }
-      },
 
+      },
+      async rmFollow(id) {
+        //console.log("id: " + id);
+        //console.log("token:" + this.$store.state.token);
+        try {
+            const response = await apiUtils.rmFollow({
+                token: this.$store.state.token,
+                follow_id: this.user.id
+            });
+
+            var userUpd = this.$store.state.user;
+            userUpd.seguiti = response.data.followArr;
+            this.$store.dispatch('setUser',userUpd);
+
+            //console.log(response.data.msg)
+
+        } catch (error) {
+            console.log(error);
+        }
+
+      },
 
       formatDate(dateString) {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -119,6 +134,20 @@
     },
     mounted() {
       this.fetchUserData();
+    },
+    computed: {
+      isFollowing() {
+            if (this.$store.state.logged) {
+                var usrFollow = this.$store.state.user.seguiti
+                var followId = parseInt(this.user.id)
+                // Controlla che usrFollow esista ed è un array prima di usare includes
+                if (Array.isArray(usrFollow)) {
+                    return usrFollow.includes(followId)
+                } else {
+                    return false; // Se usrFollow non è un array
+                }
+            } else return false;
+        },
     }
   };
 </script>

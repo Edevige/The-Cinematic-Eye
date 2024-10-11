@@ -56,15 +56,11 @@ export default {
     getUserByUsername(username) {
         return Api().get(`/getUserByUsername/${username}`);
     },
-    toggleFollowUser(username, action, token) {
-        return Api().post('/toggleFollowUser', {
-          username: username,
-          action: action
-        }, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-      }
+    addFollow (credentials) {
+        return Api().post('/addFollow', credentials)
+    },
+    rmFollow  (credentials) {
+        return Api().post('/rmFollow', credentials)
+    },
     
 }
