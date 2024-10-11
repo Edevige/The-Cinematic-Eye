@@ -2,7 +2,6 @@ import {users, listfilms} from "../models/index.mjs"
 import jsonwebtoken from "jsonwebtoken"
 import config from "../config/config.mjs";
 import { OAuth2Client } from "google-auth-library";
-import { where } from "sequelize";
 
 function jwtTokenGen(user){
     const ONE_WEEK = 60 * 60 * 24 * 7;
@@ -159,23 +158,6 @@ export default {
         } catch (error) {
             console.error('Errore durante l’eliminazione dell’account:', error);
             return res.status(500).send({ message: 'Errore del server. Riprova più tardi.' });
-        }
-    },
-    async getUserByUsername(req, res) {
-        try {
-          const user = await users.findOne({
-            where: { username: req.params.username },
-            attributes: ['username', 'email', 'name', 'birthdate', 'bio', 'favorites', 'seen', 'lists', 'seguiti', 'private', 'id']
-          });
-          
-          if (!user) {
-            return res.status(404).send({ error: 'Utente non trovato' });
-          }
-      
-          res.send(user);
-        } catch (error) {
-          console.error('Errore nel recupero dati utente:', error);
-          res.status(500).send({ error: 'Errore del server' });
         }
     },
       

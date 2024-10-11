@@ -23,7 +23,7 @@ export default function (app) {
 
   app.post("/updatePersonalData", UpdatesPersonalData.updatePersonalData);
 
-  app.get('/getUserByUsername/:username', Authentication.getUserByUsername);
+  app.get('/getUserByUsername/:username', Search.getUserByUsername);
   app.post("/addFollow", UpdatesPersonalData.addFollow);
   app.post("/rmFollow", UpdatesPersonalData.removeFollow);
 

@@ -47,5 +47,22 @@ export default {
       console.log(error);
       res.status(400).send({ error: error });
     }
-  }
+  },
+  async getUserByUsername(req, res) {
+    try {
+      const user = await users.findOne({
+        where: { username: req.params.username },
+        attributes: ['username', 'email', 'name', 'birthdate', 'bio', 'favorites', 'seen', 'lists', 'seguiti', 'private', 'id']
+      });
+      
+      if (!user) {
+        return res.status(404).send({ error: 'Utente non trovato' });
+      }
+  
+      res.send(user);
+    } catch (error) {
+      console.error('Errore nel recupero dati utente:', error);
+      res.status(500).send({ error: 'Errore del server' });
+    }
+  },
 };
