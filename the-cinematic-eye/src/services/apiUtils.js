@@ -62,5 +62,8 @@ export default {
     rmFollow  (credentials) {
         return Api().post('/rmFollow', credentials)
     },
+    getUserRole(credentials) {
+        return Api().get('/userrole', credentials);
+    },
     
 }

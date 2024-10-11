@@ -247,25 +247,32 @@ export default {
                     email: this.logMail,
                     password: this.logPass
                 });
-                
-                this.$store.dispatch('setToken', response.data.token);
-                this.$store.dispatch('setUser', response.data.user);
-                this.$store.commit('login');
-                
-                this.logMail = '';
-                this.logPass = '';
-                this.error = null; // Resetta gli errori in caso di successo
 
-                // Chiudi il menu a tendina manualmente dopo il successo del login
-                const dropdownElement = this.$refs.loginDropdown;
-                const dropdownInstance = bootstrap.Dropdown.getInstance(dropdownElement);
-                if (dropdownInstance) {
-                    dropdownInstance.hide();
+                // Verifica se la risposta contiene 'data'
+                if (response && response.data) {
+                    this.$store.dispatch('setToken', response.data.token);
+                    this.$store.dispatch('setUser', response.data.user);
+                    this.$store.commit('login');
+                    
+                    this.logMail = '';
+                    this.logPass = '';
+                    this.error = null; // Resetta gli errori in caso di successo
+
+                    // Chiudi il menu a tendina manualmente dopo il successo del login
+                    const dropdownElement = this.$refs.loginDropdown;
+                    const dropdownInstance = bootstrap.Dropdown.getInstance(dropdownElement);
+                    if (dropdownInstance) {
+                        dropdownInstance.hide();
+                    }
+                } else {
+                    this.error = 'Errore di autenticazione. Riprova più tardi.';
                 }
-
             } catch (error) {
-                this.error = error.response.data.error;
-                // Mantieni il dropdown aperto in caso di errore
+                if (error.response && error.response.data) {
+                    this.error = error.response.data.error;  // Errore specifico dal server
+                } else {
+                    this.error = 'Errore di rete. Riprova più tardi.';  // Errore generico di rete
+                }
             }
         },
         logout(){

@@ -7,6 +7,7 @@ import SearchPolicy from "./controllers/SearchPolicy.mjs";
 import UpdatesPersonalData from "./controllers/UpdatesPersonalData.mjs";
 import test from "./controllers/testSeqFunc.mjs";
 import ListController from "./controllers/ListController.mjs";
+import RoleController from "./controllers/RoleController.mjs";
 
 export default function (app) {
   app.get("/", (_req, res) => {
@@ -54,5 +55,7 @@ export default function (app) {
 
   app.post("/emailCheck", Authentication.emailCheck);
   app.post("/deleteAccount", Authentication.deleteAccount);
+
+  app.get('/userrole', RoleController.getUserRole)
 }
 
