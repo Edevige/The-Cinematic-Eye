@@ -56,6 +56,9 @@ export default function (app) {
   app.post("/emailCheck", Authentication.emailCheck);
   app.post("/deleteAccount", Authentication.deleteAccount);
 
-  app.get('/userrole', RoleController.getUserRole)
+  // Gestione dei ruoli
+  app.get('/userrole', RoleController.getUserRole);  // Ottenere il ruolo dell'utente loggato
+  app.get('/userRole/:id', RoleController.getUserRoleById);  // Ottenere il ruolo di un utente specifico
+  app.post('/updateUserRole', RoleController.updateUserRole);  // Aggiornare il ruolo di un utente
 }
 
