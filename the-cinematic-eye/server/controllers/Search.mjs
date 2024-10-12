@@ -13,7 +13,7 @@ export default {
       });
       const found = [];
       user.forEach((i) => {
-        found.push({ Username: i.username });
+        found.push({ Username: i.username, Id: i.id });
       });
       res.send(found);
     } catch (e) {
