@@ -7,17 +7,20 @@
         </div>
         <FilmSearch v-if="selector == 1" :searchParameter="searchParameter" />
         <UserSearch v-if="selector == 2" :searchParameter="searchParameter" />
+        <ListSearch v-if="selector == 3" :searchParameter="searchParameter" />
     </div>
 </template>
 
 <script>
 import FilmSearch from '@/components/FilmSearch.vue';
+import ListSearch from '@/components/ListSearch.vue';
 import UserSearch from '@/components/UserSearch.vue';
 
 export default {
     components:{
         FilmSearch,
-        UserSearch
+        UserSearch,
+        ListSearch
     },
     data() {
         return {
