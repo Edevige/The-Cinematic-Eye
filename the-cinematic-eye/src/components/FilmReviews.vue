@@ -47,6 +47,12 @@
                 {{ item.dislike }}
               </div>
             </div>
+
+            <!-- Pulsante Segnala Spoiler-->
+            <div v-if="(isAdmin || isProUser) && !item.spoiler" class="col-12">
+              <button @click="Spoiler(item)" class="spoiler-btn">Segnala Spoiler</button>
+            </div>
+
             <!-- Se l'utente è un amministratore, mostra i pulsanti per modificare ed eliminare -->
             <div v-if="isAdmin">
               <button @click="Spoiler(item)">Cambia Spoiler</button>
@@ -98,6 +104,7 @@ export default {
       spoilerRevealed:false,
       loggedInUsername: this.$store.state.user.username,
       isAdmin: false,
+      isProUser: false,
     };
   },
   computed: {
@@ -201,6 +208,7 @@ export default {
         });
         if (response && response.data) {
           this.isAdmin = response.data.role === 1;  // Solo gli amministratori possono promuovere
+          this.isProUser = response.data.role === 2;
         }
       } catch (error) {
         console.error('Errore nel recuperare il ruolo dell\'utente loggato:', error);
@@ -209,36 +217,36 @@ export default {
     // Metodo per cambiare lo stato spoiler di una recensione
     async Spoiler(review) {
       try {
-          if (!review || typeof review !== 'object') {
-              throw new Error('Oggetto recensione non valido.');
-          }
+        if (!review || typeof review !== 'object') {
+          throw new Error('Oggetto recensione non valido.');
+        }
 
-          const token = this.$store.state.token;  // Recupera il token per l'autenticazione
-          const newSpoilerStatus = !review.spoiler;  // Inverti lo stato attuale dello spoiler
+        const token = this.$store.state.token;  // Recupera il token per l'autenticazione
+        const newSpoilerStatus = !review.spoiler;  // Inverti lo stato attuale dello spoiler
 
-          // Creazione dell'oggetto aggiornato per l'invio al backend
-          const updatedReview = {
-              id: review.id,
-              rating: review.rating, 
-              text: review.text,
-              spoiler: newSpoilerStatus,
-          };
+        // Creazione dell'oggetto aggiornato per l'invio al backend
+        const updatedReview = {
+          id: review.id,
+          rating: review.rating, 
+          text: review.text,
+          spoiler: newSpoilerStatus,  // Setta il nuovo stato dello spoiler
+        };
 
-          // Effettua la chiamata API per aggiornare la recensione
-          const response = await apiUtils.updateReview(updatedReview, {
-              headers: {
-                  Authorization: `Bearer ${token}`,
-              },
-          });
+        // Effettua la chiamata API per aggiornare la recensione
+        const response = await apiUtils.updateReview(updatedReview, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-          // Trova l'indice della recensione aggiornata nell'array delle recensioni
-          const index = this.reviews.findIndex(r => r.id === review.id);
-          if (index !== -1) {
-              // Aggiorna lo stato spoiler solo per la recensione trovata
-              this.reviews[index].spoiler = response.data.review.spoiler;
-          }
+        // Trova l'indice della recensione aggiornata nell'array delle recensioni
+        const index = this.reviews.findIndex(r => r.id === review.id);
+        if (index !== -1) {
+          // Aggiorna lo stato spoiler solo per la recensione trovata
+          this.reviews[index].spoiler = response.data.review.spoiler;
+        }
       } catch (error) {
-          console.error('Errore nella modifica della recensione:', error);
+        console.error('Errore nella modifica della recensione:', error);
       }
     },
 
