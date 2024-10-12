@@ -155,13 +155,24 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      // Torna alla posizione precedente se c'è
+      return savedPosition;
+    } else {
+      // Scorri fino all'inizio della nuova pagina
+      return { left: 0, top: 0 };
+    }
+  }
 })
 
 router.beforeEach((to, from) => {
   if(to.meta.guest && store.state.logged){
      return false
   } 
+
+
 });
 
 export default router
