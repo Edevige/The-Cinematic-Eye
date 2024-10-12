@@ -107,7 +107,7 @@
                         </div>
 
 
-                        <iframe width="560" height="315" :src="trailerUrl" title="YouTube video player" frameborder="0" allow="fullscreen" ></iframe>
+                        <iframe width="560" height="315" :key="trailerUrl" :src="trailerUrl" title="YouTube video player" frameborder="0" allow="fullscreen" ></iframe>
                     </div>
                 </div>
             </div>
