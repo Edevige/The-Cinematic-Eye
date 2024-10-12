@@ -60,5 +60,7 @@ export default function (app) {
   app.get('/userrole', RoleController.getUserRole);  // Ottenere il ruolo dell'utente loggato
   app.get('/userRole/:id', RoleController.getUserRoleById);  // Ottenere il ruolo di un utente specifico
   app.post('/updateUserRole', RoleController.updateUserRole);  // Aggiornare il ruolo di un utente
+
+  app.post('/suspendUser', RoleController.suspendUser);
 }
 

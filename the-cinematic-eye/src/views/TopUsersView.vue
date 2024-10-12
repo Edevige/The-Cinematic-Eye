@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex flex-column">
       <div v-for="item in userFound">
-          <router-link class="d-flex flex-row" :to="'/user/'+item.id" style="appearance: none !important; text-decoration: none;">
+          <router-link class="d-flex flex-row" :to="'/OtherUser/'+item.Username" style="appearance: none !important; text-decoration: none;">
           <div class="col d-flex align-items-center " style="color:white"><div class="h4 m-4">{{ item.Username }}</div></div>
           </router-link>
       </div>

@@ -16,6 +16,12 @@
       <!-- Pulsante Promuovi e il form -->
       <button v-if="isAdmin" @click="togglePromotionForm" class="btn btn-outline-success">Cambia Ruolo</button>
 
+      <!-- Pulsante Sospendi/Riattiva -->
+      <button v-if="isAdmin" @click="toggleSuspendUser" class="btn" :class="user.suspended ? 'btn-outline-danger' : 'btn-outline-warning'">
+        <i :class="user.suspended ? 'bi bi-person-check-fill' : 'bi bi-person-x-fill'"></i>
+        {{ user.suspended ? 'Riattiva Utente' : 'Sospendi Utente' }}
+      </button>
+
       <!-- Form di Promozione -->
       <div v-if="showPromotionForm" class="promotion-form">
         <h3>Modifica il ruolo di {{ user.username }}</h3>
@@ -105,6 +111,28 @@ export default {
     };
   },
   methods: {
+    async toggleSuspendUser() {
+      try {
+        const token = this.$store.state.token;  // Recupera il token per l'autenticazione
+
+        // Inverti lo stato attuale della sospensione
+        const newSuspendedStatus = !this.user.suspended;
+
+        // Effettua una chiamata API per aggiornare lo stato di sospensione dell'utente
+        const response = await apiUtils.updateUserSuspension({
+          userId: this.user.id,
+          suspended: newSuspendedStatus,
+          token
+        });
+
+        if (response && response.data) {
+          this.user.suspended = response.data.suspended;  // Aggiorna lo stato locale
+          console.log('Stato di sospensione aggiornato:', response.data.suspended);
+        }
+      } catch (error) {
+        console.error('Errore nella modifica dello stato di sospensione:', error);
+      }
+    },
     async fetchUserData() {
       try {
         const response = await apiUtils.getUserByUsername(this.username);
