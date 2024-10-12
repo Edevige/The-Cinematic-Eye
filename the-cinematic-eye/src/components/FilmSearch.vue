@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-column">
-        <div v-if="filmFound > 0" v-for="item in filmFound">
+        <div v-if="filmFound.length > 0" v-for="item in filmFound">
             <router-link class="d-flex flex-row" :to="'/film/'+item.id" style="appearance: none !important; text-decoration: none;">
             <div class="col-1">
                 <img v-if="item.poster_path != null" class="img img-fluid w-auto mt-4" :src="imgUrl + item.poster_path" />
