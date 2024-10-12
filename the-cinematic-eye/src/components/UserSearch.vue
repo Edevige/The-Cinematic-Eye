@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex flex-column">
         <div v-if="userFound.length > 0" v-for="item in userFound">
-            <router-link class="d-flex flex-row" :to="'/user/'+item.Id" style="appearance: none !important; text-decoration: none;">
+            <router-link class="d-flex flex-row" :to="'/OtherUser/'+item.Username" style="appearance: none !important; text-decoration: none;">
             <div class="col-1">
                 <!-- img v-if="item.poster_path != null" class="img img-fluid w-auto mt-4" :src="imgUrl + item.poster_path" />
                 <img v-if="item.poster_path == null" class="img img-fluid w-auto mt-4"
