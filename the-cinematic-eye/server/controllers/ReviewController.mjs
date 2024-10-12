@@ -4,6 +4,7 @@ import { reviews as Reviews } from "../models/index.mjs";
 import jsonwebtoken from "jsonwebtoken";
 import config from "../config/config.mjs";
 import { users } from "../models/index.mjs";
+import { userroles } from "../models/index.mjs";
 
 export default{
 
@@ -67,30 +68,54 @@ export default{
     },
     async updateReview(req, res) {
         try {
-          const decode = jsonwebtoken.verify(req.headers.authorization.split(' ')[1], config.authentication.jwtSecret);
-          const review = await reviews.findOne({ where: { id: req.body.id, UserId: decode.id } });
-      
-          if (!review) {
-            return res.status(404).send({ error: 'Recensione non trovata o non autorizzato.' });
-          }
-      
-          review.rating = req.body.rating;
-          review.text = req.body.text;
-          review.spoiler = req.body.spoiler;
-      
-          await review.save();
-      
-          res.send({ review: review.toJSON() });
+            // Decodifica il token e ottieni l'ID dell'utente loggato
+            const decoded = jsonwebtoken.verify(req.headers.authorization.split(' ')[1], config.authentication.jwtSecret);
+            const userId = decoded.id;
+    
+            // Trova la recensione da aggiornare in base all'ID della recensione
+            const review = await reviews.findOne({ where: { id: req.body.id } });
+            
+            if (!review) {
+                return res.status(404).send({ error: 'Recensione non trovata.' });
+            }
+    
+            // Trova se l'utente loggato è un amministratore nella tabella userroles
+            const admin = await userroles.findOne({ where: { UserId: userId, role: 1 } });
+    
+            // Controlla se l'utente è l'autore della recensione o un amministratore
+            if (review.UserId !== userId && !admin) {
+                return res.status(403).send({ error: 'Non sei autorizzato a modificare questa recensione.' });
+            }
+    
+            // Aggiorna solo lo stato dello spoiler se l'utente è autorizzato
+            review.spoiler = req.body.spoiler !== undefined ? req.body.spoiler : review.spoiler;
+            review.rating = req.body.rating;
+            review.text = req.body.text;
+
+            await review.save();  // Salva le modifiche nel database
+    
+            // Invia la recensione aggiornata come risposta
+            res.send({ review: review.toJSON() });
         } catch (e) {
-          console.log(e);
-          res.status(400).send({ error: 'Errore nella modifica della recensione.' });
+            console.error('Errore nella modifica della recensione:', e);
+            res.status(400).send({ error: 'Errore nella modifica della recensione.' });
         }
     },
+    
     async deleteReview(req, res) {
         try {
           const decode = jsonwebtoken.verify(req.headers.authorization.split(' ')[1], config.authentication.jwtSecret);
-          const review = await reviews.findOne({ where: { id: req.params.id, UserId: decode.id } });
-      
+          const userId = decode.id;
+          const review = await reviews.findOne({ where: { id: req.params.id, } });
+          
+          // Trova se l'utente loggato è un amministratore nella tabella userroles
+          const admin = await userroles.findOne({ where: { UserId: userId, role: 1 } });
+    
+          // Controlla se l'utente è l'autore della recensione o un amministratore
+          if (review.UserId !== userId && !admin) {
+              return res.status(403).send({ error: 'Non sei autorizzato a modificare questa recensione.' });
+          }
+
           if (!review) {
             return res.status(404).send({ error: 'Recensione non trovata o non autorizzato.' });
           }

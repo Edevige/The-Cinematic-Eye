@@ -47,6 +47,11 @@
                 {{ item.dislike }}
               </div>
             </div>
+            <!-- Se l'utente è un amministratore, mostra i pulsanti per modificare ed eliminare -->
+            <div v-if="isAdmin">
+              <button @click="Spoiler(item)">Cambia Spoiler</button>
+              <button @click="deleteReview(item.id)">Elimina Recensione</button>
+            </div>
           </div>
         </div>
       </div>
@@ -92,6 +97,7 @@ export default {
       loading: false,
       spoilerRevealed:false,
       loggedInUsername: this.$store.state.user.username,
+      isAdmin: false,
     };
   },
   computed: {
@@ -185,9 +191,78 @@ export default {
       }
     },
 
+    //funzioni admin
+    // Funzione per verificare se l'utente loggato è un amministratore
+    async checkUserRole() {
+      try {
+        const token = this.$store.state.token;
+        const response = await apiUtils.getUserRole({
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (response && response.data) {
+          this.isAdmin = response.data.role === 1;  // Solo gli amministratori possono promuovere
+        }
+      } catch (error) {
+        console.error('Errore nel recuperare il ruolo dell\'utente loggato:', error);
+      }
+    },
+    // Metodo per cambiare lo stato spoiler di una recensione
+    async Spoiler(review) {
+      try {
+          if (!review || typeof review !== 'object') {
+              throw new Error('Oggetto recensione non valido.');
+          }
+
+          const token = this.$store.state.token;  // Recupera il token per l'autenticazione
+          const newSpoilerStatus = !review.spoiler;  // Inverti lo stato attuale dello spoiler
+
+          // Creazione dell'oggetto aggiornato per l'invio al backend
+          const updatedReview = {
+              id: review.id,
+              rating: review.rating, 
+              text: review.text,
+              spoiler: newSpoilerStatus,
+          };
+
+          // Effettua la chiamata API per aggiornare la recensione
+          const response = await apiUtils.updateReview(updatedReview, {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+          });
+
+          // Trova l'indice della recensione aggiornata nell'array delle recensioni
+          const index = this.reviews.findIndex(r => r.id === review.id);
+          if (index !== -1) {
+              // Aggiorna lo stato spoiler solo per la recensione trovata
+              this.reviews[index].spoiler = response.data.review.spoiler;
+          }
+      } catch (error) {
+          console.error('Errore nella modifica della recensione:', error);
+      }
+    },
+
+    // Metodo per eliminare una recensione
+    async deleteReview(reviewId) {
+      try {
+        const token = this.$store.state.token;
+        
+        await apiUtils.deleteReview(reviewId, {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+        });
+        // Rimuovi la recensione dalla lista locale
+        this.reviews = this.reviews.filter((r) => r.id !== reviewId);
+      } catch (error) {
+        console.error("Errore durante l'eliminazione della recensione:", error);
+      }
+    },
+
   },
   mounted() {
     this.getReviews(this.filmID);
+    this.checkUserRole();
   }
 };
 </script>
