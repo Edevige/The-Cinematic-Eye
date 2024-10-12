@@ -1,5 +1,5 @@
 import { Op, where } from "sequelize";
-import { users } from "../models/index.mjs";
+import { users, listfilms } from "../models/index.mjs";
 
 export default {
   async usrSearch(req, res) {
@@ -63,6 +63,25 @@ export default {
     } catch (error) {
       console.error('Errore nel recupero dati utente:', error);
       res.status(500).send({ error: 'Errore del server' });
+    }
+  },
+  async listSearch(req, res) {
+    try {
+      const user = await listfilms.findAll({
+        where: {
+          title: {
+            [Op.like]: "%" + req.query.q + "%",
+          },
+        },
+      });
+      const found = [];
+      user.forEach((i) => {
+        found.push({ Title: i.title, Id: i.id });
+      });
+      res.send(found);
+    } catch (e) {
+      console.error(e);
+      res.status(400).send({ error: e });
     }
   },
 };

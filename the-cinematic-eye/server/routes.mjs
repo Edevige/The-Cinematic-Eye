@@ -21,6 +21,7 @@ export default function (app) {
   app.get("/usrSrc", SearchPolicy.usrSearch, Search.usrSearch);
   app.get('/getUsers', Search.getUser);
   app.get('/getUserById/:id', Search.getUserById);
+  app.get("/listSrc", SearchPolicy.usrSearch, Search.listSearch);
 
   app.post("/updatePersonalData", UpdatesPersonalData.updatePersonalData);
 
