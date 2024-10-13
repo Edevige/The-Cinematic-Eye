@@ -1,7 +1,8 @@
-import {users, listfilms} from "../models/index.mjs"
+import {users, listfilms, userbans} from "../models/index.mjs"
+import { OAuth2Client } from "google-auth-library";
 import jsonwebtoken from "jsonwebtoken"
 import config from "../config/config.mjs";
-import { OAuth2Client } from "google-auth-library";
+
 
 function jwtTokenGen(user){
     const ONE_WEEK = 60 * 60 * 24 * 7;
@@ -55,32 +56,41 @@ export default {
             
         }         
     },
-    async login(req, res){
+    async login(req, res) {
         try {
             const match = await users.findOne({
                 where: {
-                  email: req.body.email
+                    email: req.body.email
                 }
-              });
-            if(!match){
+            });
+    
+            if (!match) {
                 res.status(403).send({ error: "Credenziali errate!" });
-            }
-            else {
+            } else {
+                // Verifica se l'utente è bannato
+                const banStatus = await userbans.findOne({ where: { UserId: match.id } });
+                if (banStatus && banStatus.ban === 1) {
+                    return res.status(403).send({ error: "Il tuo account è stato bannato." });
+                }
+    
                 const isEqual = await match.comparePass(req.body.password);
-                if(isEqual) {
-                    res.status(200).send({ 
-                    user: match,
-                    token: jwtTokenGen(match.toJSON()),
-                    message: "General "+req.body.email });
+                if (isEqual) {
+                    res.status(200).send({
+                        user: match,
+                        token: jwtTokenGen(match.toJSON()),
+                        message: "Benvenuto " + req.body.email
+                    });
                 } else {
                     res.status(403).send({ error: "Credenziali errate!" });
-            }}
-          } catch (err) {
+                }
+            }
+        } catch (err) {
             res.status(500).send({
-                error: 'An unexpected error occured, conctat the system admin'
-            })
-          }
+                error: 'An unexpected error occurred, contatta l’amministratore del sistema'
+            });
+        }
     },
+    
     async loginWithGoogleToken(req, res) {
         const id_token = req.body.token_id;
         try {
@@ -100,9 +110,14 @@ export default {
                     google_id: google_id
                 });
     
-                // Invia risposta per utente appena creato e termina la funzione
                 const token = jwtTokenGen(user.toJSON());
                 return res.status(200).send({ user: user.toJSON(), token });
+            }
+    
+            // Aggiungi il controllo del ban
+            const banStatus = await userbans.findOne({ where: { UserId: user.id } });
+            if (banStatus && banStatus.ban === 1) {
+                return res.status(403).send({ error: "Il tuo account è stato bannato." });
             }
     
             // Invia risposta per utente esistente
@@ -112,7 +127,6 @@ export default {
             });
         } catch (error) {
             console.error(error);
-            // Gestisce gli errori e invia risposta solo una volta
             return res.status(500).send({
                 error: 'Errore nella verifica del token ID di Google o nella creazione utente'
             });

@@ -121,6 +121,7 @@
 </template>
 
 <script>
+import apiUtils from '@/services/apiUtils';  // Assicurati che il percorso sia corretto
 import AuthenticationService from '@/services/AuthenticationService';
 import WatchListView from '@/views/WatchListView.vue';
 import { RouterLink } from 'vue-router';
@@ -142,6 +143,10 @@ export default {
         document.addEventListener('hide.bs.dropdown', () => {
         this.isSubmenuVisible = false;
         });
+        // Verifica lo stato di ban quando il componente è montato
+        if (this.logged) {
+            this.checkBanStatus();
+        }
     },
     beforeDestroy() {
         // Rimuove l'event listener quando il componente viene distrutto
@@ -176,13 +181,6 @@ export default {
         // Metodo per aprire/chiudere il sottomenu
         toggleSubmenu(event) {
             this.isSubmenuVisible = !this.isSubmenuVisible;
-        },
-        toggleMenu(event) {
-            this.isMenuVisible = !this.isMenuVisible;
-        },
-        toggleAllMenu(event) {
-            this.isSubmenuVisible = !this.isSubmenuVisible;
-            this.isMenuVisible = !this.isMenuVisible;
         },
 
         // Metodo per chiudere il sottomenu quando il menu generale si chiude o clicchi fuori
@@ -229,16 +227,10 @@ export default {
             }
         },
         async login(event) {
-            // Impedisci la chiusura del dropdown a meno che il login non abbia successo
             event.stopPropagation();
 
-            // Verifica che l'email e la password siano stati inseriti
-            if (!this.logMail) {
-                this.error = 'Per favore, inserisci l\'email.';
-                return;
-            }
-            if (!this.logPass) {
-                this.error = 'Per favore, inserisci la password.';
+            if (!this.logMail || !this.logPass) {
+                this.error = 'Per favore, inserisci l\'email e la password.';
                 return;
             }
 
@@ -248,30 +240,24 @@ export default {
                     password: this.logPass
                 });
 
-                // Verifica se la risposta contiene 'data'
                 if (response && response.data) {
                     this.$store.dispatch('setToken', response.data.token);
                     this.$store.dispatch('setUser', response.data.user);
                     this.$store.commit('login');
-                    
+
                     this.logMail = '';
                     this.logPass = '';
-                    this.error = null; // Resetta gli errori in caso di successo
-
-                    // Chiudi il menu a tendina manualmente dopo il successo del login
-                    const dropdownElement = this.$refs.loginDropdown;
-                    const dropdownInstance = bootstrap.Dropdown.getInstance(dropdownElement);
-                    if (dropdownInstance) {
-                        dropdownInstance.hide();
-                    }
+                    this.error = null;
                 } else {
                     this.error = 'Errore di autenticazione. Riprova più tardi.';
                 }
             } catch (error) {
-                if (error.response && error.response.data) {
-                    this.error = error.response.data.error;  // Errore specifico dal server
+                if (error.response && error.response.data.error === "Il tuo account è stato bannato.") {
+                    this.error = "Il tuo account è stato bannato.";
+                } else if (error.response && error.response.data.error) {
+                    this.error = error.response.data.error;
                 } else {
-                    this.error = 'Errore di rete. Riprova più tardi.';  // Errore generico di rete
+                    this.error = 'Errore di rete. Riprova più tardi.';
                 }
             }
         },
@@ -292,18 +278,37 @@ export default {
         },
 
         //Login con Google
-        async loginWithGoogle(CredentialResponse){ 
-        const token_id = CredentialResponse.credential;
-        try {
-            const Gregister =await AuthenticationService.loginWithGoogleToken({"token_id":token_id});
-            this.$store.dispatch('setToken', Gregister.data.token);
-            this.$store.dispatch('setUser', Gregister.data.user);
-            this.$store.commit('login');
-        } catch (error) {
-            this.error = error.Gregister.data.error;
-        }
-            
+        async loginWithGoogle(CredentialResponse) { 
+            const token_id = CredentialResponse.credential;
+            try {
+                const Gregister = await AuthenticationService.loginWithGoogleToken({ "token_id": token_id });
+                if (Gregister && Gregister.data) {
+                    this.$store.dispatch('setToken', Gregister.data.token);
+                    this.$store.dispatch('setUser', Gregister.data.user);
+                    this.$store.commit('login');
+                }
+            } catch (error) {
+                if (error.response && error.response.data.error === "Il tuo account è stato bannato.") {
+                    this.error = "Il tuo account è stato bannato.";
+                    alert(this.error);  // Mostra un messaggio di errore all'utente
+                } else {
+                    this.error = error.response ? error.response.data.error : "Errore di rete. Riprova più tardi.";
+                }
+            }
         },
+
+        async checkBanStatus() {
+            try {
+                const response = await apiUtils.isUserBanned(this.$store.state.user.id);
+                if (response.data.ban === 1) {
+                    this.logout();  // Esegui il logout se l'utente è bannato
+                    alert("Il tuo account è stato bannato.");
+                }
+            } catch (error) {
+                console.error("Errore nel controllo del ban:", error);
+            }
+        },
+        
         
     },
     computed:{
