@@ -278,6 +278,7 @@ export default {
         logout(){
             this.user = {};
             this.jwt = "";
+            this.error = null;
             this.$store.commit('logout')
 
             // Reindirizza alla homepage
