@@ -15,12 +15,33 @@
 
       <!-- Pulsante Promuovi e il form -->
       <button v-if="isAdmin" @click="togglePromotionForm" class="btn btn-outline-success">Cambia Ruolo</button>
+      
+      <!-- Pulsante Ban/Togli il Ban -->
+      <div v-if="isAdmin">
+      <button v-if="isUserBanned" @click="rmBan(this.user.id)" class="btn btn-outline-light flex-fill" type="button">
+        <i class="bi bi-check2-circle"> Togli il Ban</i>
+      </button>
+      <button v-else @click="showBanForm = !showBanForm" class="btn btn-outline-light flex-fill" type="button">
+        <i class="bi bi-ban"> Ban Utente</i></button>
+      </div>
 
-      <!-- Pulsante Sospendi/Riattiva -->
+        <!-- Pulsante Sospendi/Riattiva -->
       <button v-if="isAdmin" @click="toggleSuspendUser" class="btn" :class="user.suspended ? 'btn-outline-danger' : 'btn-outline-warning'">
         <i :class="user.suspended ? 'bi bi-person-check-fill' : 'bi bi-person-x-fill'"></i>
         {{ user.suspended ? 'Riattiva Utente' : 'Sospendi Utente' }}
       </button>
+
+      <!-- Form di Ban -->
+      <div v-if="showBanForm" class="ban-form">
+        <form @submit.prevent="addBan(this.user.id)">
+          <div class="form-group">
+            <label for="banReason">Motivo del Ban:</label>
+            <input v-model="banReason" type="text" class="form-control" id="banReason" placeholder="Inserisci il motivo del ban" required>
+          </div>
+          <button type="submit" class="btn btn-primary mt-2">Invia</button>
+          <button type="button" @click="showBanForm = false" class="btn btn-secondary mt-2">Annulla</button>
+        </form>
+      </div>
 
       <!-- Form di Promozione -->
       <div v-if="showPromotionForm" class="promotion-form">
@@ -107,32 +128,13 @@ export default {
       isAdmin: false,
       showPromotionForm: false, // Per visualizzare o nascondere il form di promozione
       selectedRole: null,       // Ruolo selezionato nel form
-      userRole: 0               // Imposta il ruolo di default a base (0) se non esiste nella tabella UserRole
+      userRole: 0,               // Imposta il ruolo di default a base (0) se non esiste nella tabella UserRole
+      showBanForm: false,
+      banReason: '',
+      isUserBanned: false
     };
   },
   methods: {
-    async toggleSuspendUser() {
-      try {
-        const token = this.$store.state.token;  // Recupera il token per l'autenticazione
-
-        // Inverti lo stato attuale della sospensione
-        const newSuspendedStatus = !this.user.suspended;
-
-        // Effettua una chiamata API per aggiornare lo stato di sospensione dell'utente
-        const response = await apiUtils.updateUserSuspension({
-          userId: this.user.id,
-          suspended: newSuspendedStatus,
-          token
-        });
-
-        if (response && response.data) {
-          this.user.suspended = response.data.suspended;  // Aggiorna lo stato locale
-          console.log('Stato di sospensione aggiornato:', response.data.suspended);
-        }
-      } catch (error) {
-        console.error('Errore nella modifica dello stato di sospensione:', error);
-      }
-    },
     async fetchUserData() {
       try {
         const response = await apiUtils.getUserByUsername(this.username);
@@ -146,6 +148,9 @@ export default {
           } else {
             this.userRole = 0;  // Se non ha un ruolo nella tabella, è un utente base
           }
+        }else {
+          console.error('Errore: Utente non trovato.');
+          this.user = null;
         }
       } catch (error) {
         console.error('Errore nel recupero delle informazioni utente:', error);
@@ -195,11 +200,108 @@ export default {
     formatDate(dateString) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       return new Date(dateString).toLocaleDateString(undefined, options);
+    },
+
+    async toggleSuspendUser() {
+      try {
+        const token = this.$store.state.token;  // Recupera il token per l'autenticazione
+
+        // Inverti lo stato attuale della sospensione
+        const newSuspendedStatus = !this.user.suspended;
+
+        // Effettua una chiamata API per aggiornare lo stato di sospensione dell'utente
+        const response = await apiUtils.updateUserSuspension({
+          userId: this.user.id,
+          suspended: newSuspendedStatus,
+          token
+        });
+
+        if (response && response.data) {
+          this.user.suspended = response.data.suspended;  // Aggiorna lo stato locale
+          console.log('Stato di sospensione aggiornato:', response.data.suspended);
+        }
+      } catch (error) {
+        console.error('Errore nella modifica dello stato di sospensione:', error);
+      }
+    },
+
+    // Controlla se l'utente è bannato
+    async isBan(userId) {
+      try {
+        const response = await apiUtils.isUserBanned(userId);  // Chiama l'API per controllare il ban
+        if (response && response.data) {
+          this.isUserBanned = response.data.ban === 1;
+        } else {
+          this.isUserBanned = false;
+        }
+      } catch (error) {
+        console.error('Errore nel controllo del ban:', error);
+        this.isUserBanned = false;  // Imposta a false se si verifica un errore
+      }
+    },
+
+    // Aggiungi il ban all'utente
+    async addBan(userId) {
+    try {
+        const token = this.$store.state.token;
+
+        const banData = {
+            user_id: userId,  // Assicurati che sia 'user_id' come nel backend
+            text: this.banReason,
+            token
+        };
+
+        const response = await apiUtils.addUserBan(banData);
+
+        if (response && response.data) {
+            // Aggiorna lo stato dell'utente nel Vuex store
+            this.showBanForm = !this.showBanForm;
+            this.banReason = '';
+            this.isUserBanned = !this.isUserBanned;
+            var userUpd = this.$store.state.user;
+            userUpd.bannedUsers = response.data.bannedArr;  // Aggiorna la lista degli utenti bannati
+            this.$store.dispatch('setUser', userUpd);
+        }
+
+    } catch (error) {
+        console.error("Errore nell'aggiunta del ban:", error);
     }
+},
+    // Rimuovi il ban dall'utente
+    async rmBan(userId) {
+    try {
+        const token = this.$store.state.token;
+
+        const response = await apiUtils.removeUserBan(userId, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (response && response.data) {
+            // Aggiorna lo stato dell'utente nel Vuex store
+            this.isUserBanned = !this.isUserBanned;
+            var userUpd = this.$store.state.user;
+            userUpd.bannedUsers = response.data.bannedArr;  // Aggiorna la lista degli utenti bannati
+            this.$store.dispatch('setUser', userUpd);
+        }
+
+    } catch (error) {
+        console.error("Errore nella rimozione del ban:", error);
+    }
+},
+
+    
   },
   mounted() {
-    this.fetchUserData();
-    this.checkUserRole();
+    this.fetchUserData().then(() => {
+      if (this.user && this.user.id) {
+        this.isBan(this.user.id);  // Chiama isBan solo se user.id esiste
+        this.checkUserRole();  // Chiama altre funzioni solo se i dati dell'utente sono disponibili
+      } else {
+        console.error('Errore: Nessun utente trovato.');
+      }
+    });
   },
   computed: {
     isFollowing() {
@@ -225,16 +327,20 @@ export default {
   border-radius: 10px;
   border: 1px solid whitesmoke;
 }
-
+.ban-form {
+  margin-top: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid whitesmoke;
+}
 h1, h3 {
   color: whitesmoke;
 }
-
 ul {
   list-style-type: none;
   padding-left: 0;
 }
-
 li {
   margin-bottom: 0.5rem;
   color: whitesmoke;

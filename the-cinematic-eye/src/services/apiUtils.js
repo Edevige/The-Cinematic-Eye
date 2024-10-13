@@ -82,6 +82,18 @@ export default {
     // Funzione per ottenere il ruolo dell'utente loggato
     getUserRole(credentials) {
         return Api().get('/userrole', credentials);
+    },
+    // Funzione per verificare se un utente è bannato
+    isUserBanned(userId) {
+        return Api().get(`/isUserBanned/${userId}`);
+    },
+    // Funzione per aggiungere un ban
+    addUserBan(credentials) {
+        return Api().post('/addUserBan', credentials);
+    },
+    // Funzione per rimuovere un ban
+    removeUserBan(userId, credentials) {
+        return Api().delete(`/removeUserBan/${userId}`, credentials);
     }
     
 }

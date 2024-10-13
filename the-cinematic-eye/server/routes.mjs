@@ -8,6 +8,7 @@ import UpdatesPersonalData from "./controllers/UpdatesPersonalData.mjs";
 import test from "./controllers/testSeqFunc.mjs";
 import ListController from "./controllers/ListController.mjs";
 import RoleController from "./controllers/RoleController.mjs";
+import BanController from "./controllers/BanController.mjs";
 
 export default function (app) {
   app.get("/", (_req, res) => {
@@ -63,5 +64,8 @@ export default function (app) {
   app.post('/updateUserRole', RoleController.updateUserRole);  // Aggiornare il ruolo di un utente
 
   app.post('/suspendUser', RoleController.suspendUser);
+  app.get('/isUserBanned/:userId', BanController.isUserBanned);
+  app.post('/addUserBan', BanController.addUserBan);
+  app.delete('/removeUserBan/:userId', BanController.removeUserBan);
 }
 

@@ -1,4 +1,4 @@
-import { userroles as UserRole } from '../models/index.mjs';  // Importa il modello userroles
+import { userroles as UserRole } from '../models/index.mjs';
 import jsonwebtoken from 'jsonwebtoken';
 import config from '../config/config.mjs';
 

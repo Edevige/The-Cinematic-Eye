@@ -32,7 +32,11 @@ const uris = URIs(sequelize, DataTypes, users, reviews);
 
 import UserRole from './UserRole.mjs';
 
-const userroles = UserRole(sequelize, DataTypes, users)
+const userroles = UserRole(sequelize, DataTypes, users);
+
+import UserBan from './UserBan.mjs';
+
+const userbans = UserBan(sequelize, DataTypes, users);
 
 const db = {
     
@@ -46,5 +50,6 @@ export {
     listfilms,
     uris,
     userroles,
+    userbans,
 }
 
