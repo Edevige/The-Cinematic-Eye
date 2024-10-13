@@ -53,13 +53,13 @@
 
         <div></div>
 
-        <div v-if="this.$store.state.user.subscribed">
-        <label for="Newsletter">Sei iscritto alla newsletter</label>
-        <button type="button" @click="cancelNewsletter()">Cancella l'iscrizione</button>
+        <div v-if="user && user.subscribed">
+            <label for="Newsletter">Sei iscritto alla newsletter</label>
+            <button type="button" @click="cancelNewsletter()">Cancella l'iscrizione</button>
         </div>
-        <div v-if="!this.$store.state.user.subscribed">
-        <label for="Newsletter">Non sei iscritto alla newsletter</label>
-        <button type="button" @click="subscribeNewsletter()">Iscriviti</button>
+        <div v-else-if="user && !user.subscribed">
+            <label for="Newsletter">Non sei iscritto alla newsletter</label>
+            <button type="button" @click="subscribeNewsletter()">Iscriviti</button>
         </div>
     </div>
     <div v-else>
@@ -96,7 +96,7 @@ export default {
     newEmail:'',
     newPassword:'',
     newBirthday: null,
-    user: null,
+    user: {},
     id: this.$store.state.user.id
     }
   },
