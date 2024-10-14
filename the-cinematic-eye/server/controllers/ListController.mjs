@@ -1,4 +1,4 @@
-import { listfilms } from '../models/index.mjs'; 
+import { listfilms,userroles } from '../models/index.mjs'; 
 import jsonwebtoken from "jsonwebtoken";
 import config from "../config/config.mjs";
 
@@ -14,6 +14,71 @@ export default {
       res.status(400).send({ error: 'Errore inatteso, contatta l’amministratore di sistema' });
     }
   },
+
+  // Funzione per creare una nuova lista di film
+  async createList(req, res) {
+    try {
+      const decode = jsonwebtoken.verify(req.headers.authorization.split(' ')[1], config.authentication.jwtSecret);
+      const userId = decode.id;
+      const { title, visible } = req.body;
+
+      // Recupera il ruolo dell'utente
+      const userRole = await userroles.findOne({ where: { UserId: userId } });
+      const role = userRole ? userRole.role : 0; // Se l'utente non ha un ruolo, lo consideriamo utente base (role = 0)
+
+      // Verifica se l'utente ha già una lista con lo stesso titolo
+      const existingList = await listfilms.findOne({ where: { UserId: userId, title: title } });
+      
+      // Se esiste una lista con lo stesso titolo, invia un messaggio di errore
+      if (existingList) {
+        return res.status(400).send({ error: 'Esiste già una lista con questo titolo.' });
+      }
+
+      // Recupera il numero di liste esistenti per l'utente
+      const existingLists = await listfilms.count({ where: { UserId: userId } });
+
+      // Se l'utente è base e ha già 3 liste, non permettere la creazione
+      if (role === 0 && existingLists >= 3) {
+        return res.status(400).send({ error: 'Hai raggiunto il limite massimo di 3 liste.' });
+      }
+
+      // Crea la nuova lista
+      const newList = await listfilms.create({
+        title: title,
+        visible: visible,
+        UserId: userId,
+        film: [],  // Lista vuota inizialmente
+        follower: 0 // Inizialmente nessun follower
+      });
+
+      res.status(201).send({ success: true, newList: newList });
+    } catch (error) {
+      console.error('Errore nella creazione della lista:', error);
+      res.status(500).send({ error: 'Errore inatteso, contatta l’amministratore di sistema.' });
+    }
+  },
+
+  async deleteList(req, res) {
+      try {
+          const decode = jsonwebtoken.verify(req.headers.authorization.split(' ')[1], config.authentication.jwtSecret);
+          const listId = req.params.id;
+
+          const list = await listfilms.findOne({ where: { id: listId, UserId: decode.id } });
+          
+          if (!list) {
+              return res.status(404).send({ error: 'Lista non trovata.' });
+          }
+
+          // Elimina la lista
+          await list.destroy();
+          
+          res.status(200).send({ success: true, message: 'Lista eliminata con successo.' });
+      } catch (error) {
+          console.error('Errore durante l\'eliminazione della lista:', error);
+          res.status(500).send({ error: 'Errore inatteso, riprova più tardi.' });
+      }
+  },
+
   async addFilmToList(req, res) {
     try {
       const decode = jsonwebtoken.verify(req.body.token, config.authentication.jwtSecret);

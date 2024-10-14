@@ -40,6 +40,8 @@ export default function (app) {
   app.get("/filmgiavisti", Lists.FilmVisti);
 
   app.get("/getUserLists", ListController.getUserLists);
+  app.post('/createList', ListController.createList);
+  app.delete('/deleteList/:id', ListController.deleteList);
   app.post('/addFilmToList', ListController.addFilmToList);
   app.get('/getList/:id', ListController.getList);
   app.post('/removeFilmFromList', ListController.removeFilmFromList);

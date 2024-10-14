@@ -68,6 +68,47 @@
     </div>
 
     <div v-else>
+        <!-- Contenitore flessibile per il titolo e il pulsante di modifica -->
+        <div class="d-flex justify-content-between align-items-center" style="padding-top: 2rem; padding-bottom: 1rem;">
+            <!-- Titolo della lista -->
+            <h2 style="color: whitesmoke;">
+                {{ listData.title }}
+            </h2>
+            <!-- Pulsante di modifica allineato a destra -->
+            <button class="btn btn-outline-light" @click="toggleEditMode">
+                <i class="bi bi-pencil-square"></i> Modifica Lista
+            </button>
+        </div>
+
+        <!-- Dati della visibilità e follower della lista -->
+        <div style="color: whitesmoke; text-align: center; padding-bottom: 1rem;">
+            <span v-if="listData.visible">Visibile al pubblico</span>
+            <span v-else>Privata</span> | 
+            <span>{{ listData.follower }} Follower</span>
+        </div>
+
+        <!-- Form per modificare il titolo e la visibilità della lista -->
+        <div v-if="isEditing" class="edit-form review-form">
+            <form @submit.prevent="saveChanges" class="text-center">
+                <div class="form-group">
+                    <label for="listTitle" class="form-label">Titolo della Lista</label>
+                    <input id="listTitle" v-model="editedTitle" type="text" class="form-control text-center" style="width: 60%; margin: 0 auto;">
+                </div>
+
+                <div class="form-group" style="padding-top: 1rem;">
+                    <label for="listVisibility" class="form-label">Lista Visibile?</label>
+                    <input id="listVisibility" type="checkbox" v-model="editedVisibility" class="form-check-input" style="margin-left: 20px;">
+                    <span style="margin-left: 5px;">{{ editedVisibility ? 'Pubblica' : 'Privata' }}</span>
+                </div>
+
+                <!-- Pulsanti posizionati sulla stessa linea, distanziati -->
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="submit" class="btn btn-outline-light mx-3" style="width: 120px;">Salva</button>
+                    <button type="button" @click="toggleEditMode" class="btn btn-secondary mx-3" style="width: 120px;">Annulla</button>
+                    <button type="button" @click="deleteList" class="btn btn-danger mx-3" style="width: 120px;">Elimina</button>
+                </div>
+            </form>
+        </div>
         <p>Questa lista non contiene ancora nessun film</p>
     </div>
 </template>
@@ -151,7 +192,24 @@ export default {
             } catch (error) {
                 console.error('Errore nella rimozione del film dalla lista:', error);
             }
-        }
+        },
+        async deleteList() {
+            if (confirm('Sei sicuro di voler eliminare questa lista?')) {
+                try {
+                    await apiUtils.deleteList(this.listId, {
+                        headers: { Authorization: `Bearer ${this.$store.state.token}` }
+                    });
+                    // Ottieni l'ID dell'utente dalla route o dallo store
+                    const userId = this.$store.state.user.id;
+
+                    // Reindirizza l'utente alla pagina delle liste dell'utente
+                    this.$router.push({ name: 'letueliste', params: { id: userId } });
+                    
+                } catch (error) {
+                    console.error('Errore durante l\'eliminazione della lista:', error);
+                }
+            }
+        },
     },
     computed: {
         owner() {

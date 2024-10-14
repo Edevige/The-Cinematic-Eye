@@ -94,6 +94,13 @@ export default {
     // Funzione per rimuovere un ban
     removeUserBan(userId, credentials) {
         return Api().delete(`/removeUserBan/${userId}`, credentials);
-    }
+    },
+    // Funzione per creare una nuova lista
+    createList(listData, credentials) {
+        return Api().post('/createList', listData, credentials);
+    },
+    deleteList(listId, config) {
+        return Api().delete(`/deleteList/${listId}`, config);
+    },
     
 }

@@ -36,7 +36,7 @@
         <form @submit.prevent="addBan(this.user.id)">
           <div class="form-group">
             <label for="banReason">Motivo del Ban:</label>
-            <input v-model="banReason" type="text" class="form-control" id="banReason" placeholder="Inserisci il motivo del ban" required>
+            <input v-model="banReason" type="text" class="form-control" id="banReason" placeholder="Inserisci il motivo del ban" autocomplete="off" required>
           </div>
           <button type="submit" class="btn btn-primary mt-2">Invia</button>
           <button type="button" @click="showBanForm = false" class="btn btn-secondary mt-2">Annulla</button>

@@ -35,7 +35,7 @@ export default {
             const user = await users.create(req.body);
 
             // Crea le 3 liste predefinite per l'utente appena creato
-            const listNames = ["Lista 1", "Lista 2", "Lista 3"];
+            const listNames = ["Watchlist"];
             for (let listName of listNames) {
                 await listfilms.create({
                     title: listName,
