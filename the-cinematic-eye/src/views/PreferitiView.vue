@@ -7,13 +7,13 @@ export default {
     },
     data() {
         return {
-            watchlist: [],  // Variabile di stato iniziale per la watchlist
+            preferiti: [],  // Variabile di stato iniziale per i preferiti
             loading: true   // Variabile di stato per gestire il caricamento
         };
     },
     computed: {
         url() {
-            return "watchlist?user=" + this.$route.params.id;
+            return "preferiti?user=" + this.$route.params.id;
         }
     }
 };
@@ -23,7 +23,7 @@ export default {
 <template>
 
     <div class="wrapper container" style="padding: 2rem;">
-      <List :prop-url="url" title="Watchlist" :id="parseInt(this.$route.params.id)" />
+      <List :prop-url="url" title="Preferiti" :id="parseInt(this.$route.params.id)" />
       
     </div>
 

@@ -70,7 +70,7 @@
                                 </router-link>
                             </li>
                             
-                            <li><router-link class="dropdown-item" :to="{ name: 'watchlist', params: { id: this.$store.state.user.id }}">Watchlist</router-link></li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'preferiti', params: { id: this.$store.state.user.id }}">Preferiti</router-link></li>
                             <li><router-link class="dropdown-item" :to="{ name: 'letueliste', params: { id: this.$store.state.user.id }}">Le Tue Liste</router-link></li>
                             <li><router-link class="dropdown-item" :to="{ name: 'letuerecensioni', params: { id: this.$store.state.user.id }}">Le Tue Recensioni</router-link></li>
                             <li><router-link class="dropdown-item" :to="{ name: 'filmgiavisti', params: { id: this.$store.state.user.id }}">Film Già Visti</router-link></li>
@@ -123,7 +123,6 @@
 <script>
 import apiUtils from '@/services/apiUtils';  // Assicurati che il percorso sia corretto
 import AuthenticationService from '@/services/AuthenticationService';
-import WatchListView from '@/views/WatchListView.vue';
 import { RouterLink } from 'vue-router';
 import { GoogleSignInButton } from 'vue3-google-signin';
 import { mapState } from 'vuex';

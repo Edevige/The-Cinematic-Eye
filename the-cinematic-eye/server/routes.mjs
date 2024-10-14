@@ -36,7 +36,7 @@ export default function (app) {
   app.post("/addSeen", UpdatesPersonalData.addSeen);
   app.post("/rmSeen", UpdatesPersonalData.removeSeen);
 
-  app.get("/watchlist", Lists.watchList);
+  app.get("/preferiti", Lists.Preferiti);
   app.get("/filmgiavisti", Lists.FilmVisti);
 
   app.get("/getUserLists", ListController.getUserLists);

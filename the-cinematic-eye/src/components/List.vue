@@ -1,4 +1,4 @@
-<!--Lista per la watchlist-->
+<!--Lista dei preferiti-->
 
 <template>
     <!-- Spinner durante il caricamento -->
@@ -7,9 +7,9 @@
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
-    <!-- Messaggio quando la watchlist è vuota -->
+    <!-- Messaggio quando la lista dei preferiti è vuota -->
     <div v-else-if="list.length === 0">
-        <p class="lista-vuota">Ancora nessun film nella watchlist</p>
+        <p class="lista-vuota">Ancora nessun film nei preferiti</p>
     </div>
 
     <!-- Mostra i film se la lista non è vuota -->

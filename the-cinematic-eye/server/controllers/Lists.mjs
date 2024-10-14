@@ -1,7 +1,7 @@
 import { users } from "../models/index.mjs";
 
 export default {
-  async watchList(req, res) {
+  async Preferiti(req, res) {
     try {
         var id = req.query.user
         

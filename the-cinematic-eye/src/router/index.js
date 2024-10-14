@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory, useRoute } from 'vue-router'
-import { watch } from 'vue'
 import HomeView from '../views/HomeView.vue'
 import FilmView from '../views/FilmView.vue'
 import RegisterView from '../views/RegisterView.vue'
@@ -9,7 +8,7 @@ import GenreView from '@/views/GenreView.vue'
 import AdvancedSearchView from '@/views/AdvancedSearchView.vue'
 import AdvancedSearchReturnView from '@/views/AdvancedSearchReturnView.vue'
 import PersonalAreaView from '@/views/PersonalAreaView.vue'
-import WatchListView from '@/views/WatchListView.vue'
+import PreferitiView from '@/views/PreferitiView.vue'
 import LeTueListeView from '@/views/LeTueListeView.vue'
 import LeTueRecensioniView from '@/views/LeTueRecensioniView.vue'
 import FilmGiaVistiView from '@/views/FilmGiaVistiView.vue'
@@ -106,9 +105,9 @@ const routes = [
     props: true 
   },
   {
-    path:'/watchlist/:id',
-    name: 'watchlist',
-    component: WatchListView
+    path:'/preferiti/:id',
+    name: 'preferiti',
+    component: PreferitiView
   },
   {
     path:'/letueliste/:id',
