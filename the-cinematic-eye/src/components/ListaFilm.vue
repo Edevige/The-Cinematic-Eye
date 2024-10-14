@@ -45,6 +45,7 @@
                 <div class="d-flex justify-content-center mt-3">
                     <button type="submit" class="btn btn-outline-light mx-3" style="width: 120px;">Salva</button>
                     <button type="button" @click="toggleEditMode" class="btn btn-secondary mx-3" style="width: 120px;">Annulla</button>
+                    <button type="button" @click="deleteList" class="btn btn-danger mx-3" style="width: 120px;">Elimina</button>
                 </div>
             </form>
         </div>
