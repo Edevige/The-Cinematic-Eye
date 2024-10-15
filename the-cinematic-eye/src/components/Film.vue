@@ -67,11 +67,9 @@
                             <button class="btn btn-outline-light" @click="toggleReviewForm" type="button">
                                 <i class="bi bi-pencil-square"></i> Scrivi una recensione</button>
                             
-                                <router-link
-  :to="{ name: 'forum', params: { filmId: filmObj.id }, query: { filmTitle: filmObj.title } }">
-  Vai al forum
-</router-link>
-
+                                <button class="btn btn-outline-light" @click="goToForum" type="button">
+                                    <i class="bi bi-chat"></i> Vai al Forum del Film
+                                </button>
 
                         </div>
 
@@ -407,7 +405,11 @@ export default {
         },
 
         goToForum() {
-            this.$router.push({ name: 'forum', params: { filmId: this.filmObj.id } });
+            this.$router.push({ 
+                name: 'forum', 
+                params: { filmId: this.filmObj.id },
+                query: { filmTitle: this.filmObj.title } // Aggiungi il titolo del film alla query
+            });
         },
 
     },

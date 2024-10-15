@@ -1,5 +1,5 @@
 <template>
-  <div v-if="user">
+  <div v-if="user && isLoggedIn">
     <div v-if="user.private && user.private === true">
       <h1>Profilo di {{ user.username }} è privato</h1>
     </div>
@@ -105,6 +105,9 @@
       </div>
     </div>
   </div>
+  <div v-else-if="!isLoggedIn">
+            <p>Effettua il login per visualizzare il profilo di {{ user.username }}.</p>
+        </div>
   <div v-else>
     <div class="spinner-border" role="status">
       <span class="visually-hidden">Loading...</span>
@@ -131,7 +134,8 @@ export default {
       userRole: 0,               // Imposta il ruolo di default a base (0) se non esiste nella tabella UserRole
       showBanForm: false,
       banReason: '',
-      isUserBanned: false
+      isUserBanned: false,
+      isLoggedIn: this.$store.state.logged,
     };
   },
   methods: {

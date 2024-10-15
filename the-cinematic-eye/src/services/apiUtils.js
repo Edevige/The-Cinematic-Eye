@@ -107,8 +107,13 @@ export default {
     getOrCreateThread(credentials) {
         return Api().post(`/forum/${credentials.filmId}`, credentials);
     },
+    // Funzione per ottenere i messaggi di un thread
+    getMessagesByThread(threadId) {
+        return Api().get(`/forum/${threadId}/messages`);
+    },      
     // Funzione per aggiungere un messaggio a un thread
-    addMessageToThread(messageData, credentials) {
-        return Api().post('/forum/addMessage', messageData, credentials);
+    addMessage(messageData) {
+        return Api().post(`/forum/${messageData.threadId}/addMessage`, messageData); // Usa threadId nell'URL
     },
+
 }

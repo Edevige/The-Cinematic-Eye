@@ -73,6 +73,7 @@ export default function (app) {
 
   // Rotte per la gestione dei forum dedicati ai film
   app.post('/forum/:filmId', ForumController.getOrCreateThread);  // Ottiene o crea un thread per un film
-  app.post('/forum/addMessage', ForumController.addMessage);     // Aggiunge un messaggio a un thread
+  app.post('/forum/:threadId/addMessage', ForumController.addMessage);     // Aggiunge un messaggio a un thread
+  app.get('/forum/:threadId/messages', ForumController.getMessagesByThread);
 }
 
