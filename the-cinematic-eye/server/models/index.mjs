@@ -38,6 +38,14 @@ import UserBan from './UserBan.mjs';
 
 const userbans = UserBan(sequelize, DataTypes, users);
 
+import Thread from './Thread.mjs';
+
+const threads = Thread(sequelize, DataTypes, users);
+
+import Message from './Message.mjs';
+
+const messages = Message(sequelize, DataTypes, users, threads);
+
 const db = {
     
 }
@@ -51,5 +59,7 @@ export {
     uris,
     userroles,
     userbans,
+    threads,
+    messages,
 }
 
