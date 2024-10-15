@@ -63,6 +63,10 @@ export default {
      async checkUserRole() {
       try {
         const token = this.$store.state.token;
+        if (!token) {
+            console.error('Token non trovato.');
+            return;  // Evita la richiesta se non c'è token
+        }
         const response = await apiUtils.getUserRole({
           headers: { Authorization: `Bearer ${token}` }
         });

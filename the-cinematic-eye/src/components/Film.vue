@@ -30,7 +30,7 @@
                     <div class="flex-fill">
                         <div class="d-grid gap-2 ps-5 pe-5 pt-2 pb-2 btn-div">
                             <div class="d-flex gap-2 justify-content-between">
-                                <button class="btn btn-outline-light flex-fill" @click="toggleListForm" type="button"><i
+                                <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light flex-fill" @click="toggleListForm" type="button"><i
                                         class="bi bi-plus-lg"></i></button>
                                 
                                 <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light flex-fill"
@@ -64,12 +64,12 @@
                                     {{ errorMessageList }}
                             </div>
 
-                            <button class="btn btn-outline-light" @click="toggleReviewForm" type="button">
+                            <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light" @click="toggleReviewForm" type="button">
                                 <i class="bi bi-pencil-square"></i> Scrivi una recensione</button>
                             
-                                <button class="btn btn-outline-light" @click="goToForum" type="button">
-                                    <i class="bi bi-chat"></i> Vai al Forum del Film
-                                </button>
+                            <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light" @click="goToForum" type="button">
+                                <i class="bi bi-chat"></i> Vai al Forum del Film
+                            </button>
 
                         </div>
 
@@ -358,8 +358,8 @@ export default {
             try {
                 const token = this.$store.state.token;
                 if (!token) {
-                console.error('Token non trovato.');
-                return;
+                    console.error('Token non trovato.');
+                    return;
                 }
                 
                 const response = await apiUtils.getUserLists({

@@ -102,9 +102,10 @@ export default {
       reviews: [],
       loading: false,
       spoilerRevealed:false,
-      loggedInUsername: this.$store.state.user.username,
+      //loggedInUsername: this.$store.state.user.username,
       isAdmin: false,
       isProUser: false,
+      //isLoggedIn: this.$store.state.logged,
     };
   },
   computed: {
@@ -127,13 +128,15 @@ export default {
   },
   methods: {
     goToUserArea(username) {
-      // Controlla se l'utente cliccato è lo stesso dell'utente loggato
-      if (username === this.loggedInUsername) {
-        // Reindirizza alla pagina personale
-        this.$router.push({ name: 'personalArea' });
-      } else {
-        // Reindirizza alla pagina dell'altro utente
-        this.$router.push({ name: 'OtherUser', params: { username: username } });
+      if(this.$store.state.logged){
+        // Controlla se l'utente cliccato è lo stesso dell'utente loggato
+        if (username === this.$store.state.user.username) {
+          // Reindirizza alla pagina personale
+          this.$router.push({ name: 'personalArea' });
+        } else {
+          // Reindirizza alla pagina dell'altro utente
+          this.$router.push({ name: 'OtherUser', params: { username: username } });
+        }
       }
     },
     async getReviews(id) {
@@ -202,13 +205,15 @@ export default {
     // Funzione per verificare se l'utente loggato è un amministratore
     async checkUserRole() {
       try {
-        const token = this.$store.state.token;
-        const response = await apiUtils.getUserRole({
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (response && response.data) {
-          this.isAdmin = response.data.role === 1;  // Solo gli amministratori possono promuovere
-          this.isProUser = response.data.role === 2;
+        if(this.$store.state.logged){
+          const token = this.$store.state.token;
+          const response = await apiUtils.getUserRole({
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (response && response.data) {
+            this.isAdmin = response.data.role === 1;  // Solo gli amministratori possono promuovere
+            this.isProUser = response.data.role === 2;
+          }
         }
       } catch (error) {
         console.error('Errore nel recuperare il ruolo dell\'utente loggato:', error);

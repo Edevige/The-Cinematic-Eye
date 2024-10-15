@@ -1,5 +1,5 @@
 <template>
-  <div v-if="user && isLoggedIn">
+  <div v-if="user">
     <div v-if="user.private && user.private === true">
       <h1>Profilo di {{ user.username }} è privato</h1>
     </div>
@@ -7,7 +7,9 @@
       <h1>Profilo di {{ user.username }}</h1>
 
       <!-- Pulsante Segui/Non Segui -->
-      <button v-if="isFollowing" @click="rmFollow(this.user.id)" class="btn btn-outline-light flex-fill" type="button">
+      <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light flex-fill" type="button">
+        <i class="bi bi-suit-heart-fill"> Segui</i></button>
+      <button v-else-if="isFollowing" @click="rmFollow(this.user.id)" class="btn btn-outline-light flex-fill" type="button">
         <i class="bi bi-heartbreak-fill"> Smetti di seguire</i>
       </button>
       <button v-else @click="addFollow(this.user.id)" class="btn btn-outline-light flex-fill" type="button">
@@ -105,9 +107,6 @@
       </div>
     </div>
   </div>
-  <div v-else-if="!isLoggedIn">
-            <p>Effettua il login per visualizzare il profilo di {{ user.username }}.</p>
-        </div>
   <div v-else>
     <div class="spinner-border" role="status">
       <span class="visually-hidden">Loading...</span>
@@ -188,12 +187,14 @@ export default {
     // Funzione per verificare se l'utente loggato è un amministratore
     async checkUserRole() {
       try {
-        const token = this.$store.state.token;
-        const response = await apiUtils.getUserRole({
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (response && response.data) {
-          this.isAdmin = response.data.role === 1;  // Solo gli amministratori possono promuovere
+        if(this.$store.state.logged){
+          const token = this.$store.state.token;
+          const response = await apiUtils.getUserRole({
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (response && response.data) {
+            this.isAdmin = response.data.role === 1;  // Solo gli amministratori possono promuovere
+          }
         }
       } catch (error) {
         console.error('Errore nel recuperare il ruolo dell\'utente loggato:', error);
