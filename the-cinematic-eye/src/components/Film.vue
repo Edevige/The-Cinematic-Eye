@@ -66,6 +66,13 @@
 
                             <button class="btn btn-outline-light" @click="toggleReviewForm" type="button">
                                 <i class="bi bi-pencil-square"></i> Scrivi una recensione</button>
+                            
+                                <router-link
+  :to="{ name: 'forum', params: { filmId: filmObj.id }, query: { filmTitle: filmObj.title } }">
+  Vai al forum
+</router-link>
+
+
                         </div>
 
                         <!-- Form per la recensione che appare quando showReviewForm è true -->
@@ -397,9 +404,11 @@ export default {
                     this.errorMessageList = ''; // Rimuove il messaggio dopo 3 secondi
                 }, 2500);
             }
-        }
+        },
 
-
+        goToForum() {
+            this.$router.push({ name: 'forum', params: { filmId: this.filmObj.id } });
+        },
 
     },
     mounted() {
@@ -454,6 +463,7 @@ export default {
         border-radius: 15px; 
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
         padding: 0.7rem;
+        
     }
     .alert {
         padding: 1rem;

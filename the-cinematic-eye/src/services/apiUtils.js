@@ -99,8 +99,16 @@ export default {
     createList(listData, credentials) {
         return Api().post('/createList', listData, credentials);
     },
+    //funzione per eliminare una lista utente
     deleteList(listId, config) {
         return Api().delete(`/deleteList/${listId}`, config);
     },
-    
+    // Funzione per ottenere o creare il thread dedicato a un film
+    getOrCreateThread(credentials) {
+        return Api().post(`/forum/${credentials.filmId}`, credentials);
+    },
+    // Funzione per aggiungere un messaggio a un thread
+    addMessageToThread(messageData, credentials) {
+        return Api().post('/forum/addMessage', messageData, credentials);
+    },
 }

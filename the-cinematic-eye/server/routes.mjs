@@ -9,6 +9,7 @@ import test from "./controllers/testSeqFunc.mjs";
 import ListController from "./controllers/ListController.mjs";
 import RoleController from "./controllers/RoleController.mjs";
 import BanController from "./controllers/BanController.mjs";
+import ForumController from "./controllers/ForumController.mjs";
 
 export default function (app) {
   app.get("/", (_req, res) => {
@@ -69,5 +70,9 @@ export default function (app) {
   app.get('/isUserBanned/:userId', BanController.isUserBanned);
   app.post('/addUserBan', BanController.addUserBan);
   app.delete('/removeUserBan/:userId', BanController.removeUserBan);
+
+  // Rotte per la gestione dei forum dedicati ai film
+  app.post('/forum/:filmId', ForumController.getOrCreateThread);  // Ottiene o crea un thread per un film
+  app.post('/forum/addMessage', ForumController.addMessage);     // Aggiunge un messaggio a un thread
 }
 

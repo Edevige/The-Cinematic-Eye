@@ -146,6 +146,12 @@ const routes = [
     component: DiscoverFilmView
   },
   {
+    path: '/forum/:filmId',
+    name: 'forum',
+    component: () => import('@/views/FilmForumView.vue'),
+    props: (route) => ({ filmId: route.params.filmId, filmTitle: route.query.filmTitle }) // Usa query per passare il titolo
+  },
+  {
     path:'/debug',
     name: 'debug',
     component: () => import('../views/DebugStoreView.vue')
