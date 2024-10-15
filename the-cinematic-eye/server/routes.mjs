@@ -75,5 +75,6 @@ export default function (app) {
   app.post('/forum/:filmId', ForumController.getOrCreateThread);  // Ottiene o crea un thread per un film
   app.post('/forum/:threadId/addMessage', ForumController.addMessage);     // Aggiunge un messaggio a un thread
   app.get('/forum/:threadId/messages', ForumController.getMessagesByThread);
+  app.delete('/forum/deleteMessage/:id', ForumController.deleteMessage);
 }
 

@@ -1,26 +1,46 @@
 <template>
-    <div class="forumContainer">
-        <h2>Forum: {{ filmTitle }}</h2>
-
-        <!-- Sezione per mostrare i messaggi del forum -->
-        <div v-for="message in forumMessages" :key="message.id" class="message-item">
-            <h5>{{ message.UserId }}:</h5>
-            <p>{{ message.text }}</p>
-        </div>
-
-        <!-- Form per inviare un nuovo messaggio -->
-        <div v-if="isPro || isAdmin" class="new-message-form">
-            <h3>Scrivi un messaggio</h3>
-            <textarea v-model="newMessageText" class="form-control" rows="3"></textarea>
-            <button class="btn btn-primary mt-2" @click="sendMessage">Invia</button>
-        </div>
-        <div v-else-if="isLoggedIn">
-            <p>Devi essere un utente pro per interagire con la chat del forum</p>
-        </div>
-        <div v-else-if="!isLoggedIn">
-            <p>Effettua il login per scrivere un messaggio.</p>
-        </div>
+  <div v-if="loading">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
+  </div>
+  <div v-else>
+    <div v-if="forumMessages.length > 0">
+      <div class="forumContainer">
+          <h2>Forum: {{ filmTitle }}</h2>
+
+          <!-- Sezione per mostrare i messaggi del forum -->
+          <div v-for="message in forumMessages" :key="message.id" class="message-item">
+              <div @click="goToUserArea(message.UserId)">
+                  <div class="nome-utente">{{ message.UserId }}</div>
+              </div>
+              <p>{{ message.text }}</p>
+              <!-- Se l'utente è un amministratore, mostra i pulsanti per modificare ed eliminare -->
+              <div v-if="isAdmin">
+                <button @click="deleteMessage(message.id)">Elimina Commento</button>
+              </div>
+          </div>
+
+          <!-- Form per inviare un nuovo messaggio -->
+          <div v-if="isPro || isAdmin" class="new-message-form">
+              <h3>Scrivi un messaggio</h3>
+              <textarea v-model="newMessageText" class="form-control" rows="3"></textarea>
+              <button class="btn btn-primary mt-2" @click="sendMessage">Invia</button>
+          </div>
+          <div v-else-if="isLoggedIn">
+              <p>Devi essere un utente pro per interagire con la chat del forum</p>
+          </div>
+          <div v-else-if="!isLoggedIn">
+              <p>Effettua il login per scrivere un messaggio.</p>
+          </div>
+      </div>
+    </div>
+    <!-- Messaggio quando la lista recensioni è vuota -->
+    <div v-else-if="forumMessages.length === 0">
+      <p class="lista-vuota" style="padding-top: 3rem; color: whitesmoke; font-size: 35px; margin-bottom: 0px;">
+        Non ci sono ancora commenti in questo forum</p>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -34,6 +54,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       forumMessages: [],
       newMessageText: '',
       isLoggedIn: this.$store.state.logged,
@@ -53,6 +74,7 @@ export default {
             console.log(this.filmTitle);
             this.thread = response.data;
             this.threadId = response.data.id; // Memorizza l'ID del thread
+            this.loading = false;
             console.log(this.threadId);
         } catch (error) {
             console.error('Errore nel recupero del forum:', error);
@@ -105,6 +127,36 @@ export default {
             console.error('Errore nell\'invio del messaggio:', error);
         }
     },
+    //da aggiungere gli username
+    goToUserArea(username) {
+      if(this.$store.state.logged){
+        // Controlla se l'utente cliccato è lo stesso dell'utente loggato
+        if (username === this.$store.state.user.username) {
+          // Reindirizza alla pagina personale
+          this.$router.push({ name: 'personalArea' });
+        } else {
+          // Reindirizza alla pagina dell'altro utente
+          this.$router.push({ name: 'OtherUser', params: { username: username } });
+        }
+      }
+    },
+
+    // Metodo per eliminare una commento
+    async deleteMessage(messageId) {
+      try {
+        const token = this.$store.state.token;
+        console.log(messageId);
+        await apiUtils.deleteMessage(messageId, {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+        });
+        // Rimuovi la recensione dalla lista locale
+        this.forumMessages = this.forumMessages.filter((r) => r.id !== messageId);
+      } catch (error) {
+        console.error("Errore durante l'eliminazione del commento:", error);
+      }
+    },
   },
   mounted() {
     this.checkUserRole();
@@ -119,3 +171,18 @@ export default {
 
 };
 </script>
+
+<style scoped>
+.spinner-border{
+    color: whitesmoke;
+    --bs-spinner-width: 5rem;
+    --bs-spinner-height: 5rem;
+    --bs-spinner-border-width: 1em;
+}
+.nome-utente{
+  color: whitesmoke;
+  font-size: large;
+  padding-bottom: 0.5rem;
+  cursor: pointer;
+}
+</style>

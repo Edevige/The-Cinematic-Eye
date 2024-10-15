@@ -1,4 +1,4 @@
-import { threads, messages, users } from '../models/index.mjs';
+import { threads, messages, users, userroles } from '../models/index.mjs';
 import jsonwebtoken from 'jsonwebtoken';
 import config from '../config/config.mjs';
 
@@ -64,6 +64,33 @@ export default {
         } catch (error) {
         console.error('Errore nel recupero dei messaggi:', error);
         res.status(500).send({ error: 'Errore nel recupero dei messaggi.' });
+        }
+    },
+
+    async deleteMessage(req, res) {
+        try {
+          const decode = jsonwebtoken.verify(req.headers.authorization.split(' ')[1], config.authentication.jwtSecret);
+          const userId = decode.id;
+          const message = await messages.findOne({ where: { id: req.params.id, } });
+          
+          // Trova se l'utente loggato è un amministratore nella tabella userroles
+          const admin = await userroles.findOne({ where: { UserId: userId, role: 1 } });
+    
+          // Controlla se l'utente è un amministratore
+          if (!admin) {
+              return res.status(403).send({ error: 'Non sei autorizzato a modificare questa recensione.' });
+          }
+
+          if (!message) {
+            return res.status(404).send({ error: 'Commento non trovato o non autorizzato.' });
+          }
+      
+          await message.destroy();
+      
+          res.send({ message: 'Commento eliminato con successo.' });
+        } catch (e) {
+          console.log(e);
+          res.status(400).send({ error: 'Errore durante l\'eliminazione del commento.' });
         }
     },
 

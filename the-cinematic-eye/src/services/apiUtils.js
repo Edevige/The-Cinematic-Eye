@@ -115,5 +115,7 @@ export default {
     addMessage(messageData) {
         return Api().post(`/forum/${messageData.threadId}/addMessage`, messageData); // Usa threadId nell'URL
     },
-
+    deleteMessage (messageId, credentials) {
+        return Api().delete(`/forum/deleteMessage/${messageId}`, credentials);
+    },
 }
