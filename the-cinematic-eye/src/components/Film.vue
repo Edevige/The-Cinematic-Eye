@@ -30,8 +30,10 @@
                     <div class="flex-fill">
                         <div class="d-grid gap-2 ps-5 pe-5 pt-2 pb-2 btn-div">
                             <div class="d-flex gap-2 justify-content-between">
-                                <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light flex-fill" @click="toggleListForm" type="button"><i
-                                        class="bi bi-plus-lg"></i></button>
+                                <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light flex-fill" type="button"><i
+                                    class="bi bi-plus-lg"></i></button>
+                                <button v-else class="btn btn-outline-light flex-fill" @click="toggleListForm" type="button"><i
+                                    class="bi bi-plus-lg"></i></button>
                                 
                                 <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light flex-fill"
                                     type="button"><i class="bi bi-eye-fill"></i></button>
@@ -64,10 +66,15 @@
                                     {{ errorMessageList }}
                             </div>
 
-                            <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light" @click="toggleReviewForm" type="button">
+                            <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light" type="button">
+                                <i class="bi bi-pencil-square"></i> Scrivi una recensione</button>
+                            <button v-else class="btn btn-outline-light" @click="toggleReviewForm" type="button">
                                 <i class="bi bi-pencil-square"></i> Scrivi una recensione</button>
                             
-                            <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light" @click="goToForum" type="button">
+                            <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light" type="button">
+                                <i class="bi bi-chat"></i> Vai al Forum del Film
+                            </button>
+                            <button v-else class="btn btn-outline-light" @click="goToForum" type="button">
                                 <i class="bi bi-chat"></i> Vai al Forum del Film
                             </button>
 

@@ -148,7 +148,7 @@ const routes = [
   {
     path: '/forum/:filmId',
     name: 'forum',
-    component: () => import('@/views/FilmForumView.vue'),
+    component: () => import('@/views/ForumView.vue'),
     props: (route) => ({ filmId: route.params.filmId, filmTitle: route.query.filmTitle }) // Usa query per passare il titolo
   },
   {

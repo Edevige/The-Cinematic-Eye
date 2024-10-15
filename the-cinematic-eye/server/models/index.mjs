@@ -46,6 +46,10 @@ import Message from './Message.mjs';
 
 const messages = Message(sequelize, DataTypes, users, threads);
 
+import Report from './Report.mjs';
+
+const reports = Report(sequelize, DataTypes, users);
+
 const db = {
     
 }
@@ -61,5 +65,6 @@ export {
     userbans,
     threads,
     messages,
+    reports,
 }
 

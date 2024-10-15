@@ -4,7 +4,7 @@ export default function (sequelize, DataTypes, user) {
       {
         title: {
           type: DataTypes.STRING,
-          allowNull: true,
+          allowNull: false,
         },
         film_id: {
           type: DataTypes.INTEGER,

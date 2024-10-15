@@ -1,6 +1,6 @@
 <template>
     <div class="forumContainer">
-        <h2>Forum del Film: {{ filmTitle }}</h2>
+        <h2>Forum: {{ filmTitle }}</h2>
 
         <!-- Sezione per mostrare i messaggi del forum -->
         <div v-for="message in forumMessages" :key="message.id" class="message-item">
@@ -27,7 +27,7 @@
 import apiUtils from '@/services/apiUtils';
 
 export default {
-  name: 'FilmForum',
+  name: 'Forum',
   props: {
     filmId: String,
     filmTitle: String // Ricevi il titolo come prop
