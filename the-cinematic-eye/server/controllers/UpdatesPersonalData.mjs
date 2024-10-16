@@ -68,7 +68,11 @@ export default {
                         match.birthdate = req.body.nuovoUpdate;
                         await match.save();
                         return res.send({ message: "Data di nascita aggiornata con successo!" , status:true });
-    
+                    case 5:
+                        console.log('Caso cambio private');
+                        match.private=req.body.nuovoUpdate;
+                        await match.save();
+                        return res.send({ message: "Privacy aggiornata con successo!" , status:true });
                     default:
                         return res.status(400).send({ error: "Richiesta non valida!" });
                 }

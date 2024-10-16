@@ -61,6 +61,13 @@
             <label for="Newsletter">Non sei iscritto alla newsletter</label>
             <button type="button" @click="subscribeNewsletter()">Iscriviti</button>
         </div>
+
+        <div class="privacy-section">
+          <input type="checkbox" v-model="user.private" @change="togglePrivacy" />
+          <span v-if="user.private">Il tuo profilo è privato</span>
+          <span v-else>Il tuo profilo è pubblico</span>
+        </div>
+
     </div>
     <div v-else>
       Caricamento Pagina o Errore
@@ -233,6 +240,26 @@ export default {
       }
       
 
+    },
+
+    async togglePrivacy() {
+      try {
+        const updatedPrivacy = this.user.private;
+        // Invia l'aggiornamento al backend
+        const response = await AuthenticationService.updatePersonalData({
+          'nuovoUpdate': updatedPrivacy,
+          'id': this.id,
+          'index':5
+        });
+
+        if (response.status) {
+          alert("Stato della privacy aggiornato con successo!");
+        } else {
+          alert("Si è verificato un errore nell'aggiornamento della privacy.");
+        }
+      } catch (error) {
+        console.error('Errore con togglePrivacy: ', error);
+      }
     },
 
     formatDate(date) {
