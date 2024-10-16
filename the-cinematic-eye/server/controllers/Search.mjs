@@ -26,7 +26,7 @@ export default {
       const user= await users.findAll();
       const found=[]
       user.forEach((i) => {
-        found.push({Username: i.username, id: i.id});
+        found.push({Username: i.username, id: i.id, private:i.private, seguiti: i.seguiti});
       });
       res.send(found);
     } catch (error) {
