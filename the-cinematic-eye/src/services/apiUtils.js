@@ -127,5 +127,8 @@ export default {
     // Funzione per creare un nuovo forum con film_id=null
     createForum(credentials) {
         return Api().post('/fm/create', credentials);
+    },
+    createReport(credentials) {
+        return Api().post('/createReport', credentials);
     }
 }

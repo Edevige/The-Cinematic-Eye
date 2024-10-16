@@ -10,6 +10,7 @@ import ListController from "./controllers/ListController.mjs";
 import RoleController from "./controllers/RoleController.mjs";
 import BanController from "./controllers/BanController.mjs";
 import ForumController from "./controllers/ForumController.mjs";
+import ReportController from "./controllers/ReportController.mjs";
 
 export default function (app) {
   app.get("/", (_req, res) => {
@@ -79,6 +80,8 @@ export default function (app) {
   app.get('/forum/user-forums', ForumController.getUserForums);
   app.get('/fm/:id', ForumController.getForumById);
   app.post('/fm/create', ForumController.createForum);
+
+  app.post('/createReport', ReportController.createReport);
 
 }
 

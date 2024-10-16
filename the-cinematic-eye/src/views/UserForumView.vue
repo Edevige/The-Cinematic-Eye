@@ -124,40 +124,52 @@ export default {
     },
     // Funzione per creare un nuovo forum (solo admin)
     async createForum() {
-  try {
-    if (this.newForumTitle.trim() === '') {
-      console.error('Il titolo del forum non può essere vuoto.');
-      return;
-    }
+        try {
+            if (this.newForumTitle.trim() === '') {
+            console.error('Il titolo del forum non può essere vuoto.');
+            return;
+            }
 
-    // Chiamata API per creare un nuovo forum con film_id null
-    const response = await apiUtils.createForum({
-      title: this.newForumTitle,
-      film_id: null  // Assicurati che film_id sia null per i forum generici
-    });
+            // Chiamata API per creare un nuovo forum con film_id null
+            const response = await apiUtils.createForum({
+            title: this.newForumTitle,
+            film_id: null  // Assicurati che film_id sia null per i forum generici
+            });
 
-    if (response && response.data) {
-      console.log('Nuovo forum creato con successo:', response.data);
-      this.forums.push(response.data); // Aggiunge il nuovo forum alla lista visualizzata
-    }
+            if (response && response.data) {
+            console.log('Nuovo forum creato con successo:', response.data);
+            this.forums.push(response.data); // Aggiunge il nuovo forum alla lista visualizzata
+            }
 
-    this.toggleCreateForm(); // Chiude il form dopo la creazione
-    this.newForumTitle = ''; // Resetta il campo di input del titolo
-  } catch (error) {
-    console.error('Errore nella creazione del forum:', error);
-  }
-}
-,
-    // Funzione per inviare la richiesta forum
-    async sendRequest() {
-      try {
-        console.log('Richiesta inviata:', this.forumRequestTitle);
-        // Logica per inviare la richiesta forum
-        this.toggleRequestForm(); // Chiude il form dopo l'invio
-      } catch (error) {
-        console.error('Errore durante la richiesta forum:', error);
-      }
+            this.toggleCreateForm(); // Chiude il form dopo la creazione
+            this.newForumTitle = ''; // Resetta il campo di input del titolo
+        } catch (error) {
+            console.error('Errore nella creazione del forum:', error);
+        }
     },
+    // Funzione per inviare la richiesta forum
+    
+    async sendRequest() {
+        try {
+            const userId = this.$store.state.user.id;
+            console.log('Titolo del forum:', this.forumRequestTitle);
+            console.log('User ID:', userId);
+
+            const response = await apiUtils.createReport({
+            text: this.forumRequestTitle,
+            userId: userId,
+            });
+
+            if (response && response.data) {
+            console.log('Report inviato con successo:', response.data);
+            }
+            this.toggleRequestForm();
+            this.forumRequestTitle='';
+        } catch (error) {
+            console.error('Errore durante l\'invio del report:', error);
+        }
+    },
+
   },
   mounted() {
     // Recupera i forum quando la pagina è caricata
