@@ -1,89 +1,174 @@
-<template>
+<template> 
   <div class="personal-area">
     <h1>Area Personale</h1>
     <div class="inside-personal-area">
 
       <div v-if="user">
-        <label for="Username">Username: {{ user.username }}</label>
-        <button type="button" @click="update(1)">Aggiorna Username</button>
-        <div v-if="selezioneNuovoUsername">
-        <input v-model="newUsername" placeholder="Inserisci Nuovo Username" >
-        <button type="button" @click="confermaModifica(newUsername, 1)">Conferma nuovo Username</button>
+        <div class="user-info">
+          <label for="Username">Username: {{ user.username }}</label>
+          <button class="btn-update" type="button" @click="update(1)">Aggiorna Username</button>
+          <div v-if="selezioneNuovoUsername" class="input-group">
+            <input v-model="newUsername" placeholder="Inserisci Nuovo Username" class="input-text">
+            <button class="btn-confirm" type="button" @click="confermaModifica(newUsername, 1)">Conferma</button>
+          </div>
+
+          <label for="Email">Email: {{ user.email }}</label>
+          <button class="btn-update" type="button" @click="update(2)">Aggiorna Email</button>
+          <div v-if="selezioneNuovaEmail" class="input-group">
+            <input v-model="newEmail" placeholder="Inserisci Nuova Email" type="email" class="input-text">
+            <button class="btn-confirm" type="button" @click="confermaModifica(newEmail, 2)">Conferma</button>
+          </div>
+
+          <label for="Password">Password: {{user.password}}</label>
+          <button class="btn-update" type="button" @click="update(3)">Aggiorna Password</button>
+          <div v-if="selezioneNuovaPassword" class="input-group">
+            <input v-model="newPassword" placeholder="Inserisci Nuova Password" type="password" class="input-text">
+            <button class="btn-confirm" type="button" @click="confermaModifica(newPassword, 3)">Conferma</button>
+          </div>
+
+          <label for="Name">Nome: {{ user.name }}</label>
+          <button class="btn-update" type="button" @click="update(0)">Aggiorna Nome</button>
+          <div v-if="selezioneNuovoNome" class="input-group">
+            <input v-model="newName" placeholder="Inserisci Nuovo Nome" class="input-text">
+            <button class="btn-confirm" type="button" @click="confermaModifica(newName, 0)">Conferma</button>
+          </div>
+
+          <div v-if="user.birthdate">
+            <label for="Birthday">Compleanno: {{ formatDate(user.birthdate) }}</label>
+            <button class="btn-update" type="button" @click="update(4)">Aggiorna Data</button>
+          </div>
+          <div v-else="!user.birthdate">
+            <label for="Birthday">Non hai inserito il tuo Compleanno</label>
+            <button class="btn-update" type="button" @click="update(4)">Inserisci Data</button>
+          </div>
+          <div v-if="selezioneNuovoCompleanno" class="input-group">
+            <input v-model="newBirthday" placeholder="Inserisci Nuova Data" type="date" class="input-text">
+            <button class="btn-confirm" type="button" @click="confermaModifica(newBirthday, 4)">Conferma</button>
+          </div>
+
+          <div class="newsletter-section">
+            <div v-if="user && user.subscribed">
+              <label for="Newsletter">Sei iscritto alla newsletter</label>
+              <button class="btn-secondary" type="button" @click="cancelNewsletter()">Cancella l'iscrizione</button>
+            </div>
+            <div v-else-if="user && !user.subscribed">
+              <label for="Newsletter">Non sei iscritto alla newsletter</label>
+              <button class="btn-primary" type="button" @click="subscribeNewsletter()">Iscriviti</button>
+            </div>
+          </div>
+
+          <div class="privacy-section">
+            <input type="checkbox" v-model="user.private" @change="togglePrivacy" />
+            <span v-if="user.private">Il tuo profilo è privato</span>
+            <span v-else>Il tuo profilo è pubblico</span>
+          </div>
         </div>
-
-        <div></div>
-
-        <label for="Email">Email: {{ user.email }}</label>
-        <button type="button" @click="update(2)">Aggiorna Email</button>
-        <div v-if="selezioneNuovaEmail">
-        <input v-model="newEmail" placeholder="Inserisci Nuova Email" type="email" >
-        <button type="button" @click="confermaModifica(newEmail, 2)">Conferma nuova Email</button>
-        </div>
-
-        <div></div>
-
-        <label for="Password">Password: {{user.password}}</label>
-        <button type="button" @click="update(3)">Aggiorna Password</button>
-        <div v-if="selezioneNuovaPassword">
-        <input v-model="newPassword" placeholder="Inserisci Nuova Password" type="password" >
-        <button type="button" @click="confermaModifica(newPassword, 3)">Conferma nuova Password</button>
-        </div>
-
-        <label for="Name">Nome: {{ user.name }}</label>
-        <button type="button" @click="update(0)">Aggiorna Nome</button>
-        <div v-if="selezioneNuovoNome">
-        <input v-model="newName" placeholder="Inserisci Nuovo Nome" >
-        <button type="button" @click="confermaModifica(newName, 0)">Conferma nuovo Nome</button>
-        </div>
-
-        <div></div>
-
-        <div v-if="user.birthdate">
-        <label for="Birthday">Compleanno: {{ formatDate(user.birthdate) }}</label>
-        <button type="button" @click="update(4)">Aggiorna Data</button>
-        </div>
-        <div v-else="!user.birthdate">
-        <label for="Birthday">Non hai inserito il tuo Compleanno</label>
-        <button type="button" @click="update(4)">Aggiorna Data</button>
       </div>
-        <div v-if="selezioneNuovoCompleanno">
-        <input v-model="newBirthday" placeholder="Inserisci Nuova Data" type="date" >
-        <button type="button" @click="confermaModifica(newBirthday, 4)">Conferma Data</button>
-        </div>
+      <div v-else>
+        <p>Caricamento Pagina o Errore</p>
+      </div>
 
-        <div></div>
-
-        <div v-if="user && user.subscribed">
-            <label for="Newsletter">Sei iscritto alla newsletter</label>
-            <button type="button" @click="cancelNewsletter()">Cancella l'iscrizione</button>
-        </div>
-        <div v-else-if="user && !user.subscribed">
-            <label for="Newsletter">Non sei iscritto alla newsletter</label>
-            <button type="button" @click="subscribeNewsletter()">Iscriviti</button>
-        </div>
-
-        <div class="privacy-section">
-          <input type="checkbox" v-model="user.private" @change="togglePrivacy" />
-          <span v-if="user.private">Il tuo profilo è privato</span>
-          <span v-else>Il tuo profilo è pubblico</span>
-        </div>
+      <div class="action-buttons">
+        <button class="btn-primary" type="button" @click="logout()">Logout</button>
+        <button class="btn-danger" type="button" @click="handleDeleteAccount()">Elimina Account</button>
+      </div>
 
     </div>
-    <div v-else>
-      Caricamento Pagina o Errore
-    </div>
-        <div></div>
-        <button type="button" @click="logout()">Logout</button>
-    </div>
-
-    <button type="button" @click="handleDeleteAccount()">
-        Elimina Account
-    </button>
-
-    
-</div>
-      
+  </div>
 </template>
+
+<style scoped>
+.personal-area {
+  background-color: #F5F9F6; /* Soft green background */
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 800px;
+  margin: 0 auto;
+  color: #2C3E50;
+  font-family: 'Arial', sans-serif;
+}
+
+.inside-personal-area {
+  padding: 15px;
+  background-color: #E8F5E9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  color: #388E3C; /* Green tone for the title */
+}
+
+label {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.input-group {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-text {
+  padding: 8px;
+  border: 1px solid #D4E6D4;
+  border-radius: 5px;
+  margin-top: 5px;
+  font-size: 16px;
+}
+
+.btn-update, .btn-confirm, .btn-primary, .btn-secondary, .btn-danger {
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-update {
+  background-color: #66BB6A; /* Green for update buttons */
+  color: white;
+}
+
+.btn-confirm {
+  background-color: #43A047; /* Darker green for confirm buttons */
+  color: white;
+}
+
+.btn-primary {
+  background-color: #00796B; /* Teal for primary actions */
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #C62828; /* Red for cancel actions */
+  color: white;
+}
+
+.btn-danger {
+  background-color: #D32F2F; /* Dark red for dangerous actions */
+  color: white;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.privacy-section {
+  margin-top: 15px;
+  font-size: 16px;
+}
+
+.newsletter-section {
+  margin-top: 20px;
+}
+</style>
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService';
