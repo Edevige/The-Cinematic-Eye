@@ -75,6 +75,9 @@
                 }
                 this.threadId = this.$route.params.id;
                 this.loading = false;
+                console.log(this.threadId);
+                console.log(this.threadId);
+                console.log(this.threadId);
             } catch (error) {
                 console.error('Errore nel recupero dei dati del forum:', error);
                 this.loading = false;
@@ -117,7 +120,7 @@
         try {
         const response = await apiUtils.addMessage({
             text: this.newMessageText,
-            threadId: this.thread.id,
+            threadId: this.threadId,
             token: this.$store.state.token,
         });
 
