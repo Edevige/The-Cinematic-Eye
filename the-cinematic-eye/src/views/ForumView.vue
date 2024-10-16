@@ -5,14 +5,14 @@
     </div>
   </div>
   <div v-else>
-    <div v-if="forumMessages.length > 0">
+    <div>
       <div class="forumContainer">
           <h2>Forum: {{ filmTitle }}</h2>
 
           <!-- Sezione per mostrare i messaggi del forum -->
           <div v-for="message in forumMessages" :key="message.id" class="message-item">
-              <div @click="goToUserArea(message.UserId)">
-                  <div class="nome-utente">{{ message.UserId }}</div>
+              <div @click="goToUserArea(message.User.username)">
+                  <div class="nome-utente">{{ message.User.username }}</div>
               </div>
               <p>{{ message.text }}</p>
               <!-- Se l'utente è un amministratore, mostra i pulsanti per modificare ed eliminare -->
@@ -20,12 +20,16 @@
                 <button @click="deleteMessage(message.id)">Elimina Commento</button>
               </div>
           </div>
-
+          <div v-if="forumMessages.length<1">
+          <p class="lista-vuota" style="padding-top: 3rem; color: whitesmoke; font-size: 35px; margin-bottom: 0px;">
+            Non ci sono ancora commenti in questo forum</p>
+          </div>
           <!-- Form per inviare un nuovo messaggio -->
           <div v-if="isPro || isAdmin" class="new-message-form">
               <h3>Scrivi un messaggio</h3>
-              <textarea v-model="newMessageText" class="form-control" rows="3"></textarea>
-              <button class="btn btn-primary mt-2" @click="sendMessage">Invia</button>
+              <textarea v-model="newMessageText" class="form-control" rows="3" required></textarea>
+              <button v-if="(newMessageText=='')" disabled class="btn btn-primary mt-2" @click="sendMessage">Invia</button>
+              <button v-else class="btn btn-primary mt-2" @click="sendMessage">Invia</button>
           </div>
           <div v-else-if="isLoggedIn">
               <p>Devi essere un utente pro per interagire con la chat del forum</p>
@@ -34,11 +38,6 @@
               <p>Effettua il login per scrivere un messaggio.</p>
           </div>
       </div>
-    </div>
-    <!-- Messaggio quando la lista recensioni è vuota -->
-    <div v-else-if="forumMessages.length === 0">
-      <p class="lista-vuota" style="padding-top: 3rem; color: whitesmoke; font-size: 35px; margin-bottom: 0px;">
-        Non ci sono ancora commenti in questo forum</p>
     </div>
   </div>
 </template>
@@ -74,7 +73,6 @@ export default {
             console.log(this.filmTitle);
             this.thread = response.data;
             this.threadId = response.data.id; // Memorizza l'ID del thread
-            this.loading = false;
             console.log(this.threadId);
         } catch (error) {
             console.error('Errore nel recupero del forum:', error);
@@ -102,31 +100,36 @@ export default {
       }
     },
     // Funzione per ottenere i messaggi del thread
+    
     async fetchMessages() {
       try {
         console.log(this.threadId);
         const response = await apiUtils.getMessagesByThread(this.threadId);
         this.forumMessages = response.data;  // Salva i messaggi nella variabile forumMessages
+        this.loading = false;
       } catch (error) {
         console.error('Errore nel recupero dei messaggi del forum:', error);
       }
     },
-    async sendMessage() {
-        try {
-            const response = await apiUtils.addMessage({
-                text: this.newMessageText,
-                threadId: this.thread.id,  
-                token: this.$store.state.token,
-            });
 
-            if (response.data.success) {
-                this.forumMessages.push(response.data.message);
-                this.newMessageText = '';
-            }
-        } catch (error) {
-            console.error('Errore nell\'invio del messaggio:', error);
-        }
-    },
+    async sendMessage() {
+  try {
+    const response = await apiUtils.addMessage({
+      text: this.newMessageText,
+      threadId: this.thread.id,
+      token: this.$store.state.token,
+    });
+
+    if (response.data.success) {
+      // Aggiungi direttamente il nuovo messaggio alla lista locale
+      await this.fetchMessages();
+      this.newMessageText = '';
+    }
+  } catch (error) {
+    console.error('Errore nell\'invio del messaggio:', error);
+  }
+},
+
     //da aggiungere gli username
     goToUserArea(username) {
       if(this.$store.state.logged){
