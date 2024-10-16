@@ -10,6 +10,7 @@ export default function (sequelize, DataTypes, user) {
           type: DataTypes.INTEGER,
           allowNull: true, // Permette NULL se il thread non è legato a un film
         },
+        /*
         UserId: { // Definisci esplicitamente la chiave esterna per l'utente
           type: DataTypes.INTEGER,
           allowNull: true, 
@@ -18,10 +19,11 @@ export default function (sequelize, DataTypes, user) {
             key: 'id'
           }
         }
+          */
       }
     );
   
-    thread.belongsTo(user, { foreignKey: 'UserId' });
+    //thread.belongsTo(user, { foreignKey: 'UserId' });
   
     return thread;
   }

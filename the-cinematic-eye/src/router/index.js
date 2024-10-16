@@ -19,6 +19,7 @@ import ResetPassword from '@/views/ResetPassword.vue'
 import ListaFilm from '@/components/ListaFilm.vue'
 import DiscoverFilmView from '@/views/DiscoverFilmView.vue'
 import OtherUserView from '@/views/OtherUserView.vue'
+import UserForumView from '@/views/UserForumView.vue'
 const routes = [
   {
     path: '/',
@@ -148,9 +149,21 @@ const routes = [
   {
     path: '/forum/:filmId',
     name: 'forum',
-    component: () => import('@/views/ForumView.vue'),
+    component: () => import('@/views/ForumFilmView.vue'),
     props: (route) => ({ filmId: route.params.filmId, filmTitle: route.query.filmTitle }) // Usa query per passare il titolo
   },
+  {
+    path: '/user-forum/:id',
+    name: 'userforum',
+    component: UserForumView,
+    props: true
+  },
+  {
+  path: '/fm/:id',
+  name: 'ForumUserView',
+  component: () => import('@/views/ForumUserView.vue'),
+  props: true,
+},
   {
     path:'/debug',
     name: 'debug',

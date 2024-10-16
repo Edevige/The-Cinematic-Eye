@@ -74,6 +74,7 @@
                             <li><router-link class="dropdown-item" :to="{ name: 'letueliste', params: { id: this.$store.state.user.id }}">Le Tue Liste</router-link></li>
                             <li><router-link class="dropdown-item" :to="{ name: 'letuerecensioni', params: { id: this.$store.state.user.id }}">Le Tue Recensioni</router-link></li>
                             <li><router-link class="dropdown-item" :to="{ name: 'filmgiavisti', params: { id: this.$store.state.user.id }}">Film Già Visti</router-link></li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'userforum', params: { id: this.$store.state.user.id }}">Forum Utenti</router-link></li>
 
                             <li><button type="button" @click="logout" class="btn btn-outline-light me-auto" style="width: 170px;">Logout</button></li>
                         </div>

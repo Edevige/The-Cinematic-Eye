@@ -113,22 +113,22 @@ export default {
     },
 
     async sendMessage() {
-  try {
-    const response = await apiUtils.addMessage({
-      text: this.newMessageText,
-      threadId: this.thread.id,
-      token: this.$store.state.token,
-    });
+      try {
+        const response = await apiUtils.addMessage({
+          text: this.newMessageText,
+          threadId: this.thread.id,
+          token: this.$store.state.token,
+        });
 
-    if (response.data.success) {
-      // Aggiungi direttamente il nuovo messaggio alla lista locale
-      await this.fetchMessages();
-      this.newMessageText = '';
-    }
-  } catch (error) {
-    console.error('Errore nell\'invio del messaggio:', error);
-  }
-},
+        if (response.data.success) {
+          // Aggiungi direttamente il nuovo messaggio alla lista locale
+          await this.fetchMessages();
+          this.newMessageText = '';
+        }
+      } catch (error) {
+        console.error('Errore nell\'invio del messaggio:', error);
+      }
+    },
 
     //da aggiungere gli username
     goToUserArea(username) {

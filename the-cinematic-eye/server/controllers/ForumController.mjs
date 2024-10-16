@@ -11,7 +11,7 @@ export default {
     
             // Controlla se esiste già un thread per questo film
             let thread = await threads.findOne({ where: { film_id: filmId } });
-    
+            console.log('Chiamata getOrCreateThread con filmId:', req.params.filmId);
             if (!thread) {
                 // Se non esiste, crea un nuovo thread con il titolo e l'id del film
                 thread = await threads.create({
@@ -93,6 +93,44 @@ export default {
           res.status(400).send({ error: 'Errore durante l\'eliminazione del commento.' });
         }
     },
+    // ForumController.mjs
+    async getUserForums(req, res) {
+        try {
+            const forums = await threads.findAll({
+                where: {
+                    film_id: null // Filtra i forum con film_id uguale a null
+                },
+                attributes: ['id', 'title', 'film_id'] // Restituisci solo l'id e il titolo
+            });
+            res.send(forums);
+        } catch (error) {
+            console.error('Errore nel recupero dei forum:', error);
+            res.status(500).send({ error: 'Errore nel recupero dei forum.' });
+        }
+    },    
+    // Funzione per ottenere un forum specifico e i relativi messaggi
+    async getForumById(req, res) {
+        console.log('Chiamata getForumById con ID:', req.params.id);
+        try {
+            const threadId = req.params.id;
+            const forum = await threads.findOne({
+                where: { id: threadId },
+            });
+            if (!forum) {
+                return res.status(404).send({ error: 'Forum non trovato' });
+            }
+            res.status(200).send({
+                forum: {
+                    id: forum.id,
+                    title: forum.title,
+                },
+            });
+        } catch (error) {
+            console.error('Errore nel recupero del forum:', error);
+            res.status(500).send({ error: 'Errore del server.' });
+        }
+    }
+    
 
 };
   

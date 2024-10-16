@@ -118,4 +118,10 @@ export default {
     deleteMessage (messageId, credentials) {
         return Api().delete(`/forum/deleteMessage/${messageId}`, credentials);
     },
+    getUserForums() {
+        return Api().get('/forum/user-forums');
+    },
+    getForumById(forumId) {
+        return Api().get(`/fm/${forumId}`);
+    },
 }
