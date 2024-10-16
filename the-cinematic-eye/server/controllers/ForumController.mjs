@@ -129,8 +129,29 @@ export default {
             console.error('Errore nel recupero del forum:', error);
             res.status(500).send({ error: 'Errore del server.' });
         }
+    },
+    // Funzione per creare un nuovo forum
+    async createForum(req, res) {
+        try {
+          const { title, film_id } = req.body;
+      
+          if (!title || title.trim() === '') {
+            return res.status(400).send({ error: 'Il titolo è richiesto.' });
+          }
+      
+          // Assicurati che film_id sia trattato come null per forum generici
+          const newThread = await threads.create({
+            title: title,
+            film_id: film_id || null,  // Se film_id è undefined o altro, usa null
+          });
+      
+          res.status(201).send(newThread);
+        } catch (error) {
+          console.error('Errore nella creazione del forum:', error);
+          res.status(500).send({ error: 'Errore del server durante la creazione del forum.' });
+        }
     }
-    
+      
 
 };
   

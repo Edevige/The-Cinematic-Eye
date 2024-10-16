@@ -31,8 +31,9 @@
 
         <!-- Form per richiesta forum (solo utenti pro) -->
         <div v-if="showRequestForm" class="request-form">
-            <input v-model="forumRequestTitle" placeholder="Titolo del forum" />
-            <button @click="sendRequest" class="btn btn-success">Invia</button>
+            <textarea v-model="forumRequestTitle" class="form-control" rows="3" required></textarea>
+            <button v-if="(forumRequestTitle=='')" disabled class="btn btn-primary mt-2">Invia</button>
+            <button v-else class="btn btn-primary mt-2" @click="sendRequest">Invia</button>
             <button @click="toggleRequestForm" class="btn btn-secondary">Annulla</button>
         </div>
 
@@ -45,8 +46,9 @@
 
         <!-- Form per creare forum (solo admin) -->
         <div v-if="showCreateForm" class="create-form">
-            <input v-model="newForumTitle" placeholder="Titolo del nuovo forum" />
-            <button @click="createForum" class="btn btn-success">Crea</button>
+            <textarea v-model="newForumTitle" class="form-control" rows="3" required></textarea>
+            <button v-if="(newForumTitle=='')" disabled class="btn btn-primary mt-2">Crea</button>
+            <button v-else class="btn btn-primary mt-2" @click="createForum">Crea</button>
             <button @click="toggleCreateForm" class="btn btn-secondary">Annulla</button>
         </div>
         </div>
@@ -117,10 +119,35 @@ export default {
     toggleRequestForm() {
       this.showRequestForm = !this.showRequestForm;
     },
-    // Mostra/nasconde il form per creare un nuovo forum (admin)
     toggleCreateForm() {
-      this.showCreateForm = !this.showCreateForm;
+        this.showCreateForm = !this.showCreateForm;
     },
+    // Funzione per creare un nuovo forum (solo admin)
+    async createForum() {
+  try {
+    if (this.newForumTitle.trim() === '') {
+      console.error('Il titolo del forum non può essere vuoto.');
+      return;
+    }
+
+    // Chiamata API per creare un nuovo forum con film_id null
+    const response = await apiUtils.createForum({
+      title: this.newForumTitle,
+      film_id: null  // Assicurati che film_id sia null per i forum generici
+    });
+
+    if (response && response.data) {
+      console.log('Nuovo forum creato con successo:', response.data);
+      this.forums.push(response.data); // Aggiunge il nuovo forum alla lista visualizzata
+    }
+
+    this.toggleCreateForm(); // Chiude il form dopo la creazione
+    this.newForumTitle = ''; // Resetta il campo di input del titolo
+  } catch (error) {
+    console.error('Errore nella creazione del forum:', error);
+  }
+}
+,
     // Funzione per inviare la richiesta forum
     async sendRequest() {
       try {
@@ -131,16 +158,6 @@ export default {
         console.error('Errore durante la richiesta forum:', error);
       }
     },
-    // Funzione per creare un nuovo forum (solo admin)
-    async createForum() {
-      try {
-        console.log('Nuovo forum creato:', this.newForumTitle);
-        // Logica per creare il nuovo forum
-        this.toggleCreateForm(); // Chiude il form dopo la creazione
-      } catch (error) {
-        console.error('Errore nella creazione del forum:', error);
-      }
-    }
   },
   mounted() {
     // Recupera i forum quando la pagina è caricata

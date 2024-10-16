@@ -78,5 +78,8 @@ export default function (app) {
   app.delete('/forum/deleteMessage/:id', ForumController.deleteMessage);
   app.get('/forum/user-forums', ForumController.getUserForums);
   app.get('/fm/:id', ForumController.getForumById);
+  app.post('/fm/create', ForumController.createForum);
+
 }
+
 
