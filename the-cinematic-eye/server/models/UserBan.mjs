@@ -3,8 +3,12 @@ export default function (sequelize, DataTypes, user) {
       "UserBan",
       {
         ban:{
-          type: DataTypes.INTEGER, // 1 se l'utente è bannato
+          type: DataTypes.INTEGER, // 1 se l'utente è bannato, 2 se l'utent è sospeso
           allowNull: false
+        },
+        suspenedUntil:{
+          type: DataTypes.INTEGER, //Duarata sospensione (ore)
+          allowNull: true
         },
         text: {
             type: DataTypes.TEXT, //motivo del ban

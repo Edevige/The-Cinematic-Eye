@@ -27,11 +27,23 @@
         <i class="bi bi-ban"> Ban Utente</i></button>
       </div>
 
-        <!-- Pulsante Sospendi/Riattiva -->
-      <button v-if="isAdmin" @click="toggleSuspendUser" class="btn" :class="user.suspended ? 'btn-outline-danger' : 'btn-outline-warning'">
+      <!-- Pulsante Sospendi/Riattiva -->
+      <button v-if="isAdmin" @click="showSuspendForm = !showSuspendForm" class="btn" :class="user.suspended ? 'btn-outline-danger' : 'btn-outline-warning'">
         <i :class="user.suspended ? 'bi bi-person-check-fill' : 'bi bi-person-x-fill'"></i>
         {{ user.suspended ? 'Riattiva Utente' : 'Sospendi Utente' }}
       </button>
+
+      <!-- Form per sospendere utente -->
+      <div v-if="showSuspendForm" class="suspend-form">
+        <form @submit.prevent="suspendUser">
+          <div class="form-group">
+            <label for="suspendDuration">Sospendi per (in ore):</label>
+            <input v-model="suspendDuration" type="number" class="form-control" id="suspendDuration" placeholder="Inserisci il numero di ore" min="1" required>
+          </div>
+          <button type="submit" class="btn btn-primary mt-2">Conferma Sospensione</button>
+          <button type="button" @click="showSuspendForm = false" class="btn btn-secondary mt-2">Annulla</button>
+        </form>
+      </div>
 
       <!-- Form di Ban -->
       <div v-if="showBanForm" class="ban-form">
@@ -135,6 +147,8 @@ export default {
       banReason: '',
       isUserBanned: false,
       isLoggedIn: this.$store.state.logged,
+      showSuspendForm: false,  // Per controllare se mostrare il form di sospensione
+      suspendDuration: 1,      // Durata della sospensione in ore (default a 1)
     };
   },
   methods: {
@@ -160,6 +174,28 @@ export default {
       }
     },
 
+    // Funzione per sospendere l'utente per la durata specificata
+    async suspendUser() {
+      try {
+        const token = this.$store.state.token;  // Recupera il token per l'autenticazione
+
+        // Effettua una chiamata API per sospendere l'utente per la durata specificata
+        const response = await apiUtils.updateUserSuspension({
+          userId: this.user.id,
+          suspended: true,  // Sospendi l'utente
+          duration: this.suspendDuration,  // Passa la durata della sospensione
+          token
+        });
+
+        if (response && response.data) {
+          this.user.suspended = response.data.suspended;  // Aggiorna lo stato locale
+          this.showSuspendForm = false;  // Nascondi il form dopo la sospensione
+          console.log('Utente sospeso per', this.suspendDuration, 'ore');
+        }
+      } catch (error) {
+        console.error('Errore durante la sospensione dell\'utente:', error);
+      }
+    },
     // Metodo per aprire/chiudere il form di promozione
     togglePromotionForm() {
       this.showPromotionForm = !this.showPromotionForm;
