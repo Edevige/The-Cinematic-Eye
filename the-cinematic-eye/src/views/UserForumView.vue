@@ -27,6 +27,10 @@
             <button @click="toggleRequestForm" class="btn btn-primary">
             Invia richiesta forum
             </button>
+            <!-- Messaggio di successo, visualizzato solo quando successMessage è settato -->
+            <div v-if="successMessage" class="alert alert-success">
+                {{ successMessage }}
+            </div>
         </div>
 
         <!-- Form per richiesta forum (solo utenti pro) -->
@@ -42,6 +46,10 @@
             <button @click="toggleCreateForm" class="btn btn-danger">
             Crea Forum
             </button>
+            <!-- Messaggio di successo, visualizzato solo quando successMessage è settato -->
+            <div v-if="successMessage" class="alert alert-success">
+                {{ successMessage }}
+            </div>
         </div>
 
         <!-- Form per creare forum (solo admin) -->
@@ -71,6 +79,7 @@ export default {
       showCreateForm: false,  // Stato per mostrare o nascondere il form creazione forum
       forumRequestTitle: '',  // Titolo del forum richiesto dagli utenti pro
       newForumTitle: '',      // Titolo del nuovo forum creato dagli admin
+      successMessage: '',
     };
   },
   methods: {
@@ -143,6 +152,12 @@ export default {
 
             this.toggleCreateForm(); // Chiude il form dopo la creazione
             this.newForumTitle = ''; // Resetta il campo di input del titolo
+            this.successMessage = 'Creazione avvenuta con successo con successo!'; // Messaggio di successo
+
+            // Mostra il messaggio per 3 secondi
+            setTimeout(() => {
+                this.successMessage = ''; // Rimuove il messaggio dopo 3 secondi
+            }, 2500);
         } catch (error) {
             console.error('Errore nella creazione del forum:', error);
         }
@@ -165,6 +180,12 @@ export default {
             }
             this.toggleRequestForm();
             this.forumRequestTitle='';
+            this.successMessage = 'Report inviato con successo!'; // Messaggio di successo
+
+            // Mostra il messaggio per 3 secondi
+            setTimeout(() => {
+                this.successMessage = ''; // Rimuove il messaggio dopo 3 secondi
+            }, 2500);
         } catch (error) {
             console.error('Errore durante l\'invio del report:', error);
         }
