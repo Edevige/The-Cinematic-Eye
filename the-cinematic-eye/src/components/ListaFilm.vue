@@ -8,15 +8,21 @@
     
     <!-- Mostra i film se la lista non è vuota -->
     <div v-else-if="listData && listData.film.length > 0">
-        <!-- Contenitore flessibile per il titolo e il pulsante di modifica -->
+        <!-- Contenitore flessibile per il titolo e il pulsante di modifica/segui -->
         <div class="d-flex justify-content-between align-items-center" style="padding-top: 2rem; padding-bottom: 1rem;">
             <!-- Titolo della lista -->
             <h2 style="color: whitesmoke;">
                 {{ listData.title }}
             </h2>
-            <!-- Pulsante di modifica allineato a destra -->
-            <button class="btn btn-outline-light" @click="toggleEditMode">
+
+            <!-- Mostra il pulsante "Modifica Lista" se l'utente è il proprietario -->
+            <button v-if="owner" class="btn btn-outline-light" @click="toggleEditMode">
                 <i class="bi bi-pencil-square"></i> Modifica Lista
+            </button>
+
+            <!-- Mostra il pulsante "Segui" se l'utente non è il proprietario -->
+            <button v-else class="btn btn-outline-light" @click="followList">
+                <i class="bi bi-plus-circle"></i> Segui Lista
             </button>
         </div>
 
@@ -60,7 +66,7 @@
                 <div class="film-info">
                     <a class="h6 p-2">{{ filmDetails[filmId]?.title || 'Titolo non disponibile' }}</a>
                 </div>
-                <!-- Pulsante per rimuovere il film dalla lista -->
+                <!-- Pulsante per rimuovere il film dalla lista (solo per il proprietario) -->
                 <div v-if="owner" @click="remove(filmId)" class="remove-button">
                     <i class="bi bi-dash-square-fill"></i>
                 </div>
@@ -68,47 +74,21 @@
         </div>
     </div>
 
+    <!-- Lista vuota -->
     <div v-else>
-        <!-- Contenitore flessibile per il titolo e il pulsante di modifica -->
         <div class="d-flex justify-content-between align-items-center" style="padding-top: 2rem; padding-bottom: 1rem;">
-            <!-- Titolo della lista -->
-            <h2 style="color: whitesmoke;">
-                {{ listData.title }}
-            </h2>
-            <!-- Pulsante di modifica allineato a destra -->
-            <button class="btn btn-outline-light" @click="toggleEditMode">
+            <h2 style="color: whitesmoke;">{{ listData.title }}</h2>
+            <button v-if="owner" class="btn btn-outline-light" @click="toggleEditMode">
                 <i class="bi bi-pencil-square"></i> Modifica Lista
             </button>
+            <button v-else class="btn btn-outline-light" @click="followList">
+                <i class="bi bi-plus-circle"></i> Segui Lista
+            </button>
         </div>
-
-        <!-- Dati della visibilità e follower della lista -->
         <div style="color: whitesmoke; text-align: center; padding-bottom: 1rem;">
             <span v-if="listData.visible">Visibile al pubblico</span>
             <span v-else>Privata</span> | 
             <span>{{ listData.follower }} Follower</span>
-        </div>
-
-        <!-- Form per modificare il titolo e la visibilità della lista -->
-        <div v-if="isEditing" class="edit-form review-form">
-            <form @submit.prevent="saveChanges" class="text-center">
-                <div class="form-group">
-                    <label for="listTitle" class="form-label">Titolo della Lista</label>
-                    <input id="listTitle" v-model="editedTitle" type="text" class="form-control text-center" style="width: 60%; margin: 0 auto;">
-                </div>
-
-                <div class="form-group" style="padding-top: 1rem;">
-                    <label for="listVisibility" class="form-label">Lista Visibile?</label>
-                    <input id="listVisibility" type="checkbox" v-model="editedVisibility" class="form-check-input" style="margin-left: 20px;">
-                    <span style="margin-left: 5px;">{{ editedVisibility ? 'Pubblica' : 'Privata' }}</span>
-                </div>
-
-                <!-- Pulsanti posizionati sulla stessa linea, distanziati -->
-                <div class="d-flex justify-content-center mt-3">
-                    <button type="submit" class="btn btn-outline-light mx-3" style="width: 120px;">Salva</button>
-                    <button type="button" @click="toggleEditMode" class="btn btn-secondary mx-3" style="width: 120px;">Annulla</button>
-                    <button type="button" @click="deleteList" class="btn btn-danger mx-3" style="width: 120px;">Elimina</button>
-                </div>
-            </form>
         </div>
         <p>Questa lista non contiene ancora nessun film</p>
     </div>
@@ -209,6 +189,16 @@ export default {
                 } catch (error) {
                     console.error('Errore durante l\'eliminazione della lista:', error);
                 }
+            }
+        },
+        async followList() {
+            try {
+                await apiUtils.followList(this.listId, {
+                    headers: { Authorization: `Bearer ${this.$store.state.token}` }
+                });
+                this.listData.follower++;  // Incrementa il numero di follower
+            } catch (error) {
+                console.error('Errore nel seguire la lista:', error);
             }
         },
     },
