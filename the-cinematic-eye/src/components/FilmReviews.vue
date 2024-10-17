@@ -49,7 +49,7 @@
             </div>
 
             <!-- Pulsante Segnala Spoiler-->
-            <div v-if="(isAdmin || isProUser) && !item.spoiler" class="col-12">
+            <div v-if="(isProUser) && !item.spoiler" class="col-12">
               <button @click="sendRequest(item)" class="spoiler-btn">Segnala Spoiler</button>
             </div>
 
