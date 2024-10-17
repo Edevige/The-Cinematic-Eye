@@ -15,6 +15,16 @@ export default {
     }
   },
 
+  async getAllList(req,res){
+    try {
+      const found= await listfilms.findAll();
+      res.send({listfilms: found})
+    } catch (error) {
+      console.error("Errore nel controller getUserLists:", e); // Log dell'errore
+      res.status(400).send({ error: 'Errore inatteso, contatta l’amministratore di sistema' });
+    }
+  },
+
   // Funzione per creare una nuova lista di film
   async createList(req, res) {
     try {

@@ -21,6 +21,7 @@ import DiscoverFilmView from '@/views/DiscoverFilmView.vue'
 import OtherUserView from '@/views/OtherUserView.vue'
 import UserForumView from '@/views/UserForumView.vue'
 import AdminView from '@/views/AdminView.vue'
+import TopListView from '@/views/TopListView.vue'
 const routes = [
   {
     path: '/',
@@ -174,6 +175,11 @@ const routes = [
     path:'/debug',
     name: 'debug',
     component: () => import('../views/DebugStoreView.vue')
+  },
+  {
+    path:'/topList',
+    name:'topList',
+    component: TopListView
   },
 ]
 

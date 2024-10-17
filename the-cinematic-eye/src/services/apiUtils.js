@@ -32,6 +32,7 @@ export default {
     toggleLikeDislike(credentials) {
         return Api().post('/toggleLikeDislike', credentials);
     },
+    //
     getUserLists(credentials) {
         return Api().get('/getUserLists', credentials);
     },
@@ -138,4 +139,7 @@ export default {
     deleteReport(reportId) {
         return Api().delete(`/reports/${reportId}`);
     },
+    getAllList(credentials){
+        return Api().get('/getAllList',credentials);
+    }
 }

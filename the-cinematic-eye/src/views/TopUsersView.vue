@@ -24,7 +24,7 @@ export default {
           .sort((a, b) => b.seguiti - a.seguiti)
           .slice(0, 10)
           .map(user => ({
-            Username: user.Username,  // Assicurati che corrisponda al nome del campo corretto
+            Username: user.Username,  
             id: user.id
           }));
       } catch (error) {

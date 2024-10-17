@@ -84,5 +84,7 @@ export default function (app) {
   app.post('/createReport', ReportController.createReport);
   app.get('/reports', ReportController.getAllReports);
   app.delete('/reports/:id', ReportController.deleteReport);
+
+  app.get('/getAllList', ListController.getAllList);
   
 }
