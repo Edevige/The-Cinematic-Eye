@@ -2,7 +2,7 @@ export default function (sequelize, DataTypes, user) {
     const report = sequelize.define(
       "Reports",
       {
-        mreason:{
+        reason:{
           type: DataTypes.TEXT,
           allowNull: false
         },

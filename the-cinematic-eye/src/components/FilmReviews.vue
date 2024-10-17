@@ -77,8 +77,7 @@
           <!-- Messaggio quando la lista recensioni è vuota -->
           <div v-else-if="reviews.length === 0">
             <p class="lista-vuota" style="padding-top: 3rem; color: whitesmoke; font-size: 35px; margin-bottom: 0px;">
-              Non ci sono ancora recensioni
-            </p>
+              Non ci sono ancora recensioni </p>
             <p class="lista-vuota" style="color: whitesmoke; font-size: 20px;">
               Lascia una recensione per primo per questo film
             </p>

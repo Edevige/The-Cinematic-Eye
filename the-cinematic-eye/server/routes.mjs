@@ -10,6 +10,7 @@ import ListController from "./controllers/ListController.mjs";
 import RoleController from "./controllers/RoleController.mjs";
 import BanController from "./controllers/BanController.mjs";
 import ForumController from "./controllers/ForumController.mjs";
+import ReportController from "./controllers/ReportController.mjs";
 
 export default function (app) {
   app.get("/", (_req, res) => {
@@ -72,8 +73,16 @@ export default function (app) {
   app.delete('/removeUserBan/:userId', BanController.removeUserBan);
 
   // Rotte per la gestione dei forum dedicati ai film
-  app.post('/forum/:filmId', ForumController.getOrCreateThread);  // Ottiene o crea un thread per un film
+  app.post('/forum/:filmId', ForumController.getOrCreateThread);   // Ottiene o crea un thread per un film
   app.post('/forum/:threadId/addMessage', ForumController.addMessage);     // Aggiunge un messaggio a un thread
   app.get('/forum/:threadId/messages', ForumController.getMessagesByThread);
+  app.delete('/forum/deleteMessage/:id', ForumController.deleteMessage);
+  app.get('/forum/user-forums', ForumController.getUserForums);
+  app.get('/fm/:id', ForumController.getForumById);
+  app.post('/fm/create', ForumController.createForum);
+
+  app.post('/createReport', ReportController.createReport);
+
 }
+
 

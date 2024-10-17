@@ -115,5 +115,20 @@ export default {
     addMessage(messageData) {
         return Api().post(`/forum/${messageData.threadId}/addMessage`, messageData); // Usa threadId nell'URL
     },
-
+    deleteMessage (messageId, credentials) {
+        return Api().delete(`/forum/deleteMessage/${messageId}`, credentials);
+    },
+    getUserForums() {
+        return Api().get('/forum/user-forums');
+    },
+    getForumById(forumId) {
+        return Api().get(`/fm/${forumId}`);
+    },
+    // Funzione per creare un nuovo forum con film_id=null
+    createForum(credentials) {
+        return Api().post('/fm/create', credentials);
+    },
+    createReport(credentials) {
+        return Api().post('/createReport', credentials);
+    }
 }
