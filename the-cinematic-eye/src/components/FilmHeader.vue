@@ -75,6 +75,8 @@
                             <li><router-link class="dropdown-item" :to="{ name: 'letuerecensioni', params: { id: this.$store.state.user.id }}">Le Tue Recensioni</router-link></li>
                             <li><router-link class="dropdown-item" :to="{ name: 'filmgiavisti', params: { id: this.$store.state.user.id }}">Film Già Visti</router-link></li>
                             <li><router-link class="dropdown-item" :to="{ name: 'userforum', params: { id: this.$store.state.user.id }}">Forum Utenti</router-link></li>
+                            <li><router-link class="dropdown-item" :to="{ name: 'polls', params: { id: this.$store.state.user.id }}">Sondaggi</router-link></li>
+
                             <div v-if="isAdmin">
                                 <li><router-link class="dropdown-item" :to="{ name: 'admin', params: { id: this.$store.state.user.id }}">Pagina Admin</router-link></li>
                             </div>

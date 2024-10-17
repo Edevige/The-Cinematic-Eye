@@ -11,6 +11,7 @@ import RoleController from "./controllers/RoleController.mjs";
 import BanController from "./controllers/BanController.mjs";
 import ForumController from "./controllers/ForumController.mjs";
 import ReportController from "./controllers/ReportController.mjs";
+import PollController from "./controllers/PollController.mjs";
 
 export default function (app) {
   app.get("/", (_req, res) => {
@@ -88,4 +89,11 @@ export default function (app) {
   app.get('/reports', ReportController.getAllReports);
   app.delete('/reports/:id', ReportController.deleteReport);
 
+  app.get('/getAllList', ListController.getAllList);
+  
+
+  app.post('/polls', PollController.createPoll); // Creazione di un nuovo sondaggio
+  app.get('/polls', PollController.getAllPolls); // Recupera tutti i sondaggi
+  app.post('/polls/vote', PollController.voteOnPoll); // Vota un sondaggio
+  app.delete('/polls/:id', PollController.deletePoll);
 }

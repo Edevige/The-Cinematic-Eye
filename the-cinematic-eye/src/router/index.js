@@ -22,6 +22,7 @@ import OtherUserView from '@/views/OtherUserView.vue'
 import UserForumView from '@/views/UserForumView.vue'
 import AdminView from '@/views/AdminView.vue'
 import TopListView from '@/views/TopListView.vue'
+import PollsView from '@/views/PollsView.vue'
 const routes = [
   {
     path: '/',
@@ -165,6 +166,11 @@ const routes = [
   name: 'ForumUserView',
   component: () => import('@/views/ForumUserView.vue'),
   props: true,
+  },
+  {
+    path: '/polls/:id', // Questo è il path per la pagina dei sondaggi
+    name: 'polls',
+    component: PollsView,
   },
   {
     path: '/admin/:id',

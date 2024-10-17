@@ -119,7 +119,9 @@ export default{
           if (!review) {
             return res.status(404).send({ error: 'Recensione non trovata o non autorizzato.' });
           }
-      
+          
+          await URIs.destroy({where: {ReviewId: req.params.id}});
+
           await review.destroy();
       
           res.send({ message: 'Recensione eliminata con successo.' });
