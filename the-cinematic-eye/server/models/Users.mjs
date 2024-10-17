@@ -4,7 +4,7 @@ async function hashPass(user) {
   if (!user.changed("password")) {
     return;
   }
-  try {
+  try { 
     const passHash = await argon2id.hash(user.password);
     user.setDataValue("password", passHash);
     return passHash;
@@ -71,7 +71,6 @@ export default function (sequelize, DataTypes) {
     },
     {
       hooks: {
-        beforeUpdate: hashPass,
         beforeSave: hashPass,
       },
     }

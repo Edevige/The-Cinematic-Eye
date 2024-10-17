@@ -32,6 +32,7 @@ export default {
     toggleLikeDislike(credentials) {
         return Api().post('/toggleLikeDislike', credentials);
     },
+    //
     getUserLists(credentials) {
         return Api().get('/getUserLists', credentials);
     },
@@ -137,6 +138,9 @@ export default {
     // Funzione per eliminare un report
     deleteReport(reportId) {
         return Api().delete(`/reports/${reportId}`);
+    },
+    getAllList(credentials){
+        return Api().get('/getAllList',credentials);
     },
     getPolls() {
         return Api().get('/polls');
