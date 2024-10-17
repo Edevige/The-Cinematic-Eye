@@ -50,7 +50,7 @@
 
             <!-- Pulsante Segnala Spoiler-->
             <div v-if="(isAdmin || isProUser) && !item.spoiler" class="col-12">
-              <button @click="Spoiler(item)" class="spoiler-btn">Segnala Spoiler</button>
+              <button @click="sendRequest(item)" class="spoiler-btn">Segnala Spoiler</button>
             </div>
 
             <!-- Se l'utente è un amministratore, mostra i pulsanti per modificare ed eliminare -->
@@ -269,6 +269,31 @@ export default {
       } catch (error) {
         console.error("Errore durante l'eliminazione della recensione:", error);
       }
+    },
+    // Funzione per inviare la segnalazione spoiler
+    
+    async sendRequest(item) {
+        try {
+            const userId = this.$store.state.user.id;
+
+            const response = await apiUtils.createReport({
+                reason: 'segnalazione spoiler',
+                text: 'recensione numero: '+ item.id + ', relativa al film: '+ item.film_id + ', postata dall\'utente id: '+ item.UserId + '\n testo: '+ item.text + ', spoiler: '+ item.spoiler,
+                userId: userId,
+            });
+
+            if (response && response.data) {
+            console.log('Report inviato con successo:', response.data);
+            }
+            //this.successMessage = 'Report inviato con successo!'; // Messaggio di successo
+
+            // Mostra il messaggio per 3 secondi
+            /*setTimeout(() => {
+                this.successMessage = ''; // Rimuove il messaggio dopo 3 secondi
+            }, 2500);*/
+        } catch (error) {
+            console.error('Errore durante l\'invio del report:', error);
+        }
     },
 
   },
