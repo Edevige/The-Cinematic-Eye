@@ -1,4 +1,4 @@
-import { listfilms,userroles } from '../models/index.mjs'; 
+import { listfilms,userroles, users } from '../models/index.mjs'; 
 import jsonwebtoken from "jsonwebtoken";
 import config from "../config/config.mjs";
 
@@ -178,6 +178,86 @@ export default {
     }
   },
 
-  
+  async followList(req, res) {
+    try {    
+      const decode = jsonwebtoken.verify(req.headers.authorization.split(' ')[1], config.authentication.jwtSecret);
+        const userId = decode.id;
+        console.log(req.body.listId);
+        
+        const listId = req.body.listId;
+
+        // Trova l'utente
+        const user = await users.findOne({ where: { id: userId } });
+        
+        if (!user) {
+            return res.status(404).send({ error: 'Utente non trovato.' });
+        }
+
+        // Inizializza l'array followingList se è vuoto
+        if (!user.followingList) user.followingList = [];
+
+        // Verifica se l'utente sta già seguendo la lista
+        if (user.followingList.includes(listId)) {
+            return res.status(400).send({ error: 'Stai già seguendo questa lista.' });
+        }
+
+        // Aggiungi l'ID della lista all'array followingList
+        const updatedFollowingList = [...user.followingList, listId];
+        await user.update({ followingList: updatedFollowingList });
+
+        // Aggiorna il numero di follower della lista
+        const list = await listfilms.findOne({ where: { id: listId } });
+        if (list) {
+            list.follower += 1;
+            await list.save();
+        }
+
+        res.status(200).send({ success: true, message: 'Ora stai seguendo questa lista.', updatedFollowingList });
+    } catch (error) {
+        console.error('Errore nel seguire la lista:', error);
+        res.status(500).send({ error: 'Errore inatteso, riprova più tardi.' });
+    }
+},
+
+async unfollowList(req, res) {
+  try {
+    console.log('REEEEQ', req.headers);
+    console.log('REEEEQ', req.body);
+    
+      const decode = jsonwebtoken.verify(req.headers.authorization.split(' ')[1], config.authentication.jwtSecret);
+      
+      const userId = decode.id;
+      const listId = req.body.listId;
+      console.log(listId);
+
+      // Trova l'utente
+      const user = await users.findOne({ where: { id: userId } });
+
+      if (!user) {
+          return res.status(404).send({ error: 'Utente non trovato.' });
+      }
+
+      // Verifica se l'utente segue effettivamente la lista
+      if (!user.followingList || !user.followingList.includes(listId)) {
+          return res.status(400).send({ error: 'Non segui questa lista.' });
+      }
+
+      // Rimuovi l'ID della lista dall'array followingList
+      const updatedFollowingList = user.followingList.filter(id => id !== listId);
+      await user.update({ followingList: updatedFollowingList });
+
+      // Aggiorna il numero di follower della lista
+      const list = await listfilms.findOne({ where: { id: listId } });
+      if (list) {
+          list.follower -= 1;
+          await list.save();
+      }
+
+      res.status(200).send({ success: true, message: 'Hai smesso di seguire la lista.', updatedFollowingList });
+  } catch (error) {
+      console.error('Errore nel smettere di seguire la lista:', error);
+      res.status(500).send({ error: 'Errore inatteso, riprova più tardi.' });
+  }
+}
 }
 

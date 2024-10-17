@@ -59,6 +59,9 @@ export default function (sequelize, DataTypes) {
       lists: {
         type: DataTypes.ARRAY(DataTypes.INTEGER),
       },
+      followingList:{
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
+      },
       seguiti: {
         type: DataTypes.ARRAY(DataTypes.INTEGER),
         defaultValue: [],

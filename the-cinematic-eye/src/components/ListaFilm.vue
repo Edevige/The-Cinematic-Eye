@@ -20,9 +20,10 @@
                 <i class="bi bi-pencil-square"></i> Modifica Lista
             </button>
 
-            <!-- Mostra il pulsante "Segui" se l'utente non è il proprietario -->
-            <button v-else class="btn btn-outline-light" @click="followList">
-                <i class="bi bi-plus-circle"></i> Segui Lista
+            <!-- Mostra il pulsante "Segui" o "Smetti di seguire" se l'utente non è il proprietario -->
+            <button v-else class="btn btn-outline-light" @click="isFollowing ? unfollowList() : followList()">
+                <i class="bi" :class="isFollowing ? 'bi-dash-circle' : 'bi-plus-circle'"></i>
+                {{ isFollowing ? 'Smetti di seguire' : 'Segui Lista' }}
             </button>
         </div>
 
@@ -81,8 +82,9 @@
             <button v-if="owner" class="btn btn-outline-light" @click="toggleEditMode">
                 <i class="bi bi-pencil-square"></i> Modifica Lista
             </button>
-            <button v-else class="btn btn-outline-light" @click="followList">
-                <i class="bi bi-plus-circle"></i> Segui Lista
+            <button v-else class="btn btn-outline-light" @click="isFollowing ? unfollowList() : followList()">
+                <i class="bi" :class="isFollowing ? 'bi-dash-circle' : 'bi-plus-circle'"></i>
+                {{ isFollowing ? 'Smetti di seguire' : 'Segui Lista' }}
             </button>
         </div>
         <div style="color: whitesmoke; text-align: center; padding-bottom: 1rem;">
@@ -93,6 +95,7 @@
         <p>Questa lista non contiene ancora nessun film</p>
     </div>
 </template>
+
 
 <script>
 import TMdbApi from '@/services/TMdbApi';
@@ -108,7 +111,8 @@ export default {
             loading: true,
             isEditing: false,  // Stato per mostrare/nascondere il form di modifica
             editedTitle: '',   // Stato per il titolo modificato
-            editedVisibility: true // Stato per la visibilità modificata
+            editedVisibility: true, // Stato per la visibilità modificata
+            isFollowing: false,  // Nuovo stato per verificare se l'utente segue la lista
         };
     },
     mounted() {
@@ -122,6 +126,13 @@ export default {
                 this.listData = response.data;
                 this.editedTitle = this.listData.title;
                 this.editedVisibility = this.listData.visible; // Booleano
+
+                // Verifica se l'utente sta già seguendo la lista
+                this.isFollowing = Array.isArray(this.$store.state.user.followingList) 
+                ? this.$store.state.user.followingList.includes(this.listId)
+                : false;
+
+
                 if (this.listData.film.length > 0) {
                     this.getFilmDetails();
                 }
@@ -197,8 +208,20 @@ export default {
                     headers: { Authorization: `Bearer ${this.$store.state.token}` }
                 });
                 this.listData.follower++;  // Incrementa il numero di follower
+                this.isFollowing = true;   // Imposta isFollowing a true dopo il follow
             } catch (error) {
                 console.error('Errore nel seguire la lista:', error);
+            }
+        },
+        async unfollowList() {
+            try {
+                await apiUtils.unfollowList(this.listId, {
+                    headers: { Authorization: `Bearer ${this.$store.state.token}` }
+                });
+                this.listData.follower--;  // Decrementa il numero di follower
+                this.isFollowing = false;  // Imposta isFollowing a false dopo l'unfollow
+            } catch (error) {
+                console.error('Errore nel smettere di seguire la lista:', error);
             }
         },
     },
@@ -209,6 +232,7 @@ export default {
     }
 };
 </script>
+
 
 <style lang="scss" scoped>
 .spinner-border {

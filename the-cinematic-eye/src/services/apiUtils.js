@@ -141,5 +141,12 @@ export default {
     },
     getAllList(credentials){
         return Api().get('/getAllList',credentials);
-    }
+    },
+    followList(listId, config){
+        return Api().post('/followList', {listId: listId}, config);
+    },
+    unfollowList(listId, config){
+        return Api().post('/unfollowList', {listId: listId}, config);
+    },
+    
 }
