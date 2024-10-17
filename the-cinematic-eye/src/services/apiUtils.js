@@ -138,4 +138,18 @@ export default {
     deleteReport(reportId) {
         return Api().delete(`/reports/${reportId}`);
     },
+    getPolls() {
+        return Api().get('/polls');
+    },
+    // Crea un nuovo sondaggio
+    createPoll(pollData) {
+        return Api().post('/polls', pollData);
+    },
+    // Vota un sondaggio
+    voteOnPoll(voteData) {
+        return Api().post('/polls/vote', voteData);
+    },
+    deletePoll(pollId) {
+        return Api().delete(`/polls/${pollId}`);
+    },
 }

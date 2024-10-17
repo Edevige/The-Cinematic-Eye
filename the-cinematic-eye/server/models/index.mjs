@@ -50,6 +50,14 @@ import Report from './Report.mjs';
 
 const reports = Report(sequelize, DataTypes, users);
 
+import Poll from './Poll.mjs';
+
+const polls = Poll(sequelize, DataTypes, users);
+
+import UPI from './UPI.mjs';
+
+const upis = UPI(sequelize, DataTypes, users, polls);
+
 const db = {
     
 }
@@ -66,5 +74,7 @@ export {
     threads,
     messages,
     reports,
+    polls,
+    upis,
 }
 
