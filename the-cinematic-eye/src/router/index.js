@@ -20,6 +20,7 @@ import ListaFilm from '@/components/ListaFilm.vue'
 import DiscoverFilmView from '@/views/DiscoverFilmView.vue'
 import OtherUserView from '@/views/OtherUserView.vue'
 import UserForumView from '@/views/UserForumView.vue'
+import AdminView from '@/views/AdminView.vue'
 const routes = [
   {
     path: '/',
@@ -163,7 +164,12 @@ const routes = [
   name: 'ForumUserView',
   component: () => import('@/views/ForumUserView.vue'),
   props: true,
-},
+  },
+  {
+    path: '/admin/:id',
+    name: 'admin',
+    component: AdminView,  // Collegamento al componente AdminView
+  },
   {
     path:'/debug',
     name: 'debug',

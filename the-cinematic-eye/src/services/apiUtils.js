@@ -130,5 +130,12 @@ export default {
     },
     createReport(credentials) {
         return Api().post('/createReport', credentials);
-    }
+    },
+    getReports() {
+        return Api().get('/reports');
+    },
+    // Funzione per eliminare un report
+    deleteReport(reportId) {
+        return Api().delete(`/reports/${reportId}`);
+    },
 }

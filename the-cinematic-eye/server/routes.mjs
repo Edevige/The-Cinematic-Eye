@@ -82,7 +82,7 @@ export default function (app) {
   app.post('/fm/create', ForumController.createForum);
 
   app.post('/createReport', ReportController.createReport);
-
+  app.get('/reports', ReportController.getAllReports);
+  app.delete('/reports/:id', ReportController.deleteReport);
+  
 }
-
-

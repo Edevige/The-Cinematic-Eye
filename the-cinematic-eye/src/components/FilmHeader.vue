@@ -75,6 +75,9 @@
                             <li><router-link class="dropdown-item" :to="{ name: 'letuerecensioni', params: { id: this.$store.state.user.id }}">Le Tue Recensioni</router-link></li>
                             <li><router-link class="dropdown-item" :to="{ name: 'filmgiavisti', params: { id: this.$store.state.user.id }}">Film Già Visti</router-link></li>
                             <li><router-link class="dropdown-item" :to="{ name: 'userforum', params: { id: this.$store.state.user.id }}">Forum Utenti</router-link></li>
+                            <div v-if="isAdmin">
+                                <li><router-link class="dropdown-item" :to="{ name: 'admin', params: { id: this.$store.state.user.id }}">Pagina Admin</router-link></li>
+                            </div>
 
                             <li><button type="button" @click="logout" class="btn btn-outline-light me-auto" style="width: 170px;">Logout</button></li>
                         </div>
@@ -138,7 +141,7 @@ export default {
     },
     mounted(){
         this.initializeGoogle();
-
+        this.checkUserRole();
         // Aggiunge un event listener per chiudere il sottomenu se il menu generale viene chiuso (opzionale)
         document.addEventListener('hide.bs.dropdown', () => {
         this.isSubmenuVisible = false;
@@ -164,7 +167,10 @@ export default {
             logMail: '',
             logPass: '',
             error: null, 
-            test: false   
+            test: false,
+            isAdmin: false,
+            isPro: false,
+            isBaseUser: false, 
         };
     },
 
@@ -178,6 +184,26 @@ export default {
     },
     
     methods:{
+        // Funzione per verificare se l'utente loggato è un amministratore, pro o base
+        async checkUserRole() {
+            try {
+                const token = this.$store.state.token;
+                if (!token) {
+                console.error('Token non trovato.');
+                return;
+                }
+                const response = await apiUtils.getUserRole({
+                headers: { Authorization: `Bearer ${token}` }
+                });
+                if (response && response.data) {
+                this.isAdmin = response.data.role === 1;
+                this.isPro = response.data.role === 2;
+                this.isBaseUser = response.data.role === 0;
+                }
+            } catch (error) {
+                console.error('Errore nel recuperare il ruolo dell\'utente loggato:', error);
+            }
+        },
         // Metodo per aprire/chiudere il sottomenu
         toggleSubmenu(event) {
             this.isSubmenuVisible = !this.isSubmenuVisible;
@@ -248,6 +274,7 @@ export default {
                     this.logMail = '';
                     this.logPass = '';
                     this.error = null;
+                    await this.checkUserRole();
                 } else {
                     this.error = 'Errore di autenticazione. Riprova più tardi.';
                 }
@@ -265,7 +292,10 @@ export default {
             this.user = {};
             this.jwt = "";
             this.error = null;
-            this.$store.commit('logout')
+            this.isAdmin = false;
+            this.isPro = false;
+            this.isBaseUser = false;
+            this.$store.commit('logout');
 
             // Reindirizza alla homepage
             this.$router.push('/');
@@ -286,6 +316,8 @@ export default {
                     this.$store.dispatch('setToken', Gregister.data.token);
                     this.$store.dispatch('setUser', Gregister.data.user);
                     this.$store.commit('login');
+
+                    await this.checkUserRole();
                 }
             } catch (error) {
                 if (error.response && error.response.data.error === "Il tuo account è stato bannato.") {

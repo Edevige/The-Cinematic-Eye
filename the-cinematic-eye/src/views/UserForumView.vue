@@ -171,8 +171,9 @@ export default {
             console.log('User ID:', userId);
 
             const response = await apiUtils.createReport({
-            text: this.forumRequestTitle,
-            userId: userId,
+                reason: 'creazione forum',
+                text: this.forumRequestTitle,
+                userId: userId,
             });
 
             if (response && response.data) {
