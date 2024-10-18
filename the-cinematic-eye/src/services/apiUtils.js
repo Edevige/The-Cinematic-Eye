@@ -163,4 +163,11 @@ export default {
     deletePoll(pollId) {
         return Api().delete(`/polls/${pollId}`);
     },
+
+    subscribeNewsletter(credentials){
+        return Api().post('/subscribeNewsletter', credentials);
+    },
+    cancelNewsletter(credentials){
+        return Api().post('/cancelNewsletter', credentials);
+    }
 }

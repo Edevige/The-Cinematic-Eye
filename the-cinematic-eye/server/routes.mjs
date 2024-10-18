@@ -12,6 +12,7 @@ import BanController from "./controllers/BanController.mjs";
 import ForumController from "./controllers/ForumController.mjs";
 import ReportController from "./controllers/ReportController.mjs";
 import PollController from "./controllers/PollController.mjs";
+import emailController from "./controllers/emailController.mjs";
 
 export default function (app) {
   app.get("/", (_req, res) => {
@@ -96,4 +97,7 @@ export default function (app) {
   app.get('/polls', PollController.getAllPolls); // Recupera tutti i sondaggi
   app.post('/polls/vote', PollController.voteOnPoll); // Vota un sondaggio
   app.delete('/polls/:id', PollController.deletePoll);
+
+  app.post('/subscribeNewsletter', emailController.subscribeNewsletter);
+  app.post('/cancelNewsletter', emailController.cancelNewsletter);
 }

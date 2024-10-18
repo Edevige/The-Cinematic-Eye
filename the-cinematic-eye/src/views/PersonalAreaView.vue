@@ -47,11 +47,11 @@
           </div>
 
           <div class="newsletter-section">
-            <div v-if="user && user.subscribed">
+            <div v-if="user && seguace">
               <label for="Newsletter">Sei iscritto alla newsletter</label>
               <button class="btn-secondary" type="button" @click="cancelNewsletter()">Cancella l'iscrizione</button>
             </div>
-            <div v-else-if="user && !user.subscribed">
+            <div v-else-if="user && !seguace">
               <label for="Newsletter">Non sei iscritto alla newsletter</label>
               <button class="btn-primary" type="button" @click="subscribeNewsletter()">Iscriviti</button>
             </div>
@@ -189,16 +189,24 @@ export default {
     newPassword:'',
     newBirthday: null,
     user: {},
-    id: this.$store.state.user.id
+    username: this.$store.state.user.username,
+    seguace: false
     }
   },
   methods:{
+    async isSubscribed(user){
+      if(user){
+        this.seguace=true;
+      } else{
+        this.seguace=false;
+      }
+    },
     async fetchUser() {
         try {
           // Chiamata API per ottenere le informazioni utente
-          const response = await Utils.getUserById(this.id);  // Assicurati che questa funzione esista nel tuo servizio
+          const response = await Utils.getUserByUsername(this.username);  // Assicurati che questa funzione esista nel tuo servizio
           this.user = response.data;  // Salva le informazioni utente
-          this.user=this.user[0];        
+          await this.isSubscribed(this.user)       
         } catch (error) {
           console.error('Errore nel recupero delle informazioni utente:', error);
           this.error = 'Impossibile caricare i dati dell\'utente';
@@ -212,11 +220,35 @@ export default {
             this.$store.commit('logout');
             this.$router.push("/")
         },
-    cancelNewsletter(){
-
+    async cancelNewsletter(){
+      try {
+        const res=await Utils.getUserByUsername(this.username);
+        const user=res.data;
+        const response=await Utils.cancelNewsletter(user);
+        if(response.data.success){
+          this.seguace=false;
+          alert(response.data.message)
+        } else{
+          alert(response.data.message)
+        }
+      } catch (error) {
+        console.error(error);
+      }
     },
-    subscribeNewsletter(){
-
+    async subscribeNewsletter(){
+      try {
+        const res=await Utils.getUserByUsername(this.username);
+        const user=res.data;
+        const response=await Utils.subscribeNewsletter(user);
+        if(response.data.success){
+          this.seguace=true;
+          alert(response.data.message)
+        } else{
+          alert(response.data.message)
+        }
+      } catch (error) {
+        console.error(error);
+      }
     },
     update(index){
       switch (index) {
@@ -333,7 +365,7 @@ export default {
         // Invia l'aggiornamento al backend
         const response = await AuthenticationService.updatePersonalData({
           'nuovoUpdate': updatedPrivacy,
-          'id': this.id,
+          'id': this.user.id,
           'index':5
         });
 

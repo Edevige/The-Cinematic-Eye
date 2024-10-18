@@ -52,9 +52,8 @@ export default {
     try {
       const user = await users.findOne({
         where: { username: req.params.username },
-        attributes: ['username', 'email', 'name', 'birthdate', 'bio', 'favorites', 'seen', 'lists', 'seguiti', 'private', 'id', 'followingList']
+        attributes: ['username', 'email', 'name', 'password', 'google_id', 'subscribed', 'birthdate', 'bio', 'favorites', 'seen', 'lists', 'seguiti', 'private', 'id', 'followingList']
       });
-      
       if (!user) {
         return res.status(404).send({ error: 'Utente non trovato' });
       }
