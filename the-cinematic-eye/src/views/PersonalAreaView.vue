@@ -173,6 +173,7 @@ label {
 <script>
 import AuthenticationService from '@/services/AuthenticationService';
 import Utils from '@/services/apiUtils';
+import emailService from '@/services/emailService';
 export default {
 
   data(){
@@ -224,7 +225,7 @@ export default {
       try {
         const res=await Utils.getUserByUsername(this.username);
         const user=res.data;
-        const response=await Utils.cancelNewsletter(user);
+        const response=await emailService.cancelNewsletter(user);
         if(response.data.success){
           this.seguace=false;
           alert(response.data.message)
@@ -239,9 +240,10 @@ export default {
       try {
         const res=await Utils.getUserByUsername(this.username);
         const user=res.data;
-        const response=await Utils.subscribeNewsletter(user);
+        const response=await emailService.subscribeNewsletter(user);
         if(response.data.success){
           this.seguace=true;
+          const invio= await emailService.sendWelcomeEmail(user.email)
           alert(response.data.message)
         } else{
           alert(response.data.message)

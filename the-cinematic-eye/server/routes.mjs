@@ -100,4 +100,5 @@ export default function (app) {
 
   app.post('/subscribeNewsletter', emailController.subscribeNewsletter);
   app.post('/cancelNewsletter', emailController.cancelNewsletter);
+  app.post('/sendWelcomeEmail', emailController.sendNewsletterEmail)
 }
