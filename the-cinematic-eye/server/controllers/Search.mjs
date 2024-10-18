@@ -52,7 +52,7 @@ export default {
     try {
       const user = await users.findOne({
         where: { username: req.params.username },
-        attributes: ['username', 'email', 'name', 'birthdate', 'bio', 'favorites', 'seen', 'lists', 'seguiti', 'private', 'id']
+        attributes: ['username', 'email', 'name', 'birthdate', 'bio', 'favorites', 'seen', 'lists', 'seguiti', 'private', 'id', 'followingList']
       });
       
       if (!user) {

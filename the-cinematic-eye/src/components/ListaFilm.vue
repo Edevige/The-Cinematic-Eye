@@ -100,6 +100,7 @@
 <script>
 import TMdbApi from '@/services/TMdbApi';
 import apiUtils from '@/services/apiUtils';
+import { number } from 'joi';
 
 export default {
     data() {
@@ -118,6 +119,7 @@ export default {
     mounted() {
         this.listId = this.$route.params.id;
         this.getList();
+        this.isFollowingSet();
     },
     methods: {
         async getList() {
@@ -204,18 +206,20 @@ export default {
         },
         async followList() {
             try {
-                await apiUtils.followList(this.listId, {
+                const response= await apiUtils.followList(Number(this.listId), {
                     headers: { Authorization: `Bearer ${this.$store.state.token}` }
                 });
-                this.listData.follower++;  // Incrementa il numero di follower
-                this.isFollowing = true;   // Imposta isFollowing a true dopo il follow
+                console.log('Risposta server:', response.status);
+                if(response.status==200)
+                {this.listData.follower++;  // Incrementa il numero di follower
+                this.isFollowing = true;}   // Imposta isFollowing a true dopo il follow
             } catch (error) {
                 console.error('Errore nel seguire la lista:', error);
             }
         },
         async unfollowList() {
             try {
-                await apiUtils.unfollowList(this.listId, {
+                await apiUtils.unfollowList(Number(this.listId), {
                     headers: { Authorization: `Bearer ${this.$store.state.token}` }
                 });
                 this.listData.follower--;  // Decrementa il numero di follower
@@ -224,11 +228,27 @@ export default {
                 console.error('Errore nel smettere di seguire la lista:', error);
             }
         },
+        async isFollowingSet(){
+            try {
+                const response= await apiUtils.getUserByUsername(this.$store.state.user.username);
+                let seguace= response.data.followingList;
+                if(seguace!=null && seguace.includes(Number(this.listId))){
+                    this.isFollowing=true;
+                }
+            else{
+                this.isEditing=false;
+            }
+            } catch (error) {
+                console.error(error);
+            }
+            
+        }
     },
     computed: {
         owner() {
             return this.$store.state.user && this.$store.state.user.id === this.listData.UserId;
-        }
+        },
+        
     }
 };
 </script>
