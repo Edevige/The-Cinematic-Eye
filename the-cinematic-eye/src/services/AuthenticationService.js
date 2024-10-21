@@ -23,7 +23,8 @@ export default {
   resetPassword(credentials){
     return Api().post('resetPassword', credentials)
   },
-  deleteAccount(credentials){
-    return Api().post('deleteAccount', credentials)
+  deleteAccount(credentials, config){
+    return Api().post('deleteAccount', {credentials}, config)
   },
+  
 }

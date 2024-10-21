@@ -163,6 +163,9 @@ export default {
     deletePoll(pollId) {
         return Api().delete(`/polls/${pollId}`);
     },
-
+    // Funzione sospensione
+    suspendUser(credentials){
+        return Api().post('suspendUser', credentials)
+    }
     
 }

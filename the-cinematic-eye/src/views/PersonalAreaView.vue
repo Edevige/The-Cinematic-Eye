@@ -371,12 +371,12 @@ export default {
         const confirmDelete = window.confirm("Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile!");
         if (confirmDelete) {
             try {
-                console.log(this.id)
-                const response = await AuthenticationService.deleteAccount({"userId":this.id});
-                
-                if (response.ok) {
+                console.log(this.username)
+                const response = await AuthenticationService.deleteAccount({"userUsername":this.username}, {headers: { Authorization: `Bearer ${this.$store.state.token}` }});
+                console.log("I?M BACCCCCCCCCCCCK", response)
+                if (response.data.ok) {
                     alert('Il tuo account è stato eliminato con successo.');
-                    navigate('/logout');  // Reindirizza alla pagina di logout o home
+                    this.logout();  // Reindirizza alla pagina di logout o home
                 } else {
                     alert('Si è verificato un problema nell’eliminazione dell’account.');
                 }

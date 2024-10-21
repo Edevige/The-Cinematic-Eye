@@ -153,25 +153,27 @@ export default {
         try {
             // Assumendo che req.user.id contenga l'ID dell'utente autenticato
             
-            console.log("Ciaooooooooooooooooooooooo", req)
-    
+            console.log("Ciaooooooooooooooooooooooo", req.headers)
+            const decode = jsonwebtoken.verify(req.headers.authorization.split(' ')[1], config.authentication.jwtSecret)
+            console.log("DECODIFICATO", decode)
             // Trova l'utente nel database
             const user = await users.findOne({
                 where: {
-                    id: req
+                    username: decode.username
                 }
             })
             if (!user) {
-                return res.status(404).send({ message: 'Utente non trovato' });
+                return res.status(404).send({ message: 'Utente non trovato', ok:false });
             }
     
             // Elimina l'utente dal database
             await user.destroy();
+
     
-            return res.status(200).send({ message: 'Account eliminato con successo' });
+            return res.status(200).send({ message: 'Account eliminato con successo', ok:true });
         } catch (error) {
             console.error('Errore durante l’eliminazione dell’account:', error);
-            return res.status(500).send({ message: 'Errore del server. Riprova più tardi.' });
+            return res.status(500).send({ message: 'Errore del server. Riprova più tardi.', ok:false });
         }
     },
       

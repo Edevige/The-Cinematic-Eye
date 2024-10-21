@@ -1,8 +1,55 @@
-import { userbans } from "../models/index.mjs";
+import { userbans, userroles, users } from "../models/index.mjs";
 import jsonwebtoken from "jsonwebtoken";
 import config from "../config/config.mjs";
 
 export default {
+
+    //Funzione sospensione utente
+    async suspendUser(req, res) {
+        console.log("DIDDY", req.body)
+        try {
+        const token = req.body.token;
+        const decoded = jsonwebtoken.verify(token, config.authentication.jwtSecret);
+            
+        console.log("DIDDYpt2", decoded)
+        // Verifica se l'utente richiedente è un amministratore
+        const requestingUserRole = await userroles.findOne({ where: { UserId: decoded.id } });
+        if (!requestingUserRole || requestingUserRole.role !== 1) {
+            return res.status(403).send({ error: 'Non autorizzato. Solo gli amministratori possono sospendere gli utenti.' });
+        }
+    
+        const { userId, suspended } = req.body;  // Suspended è un booleano (true/false)
+        console.log("DIDDYpt3", userId)
+        console.log("DIDDYpt4", suspended)
+    
+        // Trova l'utente da sospendere o riattivare
+        const user = await users.findByPk(userId);
+        if (!user) {
+            return res.status(404).send({ error: 'Utente non trovato.' });
+        }
+    
+        // Crea sospensione
+        const newBan = await userbans.create({
+            UserId: userId,
+            admin_id: decoded.id,
+            suspendedUntil: req.body.duration,
+            ban: 2
+        });
+
+        res.status(201).send({ ban: newBan.toJSON() });
+
+        // Aggiorna lo stato di sospensione dell'utente
+        /*await user.save();*/
+
+        
+    
+        const message = suspended ? 'Utente sospeso con successo.' : 'Utente riattivato con successo.';
+        res.status(200).send({ success: true, message });
+        } catch (error) {
+        console.error('Errore nella sospensione/riattivazione dell\'utente:', error);
+        res.status(500).send({ error: 'Errore del server durante la sospensione/riattivazione dell\'utente.' });
+        }
+    },
 
     async isUserBanned(req, res) {
         try {
@@ -40,6 +87,8 @@ export default {
                 text: text || 'Nessun motivo specificato',
                 ban: 1
             });
+
+            
     
             res.status(201).send({ ban: newBan.toJSON() });
         } catch (e) {

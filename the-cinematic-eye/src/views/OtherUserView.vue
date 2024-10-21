@@ -180,7 +180,7 @@ export default {
         const token = this.$store.state.token;  // Recupera il token per l'autenticazione
 
         // Effettua una chiamata API per sospendere l'utente per la durata specificata
-        const response = await apiUtils.updateUserSuspension({
+        const response = await apiUtils.suspendUser({
           userId: this.user.id,
           suspended: true,  // Sospendi l'utente
           duration: this.suspendDuration,  // Passa la durata della sospensione
@@ -241,29 +241,6 @@ export default {
     formatDate(dateString) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
       return new Date(dateString).toLocaleDateString(undefined, options);
-    },
-
-    async toggleSuspendUser() {
-      try {
-        const token = this.$store.state.token;  // Recupera il token per l'autenticazione
-
-        // Inverti lo stato attuale della sospensione
-        const newSuspendedStatus = !this.user.suspended;
-
-        // Effettua una chiamata API per aggiornare lo stato di sospensione dell'utente
-        const response = await apiUtils.updateUserSuspension({
-          userId: this.user.id,
-          suspended: newSuspendedStatus,
-          token
-        });
-
-        if (response && response.data) {
-          this.user.suspended = response.data.suspended;  // Aggiorna lo stato locale
-          console.log('Stato di sospensione aggiornato:', response.data.suspended);
-        }
-      } catch (error) {
-        console.error('Errore nella modifica dello stato di sospensione:', error);
-      }
     },
 
     // Controlla se l'utente è bannato
