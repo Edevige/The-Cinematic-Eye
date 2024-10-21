@@ -9,15 +9,6 @@ function jwtTokenGen(user){
         expiresIn: ONE_WEEK
     })
 }
-
-async function comparePass(password){
-    try {
-        const isEqual = await argon2id.verify(this.password, password);
-        return isEqual;
-      } catch (error) {
-        console.log(error);
-      }
-}
 export default {
 
     async updatePersonalData(req, res) {  
