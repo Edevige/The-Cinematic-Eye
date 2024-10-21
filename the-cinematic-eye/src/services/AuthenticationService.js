@@ -26,4 +26,5 @@ export default {
   deleteAccount(credentials, config){
     return Api().post('deleteAccount', {credentials}, config)
   },
+  
 }

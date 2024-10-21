@@ -3,37 +3,6 @@ import jsonwebtoken from 'jsonwebtoken';
 import config from '../config/config.mjs';
 
 export default {
-  //Funzione sospensione utente
-  async suspendUser(req, res) {
-    try {
-      const token = req.body.token;
-      const decoded = jsonwebtoken.verify(token, config.authentication.jwtSecret);
-  
-      // Verifica se l'utente richiedente è un amministratore
-      const requestingUserRole = await UserRole.findOne({ where: { UserId: decoded.id } });
-      if (!requestingUserRole || requestingUserRole.role !== 1) {
-        return res.status(403).send({ error: 'Non autorizzato. Solo gli amministratori possono sospendere gli utenti.' });
-      }
-  
-      const { userId, suspended } = req.body;  // Suspended è un booleano (true/false)
-  
-      // Trova l'utente da sospendere o riattivare
-      const user = await User.findByPk(userId);
-      if (!user) {
-        return res.status(404).send({ error: 'Utente non trovato.' });
-      }
-  
-      // Aggiorna lo stato di sospensione dell'utente
-      user.suspended = suspended;
-      await user.save();
-  
-      const message = suspended ? 'Utente sospeso con successo.' : 'Utente riattivato con successo.';
-      res.status(200).send({ success: true, message });
-    } catch (error) {
-      console.error('Errore nella sospensione/riattivazione dell\'utente:', error);
-      res.status(500).send({ error: 'Errore del server durante la sospensione/riattivazione dell\'utente.' });
-    }
-  },
   // Funzione per ottenere il ruolo dell'utente loggato
   async getUserRole(req, res) {
     try {

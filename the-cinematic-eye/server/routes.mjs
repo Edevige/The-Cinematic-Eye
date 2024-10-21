@@ -72,7 +72,7 @@ export default function (app) {
   app.get('/userRole/:id', RoleController.getUserRoleById);  // Ottenere il ruolo di un utente specifico
   app.post('/updateUserRole', RoleController.updateUserRole);  // Aggiornare il ruolo di un utente
 
-  app.post('/suspendUser', RoleController.suspendUser);
+  app.post('/suspendUser', BanController.suspendUser);
   app.get('/isUserBanned/:userId', BanController.isUserBanned);
   app.post('/addUserBan', BanController.addUserBan);
   app.delete('/removeUserBan/:userId', BanController.removeUserBan);
