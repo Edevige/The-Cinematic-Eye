@@ -49,11 +49,13 @@ export default {
     }
   },
   async getUserByUsername(req, res) {
+    console.log('STO CERCANDO', req.params.username)
     try {
       const user = await users.findOne({
         where: { username: req.params.username },
         attributes: ['username', 'email', 'name', 'password', 'google_id', 'subscribed', 'birthdate', 'bio', 'favorites', 'seen', 'lists', 'seguiti', 'private', 'id', 'followingList']
       });
+      console.log('UTENTE TROVATO', user)
       if (!user) {
         return res.status(404).send({ error: 'Utente non trovato' });
       }

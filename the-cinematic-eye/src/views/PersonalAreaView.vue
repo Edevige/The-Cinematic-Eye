@@ -12,18 +12,27 @@
             <button class="btn-confirm" type="button" @click="confermaModifica(newUsername, 1)">Conferma</button>
           </div>
 
-          <label for="Email">Email: {{ user.email }}</label>
-          <button class="btn-update" type="button" @click="update(2)">Aggiorna Email</button>
-          <div v-if="selezioneNuovaEmail" class="input-group">
-            <input v-model="newEmail" placeholder="Inserisci Nuova Email" type="email" class="input-text">
-            <button class="btn-confirm" type="button" @click="confermaModifica(newEmail, 2)">Conferma</button>
+          <!-- Controllo se l'utente ha google_id, in tal caso non mostriamo le opzioni per email e password -->
+          <div v-if="!user.google_id">
+            <label for="Email">Email: {{ user.email }}</label>
+            <button class="btn-update" type="button" @click="update(2)">Aggiorna Email</button>
+            <div v-if="selezioneNuovaEmail" class="input-group">
+              <input v-model="newEmail" placeholder="Inserisci Nuova Email" type="email" class="input-text">
+              <button class="btn-confirm" type="button" @click="confermaModifica(newEmail, 2)">Conferma</button>
+            </div>
+
+            <label for="Password">Password: {{user.password}}</label>
+            <button class="btn-update" type="button" @click="update(3)">Aggiorna Password</button>
+            <div v-if="selezioneNuovaPassword" class="input-group">
+              <input v-model="newPassword" placeholder="Inserisci Nuova Password" type="password" class="input-text">
+              <button class="btn-confirm" type="button" @click="confermaModifica(newPassword, 3)">Conferma</button>
+            </div>
           </div>
 
-          <label for="Password">Password: {{user.password}}</label>
-          <button class="btn-update" type="button" @click="update(3)">Aggiorna Password</button>
-          <div v-if="selezioneNuovaPassword" class="input-group">
-            <input v-model="newPassword" placeholder="Inserisci Nuova Password" type="password" class="input-text">
-            <button class="btn-confirm" type="button" @click="confermaModifica(newPassword, 3)">Conferma</button>
+          <!-- Se l'utente ha google_id, mostra un messaggio stilizzato -->
+          <div v-else class="info-box">
+            <i class="icon-warning"></i>
+            <p>Non è possibile modificare email e password: accesso effettuato tramite Google!</p>
           </div>
 
           <label for="Name">Nome: {{ user.name }}</label>
@@ -86,47 +95,55 @@
   margin: 0 auto;
   color: #2C3E50;
   font-family: 'Arial', sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Aggiungi un'ombra per dare profondità */
 }
 
 .inside-personal-area {
-  padding: 15px;
-  background-color: #E8F5E9;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  background-color: #E8F5E9; /* Light green background */
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Meno ombra rispetto al box esterno */
+  margin-bottom: 20px;
 }
 
 h1 {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
   text-align: center;
   color: #388E3C; /* Green tone for the title */
+  margin-bottom: 20px; /* Aggiungi uno spazio sotto il titolo */
 }
 
 label {
   font-size: 18px;
   margin-bottom: 8px;
+  display: block; /* Imposta il display a block per separare meglio i campi */
+  color: #2C3E50; /* Testo scuro per una migliore leggibilità */
 }
 
 .input-group {
   margin-top: 10px;
   display: flex;
   flex-direction: column;
+  gap: 10px; /* Aggiungi spaziatura tra gli elementi */
 }
 
 .input-text {
-  padding: 8px;
+  padding: 10px; /* Aumenta il padding per un input più grande e facile da usare */
   border: 1px solid #D4E6D4;
-  border-radius: 5px;
-  margin-top: 5px;
+  border-radius: 8px; /* Arrotonda i bordi per uno stile più moderno */
   font-size: 16px;
+  width: 100%; /* Rendi l'input largo quanto il contenitore */
+  box-sizing: border-box;
 }
 
 .btn-update, .btn-confirm, .btn-primary, .btn-secondary, .btn-danger {
-  padding: 10px;
+  padding: 12px 20px; /* Aumenta il padding per rendere i bottoni più accessibili */
   margin-top: 10px;
-  border-radius: 5px;
+  border-radius: 8px; /* Maggiore arrotondamento per i bottoni */
   cursor: pointer;
   border: none;
+  font-size: 16px; /* Migliora la leggibilità */
 }
 
 .btn-update {
@@ -168,7 +185,53 @@ label {
 .newsletter-section {
   margin-top: 20px;
 }
+
+/* Sezione per il messaggio di avviso */
+.info-box {
+  display: flex;
+  align-items: center;
+  background-color: #FFEBEE; /* Leggero sfondo rosso per avviso */
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #E57373;
+  margin-top: 15px;
+}
+
+.info-box i.icon-warning {
+  font-size: 24px;
+  color: #D32F2F;
+  margin-right: 10px;
+}
+
+.info-box p {
+  margin: 0;
+  color: #D32F2F;
+  font-weight: 500;
+}
+
+.privacy-section input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* Migliora la visualizzazione sui dispositivi mobili */
+@media screen and (max-width: 600px) {
+  .personal-area {
+    padding: 15px;
+  }
+
+  .btn-update, .btn-confirm, .btn-primary, .btn-secondary, .btn-danger {
+    width: 100%;
+    padding: 12px 0; /* I bottoni diventano a larghezza piena sui dispositivi mobili */
+    font-size: 18px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
 </style>
+
 
 <script>
 import AuthenticationService from '@/services/AuthenticationService';
@@ -205,8 +268,10 @@ export default {
     async fetchUser() {
         try {
           // Chiamata API per ottenere le informazioni utente
+          console.log('CERCANDO UTENTE', this.username)
           const response = await Utils.getUserByUsername(this.username);  // Assicurati che questa funzione esista nel tuo servizio
           this.user = response.data;  // Salva le informazioni utente
+          console.log('TROVATO UTENTE', response.data);
           await this.isSubscribed(this.user)       
         } catch (error) {
           console.error('Errore nel recupero delle informazioni utente:', error);
@@ -320,31 +385,41 @@ export default {
     },
     async confermaModifica(nuovoUpdate, index){
       try {
-        const response= await AuthenticationService.updatePersonalData({'nuovoUpdate': nuovoUpdate, 'index': index, 'id':this.id})
-        
-        if(response.status){
+        const response = await AuthenticationService.updatePersonalData({
+          'nuovoUpdate': nuovoUpdate,
+          'index':index
+        }, {headers: { Authorization: `Bearer ${this.$store.state.token}` }});
+        console.log('TORNATO DAL CAMBIO DATI',response.data)
+        if(response.data.status){
+          this.$store.dispatch('setToken', response.data.token);
+          this.$store.dispatch('setUser', response.data.user);
       switch (index) {
         case 0:
+          alert('Nome aggiornato con successo!')
           this.user.name=nuovoUpdate
           this.selezioneNuovoNome=false;
           this.newName='';
           break;
         case 1:
+        alert('Username aggiornato con successo!')
           this.user.username=nuovoUpdate
           this.selezioneNuovoUsername=false;
           this.newUsername='';
           break;
         case 2:
+        alert('Email aggiornata con successo!')
           this.user.email=nuovoUpdate
           this.selezioneNuovaEmail=false;
           this.newEmail='';
           break;
         case 3:
+        alert('Password aggiornata con successo!')
           this.user.password=nuovoUpdate
           this.selezioneNuovaPassword=false;
           this.newPassword='';
           break;
         case 4:
+        alert('Compleanno aggiornato con successo!')
           this.user.birthdate=nuovoUpdate;
           this.selezioneNuovoCompleanno=false;
           this.newBirthday=null;
@@ -367,9 +442,8 @@ export default {
         // Invia l'aggiornamento al backend
         const response = await AuthenticationService.updatePersonalData({
           'nuovoUpdate': updatedPrivacy,
-          'id': this.user.id,
           'index':5
-        });
+        }, {headers: { Authorization: `Bearer ${this.$store.state.token}` }});
 
         if (response.status) {
           alert("Stato della privacy aggiornato con successo!");

@@ -2,13 +2,23 @@ import {users} from "../models/index.mjs"
 import jsonwebtoken from "jsonwebtoken"
 import config from "../config/config.mjs";
 
+function jwtTokenGen(user){
+    const ONE_WEEK = 60 * 60 * 24 * 7;
+    return jsonwebtoken.sign(user, config.authentication.jwtSecret, {
+        expiresIn: ONE_WEEK
+    })
+}
+
 export default {
 
-    async updatePersonalData(req, res) {    
+    async updatePersonalData(req, res) {  
+        console.log('LA MIA REQ', req.headers.authorization)
+        const decode= jsonwebtoken.verify(req.headers.authorization.split(' ')[1], config.authentication.jwtSecret); 
+        console.log('IL MIO UTENTE', decode)
         try {
             const match = await users.findOne({
                 where: {
-                    id: req.body.id
+                    username: decode.username
                 }
             });
     
@@ -16,18 +26,19 @@ export default {
                 return res.status(403).send({ error: "NOP!" });
             } else {
                 let controllo;
-                switch (req.body.index) {
+                console.log('INDICE', req.body.data.index)
+                switch (req.body.data.index) {
                     case 0:
                         console.log('Caso cambio Name');      
-                        match.name = req.body.nuovoUpdate;
+                        match.name = req.body.data.nuovoUpdate;
                         await match.save();
-                        return res.send({ message: "Nome aggiornato con successo!", status:true});
+                        break
                     
                     case 1:
                         console.log('Caso cambio Username');
                         controllo = await users.findOne({
                             where: {
-                                username: req.body.nuovoUpdate
+                                username: req.body.data.nuovoUpdate
                             }
                         });
     
@@ -35,16 +46,16 @@ export default {
                             console.error('Username già in uso!');
                             return res.status(400).send({ error: 'Username già in uso!' });
                         } else {
-                            match.username = req.body.nuovoUpdate;
+                            match.username = req.body.data.nuovoUpdate;
                             await match.save();
-                            return res.send({ message: "Username aggiornato con successo!", status:true });
+                            break
                         }
     
                     case 2:
                         console.log('Caso cambio Email');
                         controllo = await users.findOne({
                             where: {
-                                email: req.body.nuovoUpdate
+                                email: req.body.data.nuovoUpdate
                             }
                         });
     
@@ -52,30 +63,37 @@ export default {
                             console.error('Email già in uso su un altro account!');
                             return res.status(400).send({ error: 'Email già in uso!' });
                         } else {
-                            match.email = req.body.nuovoUpdate;
+                            match.email = req.body.data.nuovoUpdate;
                             await match.save();
-                            return res.send({ message: "Email aggiornata con successo!" , status:true });
+                            break
                         }
     
                     case 3:
                         console.log('Caso cambio Password');
-                        match.password = req.body.nuovoUpdate;
+                        match.password = req.body.data.nuovoUpdate;
                         await match.save();
-                        return res.status(200).send({ message: "Password aggiornata con successo!" , status:true });
+                        break
     
                     case 4:
                         console.log('Caso cambio Birthday');
-                        match.birthdate = req.body.nuovoUpdate;
+                        match.birthdate = req.body.data.nuovoUpdate;
                         await match.save();
-                        return res.send({ message: "Data di nascita aggiornata con successo!" , status:true });
+                        break
                     case 5:
                         console.log('Caso cambio private');
-                        match.private=req.body.nuovoUpdate;
+                        match.private=req.body.data.nuovoUpdate;
                         await match.save();
-                        return res.send({ message: "Privacy aggiornata con successo!" , status:true });
+                        break
                     default:
                         return res.status(400).send({ error: "Richiesta non valida!" });
                 }
+
+                return res.send({
+                    message:'Dati aggiornati con Successo!',
+                    status: true,
+                    token: jwtTokenGen(match.toJSON()),
+                    user:match.toJSON()
+                })
             }
         } catch (error) {
             console.error(error);

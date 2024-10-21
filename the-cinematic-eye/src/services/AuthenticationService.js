@@ -14,8 +14,8 @@ export default {
   registerWithGoogleToken(credentials){
     return Api().post('registerWithGoogleToken', credentials)
   },
-  updatePersonalData(data){
-    return Api().post('updatePersonalData', data)
+  updatePersonalData(data, config){
+    return Api().post('updatePersonalData', {data}, config)
   },
   emailCheck(credentials){
     return Api().post('emailCheck', credentials)
