@@ -9,7 +9,7 @@
           <button class="btn-update" type="button" @click="update(1)">Aggiorna Username</button>
           <div v-if="selezioneNuovoUsername" class="input-group">
             <input v-model="newUsername" placeholder="Inserisci Nuovo Username" class="input-text">
-            <button class="btn-confirm" type="button" @click="confermaModifica(newUsername, 1)">Conferma</button>
+            <button class="btn-confirm" type="button" @click="confermaModifica(newUsername, 1, '')">Conferma</button>
           </div>
 
           <!-- Controllo se l'utente ha google_id, in tal caso non mostriamo le opzioni per email e password -->
@@ -18,14 +18,16 @@
             <button class="btn-update" type="button" @click="update(2)">Aggiorna Email</button>
             <div v-if="selezioneNuovaEmail" class="input-group">
               <input v-model="newEmail" placeholder="Inserisci Nuova Email" type="email" class="input-text">
-              <button class="btn-confirm" type="button" @click="confermaModifica(newEmail, 2)">Conferma</button>
+              <input type="password" v-model="passwordCorrente" placeholder="Inserisci la tua password attuale" />
+              <button class="btn-confirm" type="button" @click="confermaModifica(newEmail, 2, passwordCorrente)">Conferma</button>
             </div>
 
             <label for="Password">Password: {{user.password}}</label>
             <button class="btn-update" type="button" @click="update(3)">Aggiorna Password</button>
             <div v-if="selezioneNuovaPassword" class="input-group">
               <input v-model="newPassword" placeholder="Inserisci Nuova Password" type="password" class="input-text">
-              <button class="btn-confirm" type="button" @click="confermaModifica(newPassword, 3)">Conferma</button>
+              <input type="password" v-model="passwordCorrente" placeholder="Inserisci la tua password attuale" />
+              <button class="btn-confirm" type="button" @click="confermaModifica(newPassword, 3, passwordCorrente)">Conferma</button>
             </div>
           </div>
 
@@ -39,7 +41,7 @@
           <button class="btn-update" type="button" @click="update(0)">Aggiorna Nome</button>
           <div v-if="selezioneNuovoNome" class="input-group">
             <input v-model="newName" placeholder="Inserisci Nuovo Nome" class="input-text">
-            <button class="btn-confirm" type="button" @click="confermaModifica(newName, 0)">Conferma</button>
+            <button class="btn-confirm" type="button" @click="confermaModifica(newName, 0, '')">Conferma</button>
           </div>
 
           <div v-if="user.birthdate">
@@ -52,7 +54,7 @@
           </div>
           <div v-if="selezioneNuovoCompleanno" class="input-group">
             <input v-model="newBirthday" placeholder="Inserisci Nuova Data" type="date" class="input-text">
-            <button class="btn-confirm" type="button" @click="confermaModifica(newBirthday, 4)">Conferma</button>
+            <button class="btn-confirm" type="button" @click="confermaModifica(newBirthday, 4,'')">Conferma</button>
           </div>
 
           <div class="newsletter-section">
@@ -254,7 +256,8 @@ export default {
     newBirthday: null,
     user: {},
     username: this.$store.state.user.username,
-    seguace: false
+    seguace: false,
+    passwordCorrente:''
     }
   },
   methods:{
@@ -383,12 +386,19 @@ export default {
             }
         }
     },
-    async confermaModifica(nuovoUpdate, index){
+    async confermaModifica(nuovoUpdate, index, passwordCorrente){
       try {
-        const response = await AuthenticationService.updatePersonalData({
-          'nuovoUpdate': nuovoUpdate,
-          'index':index
-        }, {headers: { Authorization: `Bearer ${this.$store.state.token}` }});
+        let data = {
+        'nuovoUpdate': nuovoUpdate,
+        'index': index
+        };
+        if (passwordCorrente !== '') {
+        data.passwordCorrente = passwordCorrente;
+        }
+        console.log('STO INVIANDO', data)
+        const response = await AuthenticationService.updatePersonalData(data, {
+          headers: { Authorization: `Bearer ${this.$store.state.token}` }});
+      
         console.log('TORNATO DAL CAMBIO DATI',response.data)
         if(response.data.status){
           this.$store.dispatch('setToken', response.data.token);
@@ -430,7 +440,7 @@ export default {
       }
     }
       } catch (error) {
-        console.error('Errore con confermaNome: ', error);
+        console.error('Errore con aggiornamentoDati: ', error);
       }
       
 

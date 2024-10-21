@@ -1,6 +1,7 @@
 import {users} from "../models/index.mjs"
 import jsonwebtoken from "jsonwebtoken"
 import config from "../config/config.mjs";
+import argon2id from "argon2";
 
 function jwtTokenGen(user){
     const ONE_WEEK = 60 * 60 * 24 * 7;
@@ -9,22 +10,36 @@ function jwtTokenGen(user){
     })
 }
 
+async function comparePass(password){
+    try {
+        const isEqual = await argon2id.verify(this.password, password);
+        return isEqual;
+      } catch (error) {
+        console.log(error);
+      }
+}
 export default {
 
     async updatePersonalData(req, res) {  
-        console.log('LA MIA REQ', req.headers.authorization)
         const decode= jsonwebtoken.verify(req.headers.authorization.split(' ')[1], config.authentication.jwtSecret); 
-        console.log('IL MIO UTENTE', decode)
         try {
             const match = await users.findOne({
                 where: {
                     username: decode.username
                 }
             });
-    
             if (!match) {
                 return res.status(403).send({ error: "NOP!" });
             } else {
+                if(req.body.data.index===2 || req.body.data.index===3){
+                    if(!req.body.data.passwordCorrente){
+                        return res.status(400).send({ error: "Password corrente richiesta!" });
+                    }
+                    const isPasswordValid=await argon2id.verify(decode.password,req.body.data.passwordCorrente);
+                    if(!isPasswordValid){
+                        return res.status(403).send({ error: 'Password corrente errata!' });
+                    }
+                }
                 let controllo;
                 console.log('INDICE', req.body.data.index)
                 switch (req.body.data.index) {
@@ -63,9 +78,9 @@ export default {
                             console.error('Email già in uso su un altro account!');
                             return res.status(400).send({ error: 'Email già in uso!' });
                         } else {
-                            match.email = req.body.data.nuovoUpdate;
-                            await match.save();
-                            break
+                                match.email = req.body.data.nuovoUpdate;
+                                await match.save();
+                                break
                         }
     
                     case 3:
