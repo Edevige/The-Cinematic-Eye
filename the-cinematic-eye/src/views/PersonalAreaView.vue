@@ -1,16 +1,27 @@
-<template> 
+<template>
   <div class="personal-area">
     <h1>Area Personale</h1>
     <div class="inside-personal-area">
 
-      <div v-if="user">
+      <div v-if="user && !loading">
+
         <div class="user-info">
           <label for="Username">Username: {{ user.username }}</label>
           <button class="btn-update" type="button" @click="update(1)">Aggiorna Username</button>
           <div v-if="selezioneNuovoUsername" class="input-group">
             <input v-model="newUsername" placeholder="Inserisci Nuovo Username" class="input-text">
-            <button class="btn-confirm" type="button" @click="confermaModifica(newUsername, 1)">Conferma</button>
+            <button class="btn-confirm" type="button" @click="confermaModifica(newUsername, 1, '')">Conferma</button>
           </div>
+
+          <!--Bio-->
+          <label for="Bio">Bio: {{ user.bio || 'Nessuna bio inserita' }}</label>
+          <button class="btn-update" type="button" @click="update(5)">Aggiorna Bio</button>
+          <div v-if="selezioneNuovaBio" class="input-group">
+            <textarea v-model="newBio" placeholder="Inserisci nuova bio" class="input-text"></textarea>
+            <button class="btn-confirm" type="button" @click="confermaModifica(newBio, 5, '')">Conferma</button>
+          </div>
+
+          
 
           <!-- Controllo se l'utente ha google_id, in tal caso non mostriamo le opzioni per email e password -->
           <div v-if="!user.google_id">
@@ -18,14 +29,17 @@
             <button class="btn-update" type="button" @click="update(2)">Aggiorna Email</button>
             <div v-if="selezioneNuovaEmail" class="input-group">
               <input v-model="newEmail" placeholder="Inserisci Nuova Email" type="email" class="input-text">
-              <button class="btn-confirm" type="button" @click="confermaModifica(newEmail, 2)">Conferma</button>
+              <input type="password" v-model="passwordCorrente" placeholder="Inserisci la tua password attuale" />
+              <button class="btn-confirm" type="button" @click="confermaModifica(newEmail, 2, passwordCorrente)">Conferma</button>
             </div>
 
-            <label for="Password">Password: {{user.password}}</label>
+            <!-- Mostra sempre i 5 pallini al posto della password -->
+            <label for="Password">Password: {{ maskedPassword }}</label>
             <button class="btn-update" type="button" @click="update(3)">Aggiorna Password</button>
             <div v-if="selezioneNuovaPassword" class="input-group">
               <input v-model="newPassword" placeholder="Inserisci Nuova Password" type="password" class="input-text">
-              <button class="btn-confirm" type="button" @click="confermaModifica(newPassword, 3)">Conferma</button>
+              <input type="password" v-model="passwordCorrente" placeholder="Inserisci la tua password attuale" />
+              <button class="btn-confirm" type="button" @click="confermaModifica(newPassword, 3, passwordCorrente)">Conferma</button>
             </div>
           </div>
 
@@ -39,7 +53,7 @@
           <button class="btn-update" type="button" @click="update(0)">Aggiorna Nome</button>
           <div v-if="selezioneNuovoNome" class="input-group">
             <input v-model="newName" placeholder="Inserisci Nuovo Nome" class="input-text">
-            <button class="btn-confirm" type="button" @click="confermaModifica(newName, 0)">Conferma</button>
+            <button class="btn-confirm" type="button" @click="confermaModifica(newName, 0, '')">Conferma</button>
           </div>
 
           <div v-if="user.birthdate">
@@ -52,8 +66,27 @@
           </div>
           <div v-if="selezioneNuovoCompleanno" class="input-group">
             <input v-model="newBirthday" placeholder="Inserisci Nuova Data" type="date" class="input-text">
-            <button class="btn-confirm" type="button" @click="confermaModifica(newBirthday, 4)">Conferma</button>
+            <button class="btn-confirm" type="button" @click="confermaModifica(newBirthday, 4,'')">Conferma</button>
           </div>
+
+          <!-- Film Favoriti -->
+          <label for="Favorites">Film Preferiti:</label>
+            <div v-if="user.favorites && user.favorites.length > 0">
+              <FilmCarouselList :filmIds="filmPreferiti" :title="'Film Preferiti'" />
+              </div>
+          
+            <p v-else>Non hai ancora aggiunto film favoriti.</p>
+
+
+            <!-- Liste Seguite -->
+            <label for="Following">Liste Seguite:</label>
+            <ul v-if="user.followingList && user.followingList.length > 0">
+              <li v-for="list in user.followingList" :key="list">{{ list }}</li>
+            </ul>
+            <p v-else>Non stai seguendo nessuna lista.</p>
+
+            <!-- Numero di Follower -->
+            <label for="Followers">Hai in tutto {{ user.seguiti.length }} follower</label>
 
           <div class="newsletter-section">
             <div v-if="user && seguace">
@@ -85,6 +118,7 @@
     </div>
   </div>
 </template>
+
 
 <style scoped>
 .personal-area {
@@ -234,221 +268,220 @@ label {
 
 
 <script>
+import FilmCarouselList from '@/components/FilmCarouselList.vue';
 import AuthenticationService from '@/services/AuthenticationService';
 import Utils from '@/services/apiUtils';
 import emailService from '@/services/emailService';
 export default {
-
-  data(){
-    return{
-    selezioneNuovoNome:false,
-    selezioneNuovoUsername:false,
-    selezioneNuovaEmail: false,
-    selezioneNuovaPassword: false,
-    selezioneNuovoCompleanno: false,
-    newName:'',
-    newSurname:'',
-    newUsername:'',
-    newEmail:'',
-    newPassword:'',
-    newBirthday: null,
-    user: {},
-    username: this.$store.state.user.username,
-    seguace: false
+  data() {
+    return {
+      selezioneNuovoNome: false,
+      selezioneNuovoUsername: false,
+      selezioneNuovaEmail: false,
+      selezioneNuovaPassword: false,
+      selezioneNuovoCompleanno: false,
+      selezioneNuovaBio:false,
+      newName: '',
+      newSurname: '',
+      newUsername: '',
+      newEmail: '',
+      newPassword: '',
+      newBirthday: null,
+      newBio:'',
+      user: {},
+      username: this.$store.state.user.username,
+      seguace: false,
+      passwordCorrente: '',
+      loading:true,
+      filmPreferiti: []
+    };
+  },
+  components:{
+    FilmCarouselList
+  },
+  computed: {
+    // Computed property per mostrare sempre 5 pallini al posto della password
+    maskedPassword() {
+      return this.user.password ? '•••••' : '';
     }
   },
-  methods:{
-    async isSubscribed(user){
-      if(user){
-        this.seguace=true;
-      } else{
-        this.seguace=false;
+  methods: {
+    async isSubscribed(user) {
+      if (user) {
+        this.seguace = true;
+      } else {
+        this.seguace = false;
       }
     },
     async fetchUser() {
-        try {
-          // Chiamata API per ottenere le informazioni utente
-          console.log('CERCANDO UTENTE', this.username)
-          const response = await Utils.getUserByUsername(this.username);  // Assicurati che questa funzione esista nel tuo servizio
-          this.user = response.data;  // Salva le informazioni utente
-          console.log('TROVATO UTENTE', response.data);
-          await this.isSubscribed(this.user)       
-        } catch (error) {
-          console.error('Errore nel recupero delle informazioni utente:', error);
-          this.error = 'Impossibile caricare i dati dell\'utente';
-        } finally {
-          this.loading = false;  // Fine del caricamento
-        }
-      },
-    logout(){
-            this.user = {};
-            this.jwt = "";
-            this.$store.commit('logout');
-            this.$router.push("/")
-        },
-    async cancelNewsletter(){
       try {
-        const res=await Utils.getUserByUsername(this.username);
-        const user=res.data;
-        const response=await emailService.cancelNewsletter(user);
-        if(response.data.success){
-          this.seguace=false;
-          alert(response.data.message)
-        } else{
-          alert(response.data.message)
+        const response = await Utils.getUserByUsername(this.username);
+        this.user = response.data;
+        this.filmPreferiti=response.data.favorites;
+        await this.isSubscribed(this.user);
+      } catch (error) {
+        console.error('Errore nel recupero delle informazioni utente:', error);
+        this.error = 'Impossibile caricare i dati dell\'utente';
+      } finally {
+        this.loading = false;
+      }
+    },
+    logout() {
+      this.user = {};
+      this.jwt = '';
+      this.$store.commit('logout');
+      this.$router.push('/');
+    },
+    async cancelNewsletter() {
+      try {
+        const res = await Utils.getUserByUsername(this.username);
+        const user = res.data;
+        const response = await emailService.cancelNewsletter(user);
+        if (response.data.success) {
+          this.seguace = false;
+          alert(response.data.message);
+        } else {
+          alert(response.data.message);
         }
       } catch (error) {
         console.error(error);
       }
     },
-    async subscribeNewsletter(){
+    async subscribeNewsletter() {
       try {
-        const res=await Utils.getUserByUsername(this.username);
-        const user=res.data;
-        const response=await emailService.subscribeNewsletter(user);
-        if(response.data.success){
-          this.seguace=true;
-          const invio= await emailService.sendWelcomeEmail(user.email)
-          alert(response.data.message)
-        } else{
-          alert(response.data.message)
+        const res = await Utils.getUserByUsername(this.username);
+        const user = res.data;
+        const response = await emailService.subscribeNewsletter(user);
+        if (response.data.success) {
+          this.seguace = true;
+          await emailService.sendWelcomeEmail(user.email);
+          alert(response.data.message);
+        } else {
+          alert(response.data.message);
         }
       } catch (error) {
         console.error(error);
       }
     },
-    update(index){
-      switch (index) {
-        case 0: //caso nome
-          if(this.selezioneNuovoNome){
-          this.selezioneNuovoNome=false;
-          }
-          else{
-            this.selezioneNuovoNome=true;
-          }
-          break;
-        case 1: //caso username
-        if(this.selezioneNuovoUsername){
-        this.selezioneNuovoUsername=false;
-         }
-         else{
-            this.selezioneNuovoUsername=true;
-         }
-          break;
-        case 2: //caso email
-        if(this.selezioneNuovaEmail){
-          this.selezioneNuovaEmail=false;
-        }
-        else{
-          this.selezioneNuovaEmail=true;
-        }
-          break;
-        case 3: //caso password
-        if(this.selezioneNuovaPassword){
-          this.selezioneNuovaPassword=false;
-        }
-        else{
-          this.selezioneNuovaPassword=true;
-        }
-          break;
-        case 4: //caso birthday
-        if(this.selezioneNuovoCompleanno){
-          this.selezioneNuovoCompleanno=false;
-        }
-        else{
-          this.selezioneNuovoCompleanno=true;
-        }
-          break;      
-        default:
-          break;
-      }
-    },
-    async handleDeleteAccount(){
-        // Richiesta al backend per eliminare l'account
-        const confirmDelete = window.confirm("Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile!");
-        if (confirmDelete) {
-            try {
-                console.log(this.username)
-                const response = await AuthenticationService.deleteAccount({"userUsername":this.username}, {headers: { Authorization: `Bearer ${this.$store.state.token}` }});
-                console.log("I?M BACCCCCCCCCCCCK", response)
-                if (response.data.ok) {
-                    alert('Il tuo account è stato eliminato con successo.');
-                    this.logout();  // Reindirizza alla pagina di logout o home
-                } else {
-                    alert('Si è verificato un problema nell’eliminazione dell’account.');
-                }
-            } catch (error) {
-                console.error('Errore durante l’eliminazione dell’account:', error);
-                alert('Errore di connessione. Riprova più tardi.');
-            }
-        }
-    },
-    async confermaModifica(nuovoUpdate, index){
-      try {
-        const response = await AuthenticationService.updatePersonalData({
-          'nuovoUpdate': nuovoUpdate,
-          'index':index
-        }, {headers: { Authorization: `Bearer ${this.$store.state.token}` }});
-        console.log('TORNATO DAL CAMBIO DATI',response.data)
-        if(response.data.status){
-          this.$store.dispatch('setToken', response.data.token);
-          this.$store.dispatch('setUser', response.data.user);
+    update(index) {
       switch (index) {
         case 0:
-          alert('Nome aggiornato con successo!')
-          this.user.name=nuovoUpdate
-          this.selezioneNuovoNome=false;
-          this.newName='';
+          this.selezioneNuovoNome = !this.selezioneNuovoNome;
           break;
         case 1:
-        alert('Username aggiornato con successo!')
-          this.user.username=nuovoUpdate
-          this.selezioneNuovoUsername=false;
-          this.newUsername='';
+          this.selezioneNuovoUsername = !this.selezioneNuovoUsername;
           break;
         case 2:
-        alert('Email aggiornata con successo!')
-          this.user.email=nuovoUpdate
-          this.selezioneNuovaEmail=false;
-          this.newEmail='';
+          this.selezioneNuovaEmail = !this.selezioneNuovaEmail;
           break;
         case 3:
-        alert('Password aggiornata con successo!')
-          this.user.password=nuovoUpdate
-          this.selezioneNuovaPassword=false;
-          this.newPassword='';
+          this.selezioneNuovaPassword = !this.selezioneNuovaPassword;
           break;
         case 4:
-        alert('Compleanno aggiornato con successo!')
-          this.user.birthdate=nuovoUpdate;
-          this.selezioneNuovoCompleanno=false;
-          this.newBirthday=null;
+          this.selezioneNuovoCompleanno = !this.selezioneNuovoCompleanno;
+          break;
+        case 5:
+          this.selezioneNuovaBio=!this.selezioneNuovaBio;
           break;
         default:
-          console.log('Ciao');
           break;
       }
-    }
-      } catch (error) {
-        console.error('Errore con confermaNome: ', error);
+    },
+    async handleDeleteAccount() {
+      const confirmDelete = window.confirm('Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile!');
+      if (confirmDelete) {
+        try {
+          const response = await AuthenticationService.deleteAccount(
+            { userUsername: this.username },
+            { headers: { Authorization: `Bearer ${this.$store.state.token}` } }
+          );
+          if (response.data.ok) {
+            alert('Il tuo account è stato eliminato con successo.');
+            this.logout();
+          } else {
+            alert('Si è verificato un problema nell’eliminazione dell’account.');
+          }
+        } catch (error) {
+          console.error('Errore durante l’eliminazione dell’account:', error);
+          alert('Errore di connessione. Riprova più tardi.');
+        }
       }
-      
+    },
+    async confermaModifica(nuovoUpdate, index, passwordCorrente) {
+      try {
+        let data = {
+          nuovoUpdate: nuovoUpdate,
+          index: index
+        };
+        if (passwordCorrente !== '') {
+          data.passwordCorrente = passwordCorrente;
+        }
+        const response = await AuthenticationService.updatePersonalData(data, {
+          headers: { Authorization: `Bearer ${this.$store.state.token}` }
+        });
 
+        if (response.data.status) {
+          this.$store.dispatch('setToken', response.data.token);
+          this.$store.dispatch('setUser', response.data.user);
+          switch (index) {
+            case 0:
+              alert('Nome aggiornato con successo!');
+              this.user.name = nuovoUpdate;
+              this.selezioneNuovoNome = false;
+              this.newName = '';
+              break;
+            case 1:
+              alert('Username aggiornato con successo!');
+              this.user.username = nuovoUpdate;
+              this.selezioneNuovoUsername = false;
+              this.newUsername = '';
+              break;
+            case 2:
+              alert('Email aggiornata con successo!');
+              this.user.email = nuovoUpdate;
+              this.selezioneNuovaEmail = false;
+              this.newEmail = '';
+              break;
+            case 3:
+              alert('Password aggiornata con successo!');
+              this.user.password = nuovoUpdate;
+              this.selezioneNuovaPassword = false;
+              this.newPassword = '';
+              break;
+            case 4:
+              alert('Compleanno aggiornato con successo!');
+              this.user.birthdate = nuovoUpdate;
+              this.selezioneNuovoCompleanno = false;
+              this.newBirthday = null;
+              break;
+            case 5:
+              alert('Bio aggiornata con successo!');
+              this.user.bio= nuovoUpdate;
+              this.selezioneNuovaBio=false;
+              this.newBio='';
+              break;
+            default:
+              console.log('Ciao');
+              break;
+          }
+        }
+      } catch (error) {
+        console.error('Errore con aggiornamentoDati: ', error);
+      }
     },
 
     async togglePrivacy() {
       try {
         const updatedPrivacy = this.user.private;
-        // Invia l'aggiornamento al backend
-        const response = await AuthenticationService.updatePersonalData({
-          'nuovoUpdate': updatedPrivacy,
-          'index':5
-        }, {headers: { Authorization: `Bearer ${this.$store.state.token}` }});
+        const response = await AuthenticationService.updatePersonalData(
+          { nuovoUpdate: updatedPrivacy, index: 6 },
+          { headers: { Authorization: `Bearer ${this.$store.state.token}` } }
+        );
 
         if (response.status) {
-          alert("Stato della privacy aggiornato con successo!");
+          alert('Stato della privacy aggiornato con successo!');
         } else {
-          alert("Si è verificato un errore nell'aggiornamento della privacy.");
+          alert('Si è verificato un errore nell\'aggiornamento della privacy.');
         }
       } catch (error) {
         console.error('Errore con togglePrivacy: ', error);
@@ -456,14 +489,11 @@ export default {
     },
 
     formatDate(date) {
-        // Funzione per formattare la data in modo leggibile
-        return new Date(date).toLocaleDateString();
-      },
-
-   },
-   mounted(){
+      return new Date(date).toLocaleDateString();
+    }
+  },
+  mounted() {
     this.fetchUser();
-   }
-}
-
+  }
+};
 </script>
