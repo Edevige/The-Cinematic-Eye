@@ -454,6 +454,12 @@ export default {
               this.selezioneNuovoCompleanno = false;
               this.newBirthday = null;
               break;
+            case 5:
+              alert('Bio aggiornata con successo!');
+              this.user.bio= nuovoUpdate;
+              this.selezioneNuovaBio=false;
+              this.newBio='';
+              break;
             default:
               console.log('Ciao');
               break;
@@ -468,7 +474,7 @@ export default {
       try {
         const updatedPrivacy = this.user.private;
         const response = await AuthenticationService.updatePersonalData(
-          { nuovoUpdate: updatedPrivacy, index: 5 },
+          { nuovoUpdate: updatedPrivacy, index: 6 },
           { headers: { Authorization: `Bearer ${this.$store.state.token}` } }
         );
 
