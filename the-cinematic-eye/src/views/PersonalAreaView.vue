@@ -3,7 +3,8 @@
     <h1>Area Personale</h1>
     <div class="inside-personal-area">
 
-      <div v-if="user">
+      <div v-if="user && !loading">
+
         <div class="user-info">
           <label for="Username">Username: {{ user.username }}</label>
           <button class="btn-update" type="button" @click="update(1)">Aggiorna Username</button>
@@ -11,6 +12,16 @@
             <input v-model="newUsername" placeholder="Inserisci Nuovo Username" class="input-text">
             <button class="btn-confirm" type="button" @click="confermaModifica(newUsername, 1, '')">Conferma</button>
           </div>
+
+          <!--Bio-->
+          <label for="Bio">Bio: {{ user.bio || 'Nessuna bio inserita' }}</label>
+          <button class="btn-update" type="button" @click="update(5)">Aggiorna Bio</button>
+          <div v-if="selezioneNuovaBio" class="input-group">
+            <textarea v-model="newBio" placeholder="Inserisci nuova bio" class="input-text"></textarea>
+            <button class="btn-confirm" type="button" @click="confermaModifica(newBio, 5, '')">Conferma</button>
+          </div>
+
+          
 
           <!-- Controllo se l'utente ha google_id, in tal caso non mostriamo le opzioni per email e password -->
           <div v-if="!user.google_id">
@@ -57,6 +68,25 @@
             <input v-model="newBirthday" placeholder="Inserisci Nuova Data" type="date" class="input-text">
             <button class="btn-confirm" type="button" @click="confermaModifica(newBirthday, 4,'')">Conferma</button>
           </div>
+
+          <!-- Film Favoriti -->
+          <label for="Favorites">Film Preferiti:</label>
+            <div v-if="user.favorites && user.favorites.length > 0">
+              <FilmCarouselList :filmIds="filmPreferiti" :title="'Film Preferiti'" />
+              </div>
+          
+            <p v-else>Non hai ancora aggiunto film favoriti.</p>
+
+
+            <!-- Liste Seguite -->
+            <label for="Following">Liste Seguite:</label>
+            <ul v-if="user.followingList && user.followingList.length > 0">
+              <li v-for="list in user.followingList" :key="list">{{ list }}</li>
+            </ul>
+            <p v-else>Non stai seguendo nessuna lista.</p>
+
+            <!-- Numero di Follower -->
+            <label for="Followers">Hai in tutto {{ user.seguiti.length }} follower</label>
 
           <div class="newsletter-section">
             <div v-if="user && seguace">
@@ -238,6 +268,7 @@ label {
 
 
 <script>
+import FilmCarouselList from '@/components/FilmCarouselList.vue';
 import AuthenticationService from '@/services/AuthenticationService';
 import Utils from '@/services/apiUtils';
 import emailService from '@/services/emailService';
@@ -249,17 +280,24 @@ export default {
       selezioneNuovaEmail: false,
       selezioneNuovaPassword: false,
       selezioneNuovoCompleanno: false,
+      selezioneNuovaBio:false,
       newName: '',
       newSurname: '',
       newUsername: '',
       newEmail: '',
       newPassword: '',
       newBirthday: null,
+      newBio:'',
       user: {},
       username: this.$store.state.user.username,
       seguace: false,
-      passwordCorrente: ''
+      passwordCorrente: '',
+      loading:true,
+      filmPreferiti: []
     };
+  },
+  components:{
+    FilmCarouselList
   },
   computed: {
     // Computed property per mostrare sempre 5 pallini al posto della password
@@ -279,6 +317,7 @@ export default {
       try {
         const response = await Utils.getUserByUsername(this.username);
         this.user = response.data;
+        this.filmPreferiti=response.data.favorites;
         await this.isSubscribed(this.user);
       } catch (error) {
         console.error('Errore nel recupero delle informazioni utente:', error);
@@ -340,6 +379,9 @@ export default {
           break;
         case 4:
           this.selezioneNuovoCompleanno = !this.selezioneNuovoCompleanno;
+          break;
+        case 5:
+          this.selezioneNuovaBio=!this.selezioneNuovaBio;
           break;
         default:
           break;
