@@ -342,6 +342,18 @@ export default {
                 console.error("Errore nel controllo del ban:", error);
             }
         },
+
+        async checkSuspendedStatus() {
+            try {
+                const response = await apiUtils.isUserSuspended(this.$store.state.user.id);
+                if (response.data.ban === 1) {
+                    this.logout();  // Esegui il logout se l'utente è bannato
+                    alert("Il tuo account è stato bannato.");
+                }
+            } catch (error) {
+                console.error("Errore nel controllo del ban:", error);
+            }
+        },
         
         
     },

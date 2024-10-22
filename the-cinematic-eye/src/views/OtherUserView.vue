@@ -28,10 +28,16 @@
       </div>
 
       <!-- Pulsante Sospendi/Riattiva -->
-      <button v-if="isAdmin" @click="showSuspendForm = !showSuspendForm" class="btn" :class="user.suspended ? 'btn-outline-danger' : 'btn-outline-warning'">
+      <div v-if="isAdmin">
+        <button v-if="!isUserSuspended" @click="showSuspendForm = !showSuspendForm" class="btn" :class="user.suspended ? 'btn-outline-danger' : 'btn-outline-warning'">
         <i :class="user.suspended ? 'bi bi-person-check-fill' : 'bi bi-person-x-fill'"></i>
         {{ user.suspended ? 'Riattiva Utente' : 'Sospendi Utente' }}
-      </button>
+        </button>
+        <button v-else @click="removeSuspended" class="btn">
+          Togli la sospensione
+        </button>
+      </div>
+
 
       <!-- Form per sospendere utente -->
       <div v-if="showSuspendForm" class="suspend-form">
@@ -149,6 +155,7 @@ export default {
       isLoggedIn: this.$store.state.logged,
       showSuspendForm: false,  // Per controllare se mostrare il form di sospensione
       suspendDuration: 1,      // Durata della sospensione in ore (default a 1)
+      isUserSuspended: false,
     };
   },
   methods: {
@@ -249,6 +256,7 @@ export default {
         const response = await apiUtils.isUserBanned(userId);  // Chiama l'API per controllare il ban
         if (response && response.data) {
           this.isUserBanned = response.data.ban === 1;
+          this.isUserSuspended = response.data.ban === 2;
         } else {
           this.isUserBanned = false;
         }

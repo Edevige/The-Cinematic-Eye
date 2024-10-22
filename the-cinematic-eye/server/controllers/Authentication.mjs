@@ -71,7 +71,11 @@ export default {
                 const banStatus = await userbans.findOne({ where: { UserId: match.id } });
                 if (banStatus && banStatus.ban === 1) {
                     return res.status(403).send({ error: "Il tuo account è stato bannato." });
-                }
+                } else if(banStatus && banStatus.ban === 2) {
+                    return res.status(403).send({ error: "Il tuo account è stato sospeso." });
+                } 
+
+    
     
                 const isEqual = await match.comparePass(req.body.password);
                 if (isEqual) {

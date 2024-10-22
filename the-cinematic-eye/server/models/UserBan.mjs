@@ -6,8 +6,8 @@ export default function (sequelize, DataTypes, user) {
           type: DataTypes.INTEGER, // 1 se l'utente è bannato, 2 se l'utent è sospeso
           allowNull: false
         },
-        suspenedUntil:{
-          type: DataTypes.INTEGER, //Duarata sospensione (ore)
+        suspendedUntil:{
+          type: DataTypes.DATE, //Duarata sospensione (ore)
           allowNull: true
         },
         text: {
