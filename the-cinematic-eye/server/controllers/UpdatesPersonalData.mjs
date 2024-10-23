@@ -2,7 +2,6 @@ import {messages, users} from "../models/index.mjs"
 import jsonwebtoken from "jsonwebtoken"
 import config from "../config/config.mjs";
 import argon2id from "argon2";
-import { ownKeys } from "core-js/fn/reflect";
 
 function jwtTokenGen(user){
     const ONE_WEEK = 60 * 60 * 24 * 7;
