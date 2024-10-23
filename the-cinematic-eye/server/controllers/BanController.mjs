@@ -44,13 +44,6 @@ export default {
 
         res.status(201).send({ ban: newBan.toJSON() });
 
-        // Aggiorna lo stato di sospensione dell'utente
-        /*await user.save();*/
-
-        
-    
-        const message = suspended ? 'Utente sospeso con successo.' : 'Utente riattivato con successo.';
-        res.status(200).send({ success: true, message });
         } catch (error) {
         console.error('Errore nella sospensione/riattivazione dell\'utente:', error);
         res.status(500).send({ error: 'Errore del server durante la sospensione/riattivazione dell\'utente.' });
@@ -136,6 +129,7 @@ export default {
 
     async removeUserBan(req, res) {
         try {
+
             if (!req.headers.authorization) {
                 return res.status(400).send({ error: 'Token di autorizzazione mancante.' });
             }
@@ -149,10 +143,12 @@ export default {
             if (!ban) {
                 return res.status(404).send({ error: 'Utente non bannato.' });
             }
+
+            const indexBan=ban.ban;
     
             await ban.destroy();  // Rimuovi il ban
     
-            res.status(200).send({ message: 'Ban rimosso con successo.' });
+            res.status(200).send({ message: 'Ban rimosso con successo.' , ban:indexBan});
         } catch (e) {
             console.error('Errore nella rimozione del ban:', e);
             res.status(500).send({ error: 'Errore nella rimozione del ban.' });

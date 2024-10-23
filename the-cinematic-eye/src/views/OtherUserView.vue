@@ -23,19 +23,17 @@
       <button v-if="isUserBanned" @click="rmBan(this.user.id)" class="btn btn-outline-light flex-fill" type="button">
         <i class="bi bi-check2-circle"> Togli il Ban</i>
       </button>
-      <button v-else @click="showBanForm = !showBanForm" class="btn btn-outline-light flex-fill" type="button">
+      <button v-else @click="showBanForm = !showBanForm" class="btn btn-outline-light flex-fill" type="button" :disabled="isUserSuspended">
         <i class="bi bi-ban"> Ban Utente</i></button>
       </div>
 
-      <!-- Pulsante Sospendi/Riattiva -->
+      <!-- Pulsante Sospendi/Togli il sospendi -->
       <div v-if="isAdmin">
-        <button v-if="!isUserSuspended" @click="showSuspendForm = !showSuspendForm" class="btn" :class="user.suspended ? 'btn-outline-danger' : 'btn-outline-warning'">
-        <i :class="user.suspended ? 'bi bi-person-check-fill' : 'bi bi-person-x-fill'"></i>
-        {{ user.suspended ? 'Riattiva Utente' : 'Sospendi Utente' }}
-        </button>
-        <button v-else @click="removeSuspended" class="btn">
-          Togli la sospensione
-        </button>
+      <button v-if="isUserSuspended" @click="rmBan(this.user.id)" class="btn btn-outline-light flex-fill" type="button">
+        <i class="bi bi-check2-circle"> Togli la Sospensione</i>
+      </button>
+      <button v-else @click="showSuspendForm = !showSuspendForm" class="btn btn-outline-light flex-fill" type="button" :disabled="isUserBanned">
+        <i class="bi bi-ban"> Sospendi Utente</i></button>
       </div>
 
 
@@ -196,7 +194,8 @@ export default {
 
         if (response && response.data) {
           this.user.suspended = response.data.suspended;  // Aggiorna lo stato locale
-          this.showSuspendForm = false;  // Nascondi il form dopo la sospensione
+          this.showSuspendForm = false;
+          this.isUserSuspended=!this.isUserSuspended;  // Nascondi il form dopo la sospensione
           console.log('Utente sospeso per', this.suspendDuration, 'ore');
         }
       } catch (error) {
@@ -306,7 +305,11 @@ export default {
 
         if (response && response.data) {
             // Aggiorna lo stato dell'utente nel Vuex store
-            this.isUserBanned = !this.isUserBanned;
+            if(response.data.ban===1){
+              this.isUserBanned = !this.isUserBanned;
+            } else{
+              this.isUserSuspended=!this.isUserSuspended;
+            }
             var userUpd = this.$store.state.user;
             userUpd.bannedUsers = response.data.bannedArr;  // Aggiorna la lista degli utenti bannati
             this.$store.dispatch('setUser', userUpd);
