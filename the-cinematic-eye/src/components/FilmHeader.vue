@@ -60,7 +60,12 @@
                         <div v-if="logged">
                             <li>
                                 <router-link to="/personalArea" class="d-flex flex-row align-items-center usr-menu">
-                                    <div class=""> <i class="bi bi-person-fill"></i></div>
+                                    <div class="">
+                                        <div v-if="this.$store.state.user.profileImage" class="profileImage">
+                                            <img :src="'public/profileImg/'+this.$store.state.user.profileImage"/>
+                                        </div>
+                                        <i v-else class="bi bi-person-fill"></i>
+                                    </div>
                                     <div class="flex-grow-1 p-2 d-flex flex-column">
                                         <div class="text-center">{{this.$store.state.user.username}}</div>
                                         <div class="flex-grow-1 p-2 justify-content-evenly d-flex flex-row">
@@ -482,6 +487,17 @@ export default {
         font-size: small;
         background-color: whitesmoke;
         font-weight: bolder;
+    }
+    .profileImage{
+        width: 65px;
+        height: 65px;
+        overflow: hidden;
+        img{
+            object-fit: cover;
+            width:100%;
+            height: 100%;
+            border-radius: 50%;
+        }
     }
     
 </style>
