@@ -74,13 +74,14 @@
         await this.fetchList();
       },
       goToUserArea(username) {
-        if (this.$store.state.logged) {
-          if (username === this.$store.state.user.username) {
+          // Controlla se l'utente cliccato è lo stesso dell'utente loggato
+          if (this.$store.state.logged && username === this.$store.state.user.username) {
+            // Reindirizza alla pagina personale
             this.$router.push({ name: 'personalArea' });
           } else {
-            this.$router.push({ name: 'OtherUser', params: { username } });
+            // Reindirizza alla pagina dell'altro utente
+            this.$router.push({ name: 'OtherUser', params: { username: username } });
           }
-        }
       },
       goToFilmList(listaId) {
         this.$router.push({ path: `/lista/${listaId}` });

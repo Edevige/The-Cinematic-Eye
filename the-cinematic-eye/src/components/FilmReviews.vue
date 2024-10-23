@@ -127,16 +127,14 @@ export default {
   },
   methods: {
     goToUserArea(username) {
-      if(this.$store.state.logged){
         // Controlla se l'utente cliccato è lo stesso dell'utente loggato
-        if (username === this.$store.state.user.username) {
+        if (this.$store.state.logged && username === this.$store.state.user.username) {
           // Reindirizza alla pagina personale
           this.$router.push({ name: 'personalArea' });
         } else {
           // Reindirizza alla pagina dell'altro utente
           this.$router.push({ name: 'OtherUser', params: { username: username } });
         }
-      }
     },
     async getReviews(id) {
       try {

@@ -1,6 +1,6 @@
 <template>
     <!-- Barra per applicare i filtri -->
-    <div class="d-flex justify-content-around bg-secondary text-white p-3">
+    <div class="bg-secondary text-white p-3" style="width: 100%; box-sizing: border-box;">
       <div class="form_group">
         <label>Genere</label>
         <select v-model="searchParams.genreId">
@@ -62,7 +62,7 @@
     </div>
   
     <!-- Filtri selezionati -->
-    <div class="bg-light text-dark p-2">
+    <div class="bg-light text-dark p-2" style="width: 100%;">
       <span v-if="activeFilters.length > 0">Filtri attivi:</span>
       <span v-for="filter in activeFilters" :key="filter" class="badge bg-info text-dark mx-1">
         {{ filter }} <button @click="removeFilter(filter)" class="btn-close btn-close-white"></button>
