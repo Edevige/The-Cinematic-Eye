@@ -6,36 +6,31 @@
     <div v-else>
       <h1>Profilo di {{ user.username }}</h1>
 
-      <!-- Pulsante Segui/Non Segui -->
-      <button v-if="!(this.$store.state.logged)" disabled class="btn btn-outline-light flex-fill" type="button">
-        <i class="bi bi-suit-heart-fill"> Segui</i></button>
-      <button v-else-if="isFollowing" @click="rmFollow(this.user.id)" class="btn btn-outline-light flex-fill" type="button">
-        <i class="bi bi-heartbreak-fill"> Smetti di seguire</i>
-      </button>
-      <button v-else @click="addFollow(this.user.id)" class="btn btn-outline-light flex-fill" type="button">
-        <i class="bi bi-suit-heart-fill"> Segui</i></button>
+      <!-- Contenitore per i pulsanti allineati -->
+      <div class="button-container">
+        <!-- Pulsante Segui/Non Segui -->
+        <button v-if="!(this.$store.state.logged)" disabled @click="addFollow(this.user.id)" class="btn btn-outline-light flex-fill" type="button">
+          <i class="bi bi-suit-heart-fill"> Segui</i></button>
+        <button v-else-if="isFollowing" @click="rmFollow(this.user.id)" class="btn btn-outline-light flex-fill" type="button">
+          <i class="bi bi-heartbreak-fill"> Smetti di seguire</i>
+        </button>
+        <button v-else @click="addFollow(this.user.id)" class="btn btn-outline-light flex-fill" type="button">
+          <i class="bi bi-suit-heart-fill"> Segui</i></button>
 
-      <!-- Pulsante Promuovi e il form -->
-      <button v-if="isAdmin" @click="togglePromotionForm" class="btn btn-outline-success">Cambia Ruolo</button>
+        <!-- Pulsante Promuovi e il form -->
+        <button v-if="isAdmin" @click="togglePromotionForm" class="btn btn-outline-light flex-fill">Cambia Ruolo</button>
       
-      <!-- Pulsante Ban/Togli il Ban -->
-      <div v-if="isAdmin">
-      <button v-if="isUserBanned" @click="rmBan(this.user.id)" class="btn btn-outline-light flex-fill" type="button">
-        <i class="bi bi-check2-circle"> Togli il Ban</i>
-      </button>
-      <button v-else @click="showBanForm = !showBanForm" class="btn btn-outline-light flex-fill" type="button" :disabled="isUserSuspended">
-        <i class="bi bi-ban"> Ban Utente</i></button>
-      </div>
+        <!-- Pulsante Ban/Togli il Ban -->
+        <button v-if="isAdmin && isUserBanned" @click="rmBan(this.user.id)" class="btn btn-outline-light flex-fill" type="button">
+          <i class="bi bi-check2-circle"> Togli il Ban</i>
+        </button>
+        <button v-if="isAdmin && !isUserBanned" @click="showBanForm = !showBanForm" class="btn btn-outline-light flex-fill" type="button" :disabled="isUserSuspended">
+          <i class="bi bi-ban"> Ban Utente</i></button>
 
-      <!-- Pulsante Sospendi/Togli il sospendi -->
-      <div v-if="isAdmin">
-      <button v-if="isUserSuspended" @click="rmBan(this.user.id)" class="btn btn-outline-light flex-fill" type="button">
-        <i class="bi bi-check2-circle"> Togli la Sospensione</i>
-      </button>
-      <button v-else @click="showSuspendForm = !showSuspendForm" class="btn btn-outline-light flex-fill" type="button" :disabled="isUserBanned">
-        <i class="bi bi-ban"> Sospendi Utente</i></button>
+        <!-- Pulsante Sospendi/Togli il sospendi -->
+        <button v-if="isAdmin && !isUserBanned" @click="showSuspendForm = !showSuspendForm" class="btn btn-outline-light flex-fill" type="button" :disabled="isUserBanned">
+          <i class="bi bi-pause-circle"> Sospendi Utente</i></button>
       </div>
-
 
       <!-- Form per sospendere utente -->
       <div v-if="showSuspendForm" class="suspend-form">
@@ -68,15 +63,10 @@
           <div class="form-group">
             <label for="roleSelect">Seleziona Ruolo:</label>
             <select v-model="selectedRole" class="form-control" id="roleSelect">
-              <!-- Opzioni per un utente base -->
               <option v-if="userRole === 0" value="2">Utente Pro</option>
               <option v-if="userRole === 0" value="1">Amministratore</option>
-
-              <!-- Opzioni per un utente pro -->
               <option v-if="userRole === 2" value="0">Utente Base</option>
               <option v-if="userRole === 2" value="1">Amministratore</option>
-
-              <!-- Opzioni per un amministratore -->
               <option v-if="userRole === 1" value="0">Utente Base</option>
               <option v-if="userRole === 1" value="2">Utente Pro</option>
             </select>
@@ -87,39 +77,24 @@
       </div>
 
       <!-- Mostra i dati dell'utente -->
-      <div class="user-info">
-        <p><strong>ID:</strong> {{ user.id || 'Non specificato' }}</p>
+      <div class="user-info" >
+        <p><strong>Username:</strong> {{ user.username || 'Non specificato' }}</p>
         <p><strong>Nome:</strong> {{ user.name || 'Non specificato' }}</p>
-        <p><strong>Data di nascita:</strong> {{ formatDate(user.birthdate) }}</p>
+        <p><strong>Data di nascita:</strong> {{ formatDate(user.birthdate) || 'Non specificato'}}</p>
         <p><strong>Biografia:</strong> {{ user.bio || 'Nessuna biografia disponibile' }}</p>
-
+        <p><strong>Follower:</strong> {{ user.seguiti.length || '0' }}</p>
+        <!-- Film Favoriti -->
+        <label for="Favorites"><strong>Preferiti:</strong></label>
         <div v-if="user.favorites && user.favorites.length > 0">
-          <h3>Film preferiti:</h3>
-          <ul>
-            <li v-for="filmId in user.favorites" :key="filmId">Film ID: {{ filmId }}</li>
-          </ul>
+          <FilmCarouselList :filmIds="filmPreferiti" :title="'Film Preferiti'" />
         </div>
-
-        <div v-if="user.seen && user.seen.length > 0">
-          <h3>Film visti:</h3>
-          <ul>
-            <li v-for="filmId in user.seen" :key="filmId">Film ID: {{ filmId }}</li>
-          </ul>
-        </div>
-
-        <div v-if="user.lists && user.lists.length > 0">
-          <h3>Liste di film seguite:</h3>
-          <ul>
-            <li v-for="listId in user.lists" :key="listId">Lista ID: {{ listId }}</li>
-          </ul>
-        </div>
-
-        <div v-if="user.seguiti && user.seguiti.length > 0">
-          <h3>Seguiti:</h3>
-          <ul>
-            <li v-for="followedUserId in user.seguiti" :key="followedUserId">Utente ID: {{ followedUserId }}</li>
-          </ul>
-        </div>
+        <p v-else>Non ha ancora aggiunto film favoriti.</p>
+        <!-- Liste Seguite -->
+        <label for="Following"><strong>Seguite:</strong></label>
+        <ul v-if="user.followingList && user.followingList.length > 0">
+          <li v-for="list in user.followingList" :key="list">{{ list }}</li>
+        </ul>
+        <p v-else>Non sta seguendo nessuna lista.</p>
       </div>
     </div>
   </div>
@@ -132,6 +107,7 @@
 
 <script>
 import apiUtils from '@/services/apiUtils';
+import FilmCarouselList from '@/components/FilmCarouselList.vue';
 
 export default {
   props: {
@@ -156,13 +132,16 @@ export default {
       isUserSuspended: false,
     };
   },
+  components:{
+    FilmCarouselList
+  },
   methods: {
     async fetchUserData() {
       try {
         const response = await apiUtils.getUserByUsername(this.username);
         if (response && response.data) {
           this.user = response.data;
-
+          this.filmPreferiti=response.data.favorites;
           // Verifica se l'utente ha un ruolo nella tabella UserRole
           const roleResponse = await apiUtils.getUserRoleById(this.user.id);
           if (roleResponse && roleResponse.data) {
@@ -178,7 +157,50 @@ export default {
         console.error('Errore nel recupero delle informazioni utente:', error);
       }
     },
+    // Funzione per aggiungere un follow
+    async addFollow(userId) {
+      try {
+        const token = this.$store.state.token;
+        
+        const response = await apiUtils.addFollow({
+          follow_id: userId,  // ID dell'utente che si vuole seguire
+          token
+        });
 
+        if (response && response.data) {
+          console.log('Follow aggiunto con successo:', response.data);
+
+          // Aggiorna lo stato dell'utente nel Vuex store
+          var userUpd = this.$store.state.user;
+          userUpd.seguiti = response.data.followArr;  // Aggiorna la lista dei seguiti
+          this.$store.dispatch('setUser', userUpd);
+        }
+      } catch (error) {
+        console.error('Errore nell\'aggiunta del follow:', error);
+      }
+    },
+    // Funzione per rimuovere un follow
+    async rmFollow(userId) {
+      try {
+        const token = this.$store.state.token;
+        
+        const response = await apiUtils.rmFollow({
+          follow_id: userId,  // ID dell'utente che si vuole smettere di seguire
+          token
+        });
+
+        if (response && response.data) {
+          console.log('Follow rimosso con successo:', response.data);
+
+          // Aggiorna lo stato dell'utente nel Vuex store
+          var userUpd = this.$store.state.user;
+          userUpd.seguiti = response.data.followArr;  // Aggiorna la lista dei seguiti
+          this.$store.dispatch('setUser', userUpd);
+        }
+      } catch (error) {
+        console.error('Errore nella rimozione del follow:', error);
+      }
+    },
     // Funzione per sospendere l'utente per la durata specificata
     async suspendUser() {
       try {
@@ -344,17 +366,19 @@ export default {
 </script>
 
 <style scoped>
-.spinner-border {
-  color: whitesmoke;
-  --bs-spinner-width: 5rem;
-  --bs-spinner-height: 5rem;
-  --bs-spinner-border-width: 1em;
+.spinner-border{
+      color: whitesmoke;
+      --bs-spinner-width: 5rem;
+      --bs-spinner-height: 5rem;
+      --bs-spinner-border-width: 1em;
 }
 .user-info {
   background-color: rgba(255, 255, 255, 0.1);
   padding: 1rem;
+  padding-top: 2rem;
   border-radius: 10px;
   border: 1px solid whitesmoke;
+  color: whitesmoke;
 }
 .ban-form {
   margin-top: 10px;
@@ -373,5 +397,25 @@ ul {
 li {
   margin-bottom: 0.5rem;
   color: whitesmoke;
+}
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding-bottom: 2rem;
+}
+
+.button-container > button {
+  flex: 1;
+  min-width: 150px; /* Imposta una larghezza minima per evitare che siano troppo piccoli */
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .button-container {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 </style>
