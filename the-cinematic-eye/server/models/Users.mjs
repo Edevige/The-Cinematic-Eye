@@ -69,6 +69,10 @@ export default function (sequelize, DataTypes) {
       private: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
+      },
+      profileImage:{
+        type: DataTypes.STRING,
+        allowNull: true
       }
 
     },
