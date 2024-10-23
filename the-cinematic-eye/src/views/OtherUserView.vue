@@ -89,12 +89,7 @@
           <FilmCarouselList :filmIds="filmPreferiti" :title="'Film Preferiti'" />
         </div>
         <p v-else>Non ha ancora aggiunto film favoriti.</p>
-        <!-- Liste Seguite -->
-        <label for="Following"><strong>Seguite:</strong></label>
-        <ul v-if="user.followingList && user.followingList.length > 0">
-          <li v-for="list in user.followingList" :key="list">{{ list }}</li>
-        </ul>
-        <p v-else>Non sta seguendo nessuna lista.</p>
+        
       </div>
     </div>
   </div>
@@ -130,6 +125,8 @@ export default {
       showSuspendForm: false,  // Per controllare se mostrare il form di sospensione
       suspendDuration: 1,      // Durata della sospensione in ore (default a 1)
       isUserSuspended: false,
+      filmPreferiti: [],
+      listaSeguita:[],
     };
   },
   components:{

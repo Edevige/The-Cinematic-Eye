@@ -21,7 +21,7 @@
             </button>
 
             <!-- Mostra il pulsante "Segui" o "Smetti di seguire" se l'utente non è il proprietario -->
-            <button v-else class="btn btn-outline-light" @click="isFollowing ? unfollowList() : followList()">
+            <button v-else-if="isLoggedIn" class="btn btn-outline-light" @click="isFollowing ? unfollowList() : followList()">
                 <i class="bi" :class="isFollowing ? 'bi-dash-circle' : 'bi-plus-circle'"></i>
                 {{ isFollowing ? 'Smetti di seguire' : 'Segui Lista' }}
             </button>
@@ -114,6 +114,7 @@ export default {
             editedTitle: '',   // Stato per il titolo modificato
             editedVisibility: true, // Stato per la visibilità modificata
             isFollowing: false,  // Nuovo stato per verificare se l'utente segue la lista
+            isLoggedIn: this.$store.state.logged,
         };
     },
     mounted() {
@@ -130,10 +131,11 @@ export default {
                 this.editedVisibility = this.listData.visible; // Booleano
 
                 // Verifica se l'utente sta già seguendo la lista
-                this.isFollowing = Array.isArray(this.$store.state.user.followingList) 
-                ? this.$store.state.user.followingList.includes(this.listId)
-                : false;
-
+                if(this.isLoggedIn){
+                    this.isFollowing = Array.isArray(this.$store.state.user.followingList) 
+                    ? this.$store.state.user.followingList.includes(this.listId)
+                    : false;
+                }
 
                 if (this.listData.film.length > 0) {
                     this.getFilmDetails();
@@ -230,14 +232,16 @@ export default {
         },
         async isFollowingSet(){
             try {
-                const response= await apiUtils.getUserByUsername(this.$store.state.user.username);
-                let seguace= response.data.followingList;
-                if(seguace!=null && seguace.includes(Number(this.listId))){
-                    this.isFollowing=true;
+                if(this.isLoggedIn){
+                    const response= await apiUtils.getUserByUsername(this.$store.state.user.username);
+                    let seguace= response.data.followingList;
+                    if(seguace!=null && seguace.includes(Number(this.listId))){
+                        this.isFollowing=true;
+                    }
+                    else{
+                        this.isEditing=false;
+                    }
                 }
-            else{
-                this.isEditing=false;
-            }
             } catch (error) {
                 console.error(error);
             }

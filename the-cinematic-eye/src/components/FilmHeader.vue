@@ -196,7 +196,7 @@ export default {
             try {
                 const token = this.$store.state.token;
                 if (!token) {
-                console.error('Token non trovato.');
+                //console.error('Token non trovato.');
                 return;
                 }
                 const response = await apiUtils.getUserRole({
@@ -282,6 +282,7 @@ export default {
                     this.logMail = '';
                     this.logPass = '';
                     this.error = null;
+                    this.$router.go(0);
                     await this.checkUserRole();
                 } else {
                     this.error = 'Errore di autenticazione. Riprova più tardi.';
@@ -305,9 +306,14 @@ export default {
             this.isBaseUser = false;
             this.$store.commit('logout');
 
-            // Reindirizza alla homepage
-            this.$router.push('/');
-
+            // Se l'utente è già sulla homepage, ricarica la pagina
+            if (this.$route.path === '/') {
+                // Forza il refresh della pagina
+                this.$router.go(0); 
+            } else {
+                // Reindirizza alla homepage
+                this.$router.push('/');
+            };
             // Reinizializza il pulsante di Google Sign-In dopo il logout
             // Usa nextTick per aspettare che l'elemento sia nel DOM
             this.$nextTick(() => {
@@ -377,6 +383,7 @@ export default {
     .navbar{
         background-color: #{$menu-color} !important;
         position: relative;
+        width: 100%;
         top: 0;
         left: 0;
         right: 0;
