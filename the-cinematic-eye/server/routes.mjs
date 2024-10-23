@@ -78,6 +78,7 @@ export default function (app) {
   app.delete('/deleteList/:id', ListController.deleteList);
   app.post('/addFilmToList', ListController.addFilmToList);
   app.get('/getList/:id', ListController.getList);
+  app.get('/getListWithOwner/:id', ListController.getListwithOwner);
   app.post('/removeFilmFromList', ListController.removeFilmFromList);
   app.put('/updateList/:listId', ListController.updateList);
   app.get('/getAllList', ListController.getAllList);
@@ -130,5 +131,7 @@ export default function (app) {
 
   app.post('/subscribeNewsletter', emailController.subscribeNewsletter);
   app.post('/cancelNewsletter', emailController.cancelNewsletter);
-  app.post('/sendWelcomeEmail', emailController.sendNewsletterEmail)
+  app.post('/sendWelcomeEmail', emailController.sendNewsletterEmail);
+  app.post('/isUserSuspended', BanController.isUserSuspended);
+  app.post('/isUserSuspendedGoogle', BanController.isUserSuspendedGoogle);
 }

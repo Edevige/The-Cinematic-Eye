@@ -268,6 +268,7 @@ export default {
             }
 
             try {
+                const fetchSuspension=await apiUtils.isUserSuspended(this.logMail);
                 const response = await AuthenticationService.login({
                     email: this.logMail,
                     password: this.logPass
@@ -318,6 +319,7 @@ export default {
         async loginWithGoogle(CredentialResponse) { 
             const token_id = CredentialResponse.credential;
             try {
+                const fetchSuspension= await apiUtils.isUserSuspendedGoogle({"token_id": token_id});
                 const Gregister = await AuthenticationService.loginWithGoogleToken({ "token_id": token_id });
                 if (Gregister && Gregister.data) {
                     this.$store.dispatch('setToken', Gregister.data.token);
@@ -339,6 +341,18 @@ export default {
         async checkBanStatus() {
             try {
                 const response = await apiUtils.isUserBanned(this.$store.state.user.id);
+                if (response.data.ban === 1) {
+                    this.logout();  // Esegui il logout se l'utente è bannato
+                    alert("Il tuo account è stato bannato.");
+                }
+            } catch (error) {
+                console.error("Errore nel controllo del ban:", error);
+            }
+        },
+
+        async checkSuspendedStatus() {
+            try {
+                const response = await apiUtils.isUserSuspended(this.$store.state.user.id);
                 if (response.data.ban === 1) {
                     this.logout();  // Esegui il logout se l'utente è bannato
                     alert("Il tuo account è stato bannato.");

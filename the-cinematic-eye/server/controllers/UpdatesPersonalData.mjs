@@ -80,13 +80,17 @@ export default {
                         match.password = req.body.data.nuovoUpdate;
                         await match.save();
                         break
-    
                     case 4:
                         console.log('Caso cambio Birthday');
                         match.birthdate = req.body.data.nuovoUpdate;
                         await match.save();
                         break
                     case 5:
+                        console.log('Caso cambio bio');
+                        match.bio=req.body.data.nuovoUpdate;
+                        await match.save();
+                        break
+                    case 6:
                         console.log('Caso cambio private');
                         match.private=req.body.data.nuovoUpdate;
                         await match.save();

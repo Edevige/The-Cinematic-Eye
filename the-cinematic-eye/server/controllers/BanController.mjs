@@ -1,17 +1,36 @@
 import { userbans, userroles, users } from "../models/index.mjs";
 import jsonwebtoken from "jsonwebtoken";
 import config from "../config/config.mjs";
+import { OAuth2Client } from "google-auth-library";
+import { addHours } from 'date-fns';  // Puoi usare una libreria per manipolare le date
+
+const client= new OAuth2Client(config.googleClientId);
+
+async function verifyGoogleToken(id_token){
+    try{
+    const ticket = await client.verifyIdToken({
+        idToken: id_token,
+        audience: config.googleClientId,
+    });
+    if(ticket){
+        const payload= ticket.getPayload();
+        return payload;
+    }
+}
+    catch(error) {
+        console.error("Errore verifica Token: ", error);
+    }
+}
 
 export default {
 
     //Funzione sospensione utente
     async suspendUser(req, res) {
-        console.log("DIDDY", req.body)
+        
         try {
         const token = req.body.token;
         const decoded = jsonwebtoken.verify(token, config.authentication.jwtSecret);
             
-        console.log("DIDDYpt2", decoded)
         // Verifica se l'utente richiedente è un amministratore
         const requestingUserRole = await userroles.findOne({ where: { UserId: decoded.id } });
         if (!requestingUserRole || requestingUserRole.role !== 1) {
@@ -19,37 +38,88 @@ export default {
         }
     
         const { userId, suspended } = req.body;  // Suspended è un booleano (true/false)
-        console.log("DIDDYpt3", userId)
-        console.log("DIDDYpt4", suspended)
-    
+        
+
+        
         // Trova l'utente da sospendere o riattivare
-        const user = await users.findByPk(userId);
+        const user = await users.findOne({
+            where: {id: userId}
+        });
         if (!user) {
             return res.status(404).send({ error: 'Utente non trovato.' });
         }
-    
+        
+        const durationHours = req.body.duration; // Durata della sospensione in ore
+        const suspendedUntil = addHours(new Date(), durationHours); // Calcola la data di scadenza
+
         // Crea sospensione
         const newBan = await userbans.create({
             UserId: userId,
             admin_id: decoded.id,
-            suspendedUntil: req.body.duration,
+            suspendedUntil: suspendedUntil,
             ban: 2
         });
 
         res.status(201).send({ ban: newBan.toJSON() });
 
-        // Aggiorna lo stato di sospensione dell'utente
-        /*await user.save();*/
-
-        
-    
-        const message = suspended ? 'Utente sospeso con successo.' : 'Utente riattivato con successo.';
-        res.status(200).send({ success: true, message });
         } catch (error) {
         console.error('Errore nella sospensione/riattivazione dell\'utente:', error);
         res.status(500).send({ error: 'Errore del server durante la sospensione/riattivazione dell\'utente.' });
         }
     },
+
+    async isUserSuspended(req, res) {
+        try {
+            const email  = req.body.credentials;
+            const user = await users.findOne({ where: { email: email } });
+            if(!user){
+                return res.status(500).send({ error: 'Credenziali Errate' });
+            }
+            const userId=user.id
+            const ban= await userbans.findOne({ where: {UserId: userId}});
+            if (ban) {
+                if (ban.ban === 2 && new Date() > ban.suspendedUntil) {
+                    // Se la sospensione è scaduta, riattiva l'utente
+                    await ban.destroy();
+                    return res.status(200).send({ ban: 0 });
+                }
+                return res.status(200).send({ ban: ban.ban, suspendedUntil: ban.suspendedUntil });
+            }
+    
+            return res.status(200).send({ ban: 0 });
+        } catch (e) {
+            console.error('Errore nel controllo del ban:', e);
+            res.status(500).send({ error: 'Errore del server.' });
+        }
+    },
+
+    async isUserSuspendedGoogle(req, res) {
+        try {
+            const token_id  = req.body.token_id;
+            const payload = await verifyGoogleToken(token_id);
+            const google_id=payload['sub'];
+            const user = await users.findOne({ where: { google_id : google_id } });
+            if(!user){
+                return res.status(500).send({ error: 'Credenziali Errate' });
+            }
+            const userId=user.id
+            const ban= await userbans.findOne({ where: {UserId: userId}});
+            if (ban) {
+                if (ban.ban === 2 && new Date() > ban.suspendedUntil) {
+                    // Se la sospensione è scaduta, riattiva l'utente
+                    await ban.destroy();
+                    return res.status(200).send({ ban: 0 });
+                }
+                return res.status(200).send({ ban: ban.ban, suspendedUntil: ban.suspendedUntil });
+            }
+    
+            return res.status(200).send({ ban: 0 });
+        } catch (e) {
+            console.error('Errore nel controllo del ban:', e);
+            res.status(500).send({ error: 'Errore del server.' });
+        }
+    },
+    
 
     async isUserBanned(req, res) {
         try {
@@ -99,6 +169,7 @@ export default {
 
     async removeUserBan(req, res) {
         try {
+
             if (!req.headers.authorization) {
                 return res.status(400).send({ error: 'Token di autorizzazione mancante.' });
             }
@@ -112,10 +183,12 @@ export default {
             if (!ban) {
                 return res.status(404).send({ error: 'Utente non bannato.' });
             }
+
+            const indexBan=ban.ban;
     
             await ban.destroy();  // Rimuovi il ban
     
-            res.status(200).send({ message: 'Ban rimosso con successo.' });
+            res.status(200).send({ message: 'Ban rimosso con successo.' , ban:indexBan});
         } catch (e) {
             console.error('Errore nella rimozione del ban:', e);
             res.status(500).send({ error: 'Errore nella rimozione del ban.' });
