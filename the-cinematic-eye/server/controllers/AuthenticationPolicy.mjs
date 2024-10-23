@@ -37,7 +37,7 @@ export default {
               "Il nome inserito non è valido. Deve contenere solo lettere, spazi e alcuni simboli come virgole, apostrofi o trattini.",
           });
           break;
-        case "birthdate":
+        case "date":
           res.status(400).send({
             error: "La data di nascita non è valida. Deve essere una data valida nel passato.",
           });
