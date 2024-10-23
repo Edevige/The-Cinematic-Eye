@@ -102,5 +102,6 @@ export default function (app) {
   app.post('/subscribeNewsletter', emailController.subscribeNewsletter);
   app.post('/cancelNewsletter', emailController.cancelNewsletter);
   app.post('/sendWelcomeEmail', emailController.sendNewsletterEmail);
-  app.post('/isUserSuspended', BanController.isUserSuspended)
+  app.post('/isUserSuspended', BanController.isUserSuspended);
+  app.post('/isUserSuspendedGoogle', BanController.isUserSuspendedGoogle);
 }

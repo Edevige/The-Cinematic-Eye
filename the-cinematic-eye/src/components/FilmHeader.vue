@@ -314,6 +314,7 @@ export default {
         async loginWithGoogle(CredentialResponse) { 
             const token_id = CredentialResponse.credential;
             try {
+                const fetchSuspension= await apiUtils.isUserSuspendedGoogle({"token_id": token_id});
                 const Gregister = await AuthenticationService.loginWithGoogleToken({ "token_id": token_id });
                 if (Gregister && Gregister.data) {
                     this.$store.dispatch('setToken', Gregister.data.token);

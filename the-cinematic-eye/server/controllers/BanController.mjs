@@ -1,8 +1,26 @@
 import { userbans, userroles, users } from "../models/index.mjs";
 import jsonwebtoken from "jsonwebtoken";
 import config from "../config/config.mjs";
+import { OAuth2Client } from "google-auth-library";
 import { addHours } from 'date-fns';  // Puoi usare una libreria per manipolare le date
 
+const client= new OAuth2Client(config.googleClientId);
+
+async function verifyGoogleToken(id_token){
+    try{
+    const ticket = await client.verifyIdToken({
+        idToken: id_token,
+        audience: config.googleClientId,
+    });
+    if(ticket){
+        const payload= ticket.getPayload();
+        return payload;
+    }
+}
+    catch(error) {
+        console.error("Errore verifica Token: ", error);
+    }
+}
 
 export default {
 
@@ -53,17 +71,39 @@ export default {
     async isUserSuspended(req, res) {
         try {
             const email  = req.body.credentials;
-            console.log('EMAIL', email)
             const user = await users.findOne({ where: { email: email } });
-            console.log('UTENTE PRIMO', user)
             if(!user){
                 return res.status(500).send({ error: 'Credenziali Errate' });
             }
-            console.log('UTENTE', user)
-
             const userId=user.id
             const ban= await userbans.findOne({ where: {UserId: userId}});
+            if (ban) {
+                if (ban.ban === 2 && new Date() > ban.suspendedUntil) {
+                    // Se la sospensione è scaduta, riattiva l'utente
+                    await ban.destroy();
+                    return res.status(200).send({ ban: 0 });
+                }
+                return res.status(200).send({ ban: ban.ban, suspendedUntil: ban.suspendedUntil });
+            }
     
+            return res.status(200).send({ ban: 0 });
+        } catch (e) {
+            console.error('Errore nel controllo del ban:', e);
+            res.status(500).send({ error: 'Errore del server.' });
+        }
+    },
+
+    async isUserSuspendedGoogle(req, res) {
+        try {
+            const token_id  = req.body.token_id;
+            const payload = await verifyGoogleToken(token_id);
+            const google_id=payload['sub'];
+            const user = await users.findOne({ where: { google_id : google_id } });
+            if(!user){
+                return res.status(500).send({ error: 'Credenziali Errate' });
+            }
+            const userId=user.id
+            const ban= await userbans.findOne({ where: {UserId: userId}});
             if (ban) {
                 if (ban.ban === 2 && new Date() > ban.suspendedUntil) {
                     // Se la sospensione è scaduta, riattiva l'utente

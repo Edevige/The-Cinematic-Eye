@@ -171,6 +171,9 @@ export default {
         console.log(credentials)
         return Api().post('/isUserSuspended', {credentials})
     },
+    isUserSuspendedGoogle(token_id){
+        return Api().post('/isUserSuspendedGoogle', token_id)
+    },
     getListWithOwner(listId) {
         return Api().get(`/getListWithOwner/${listId}`); 
     },
