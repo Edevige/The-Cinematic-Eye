@@ -48,6 +48,7 @@ export default function (app) {
   app.delete('/deleteList/:id', ListController.deleteList);
   app.post('/addFilmToList', ListController.addFilmToList);
   app.get('/getList/:id', ListController.getList);
+  app.get('/getListWithOwner/:id', ListController.getListwithOwner);
   app.post('/removeFilmFromList', ListController.removeFilmFromList);
   app.put('/updateList/:listId', ListController.updateList);
   app.get('/getAllList', ListController.getAllList);

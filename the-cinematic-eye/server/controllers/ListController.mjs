@@ -138,6 +138,26 @@ export default {
       res.status(500).send({ error: 'Errore del server.' });
     }
   },
+  async getListwithOwner(req, res) {
+    try {
+      const listId = req.params.id;
+      const list = await listfilms.findOne({ where: { id: listId } });
+      
+      if (!list) {
+        return res.status(404).send({ error: 'Lista non trovata.' });
+      }
+      const userId= list.UserId
+      const user= await users.findOne({ where: { id: userId}});
+      if(!user){
+        return res.status(404).send({ error: 'Utente non trovato.' });
+      }
+  
+      res.send({list: list, owner:user.username});
+    } catch (error) {
+      console.error('Errore nel recupero della lista:', error);
+      res.status(500).send({ error: 'Errore del server.' });
+    }
+  },
   async removeFilmFromList(req, res) {
     try {
         const { listId, filmId } = req.body;

@@ -170,6 +170,9 @@ export default {
     isUserSuspended(credentials){
         console.log(credentials)
         return Api().post('/isUserSuspended', {credentials})
-    }
+    },
+    getListWithOwner(listId) {
+        return Api().get(`/getListWithOwner/${listId}`); 
+    },
     
 }

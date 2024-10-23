@@ -72,7 +72,7 @@
           <!-- Film Favoriti -->
           <label for="Favorites">Film Preferiti:</label>
             <div v-if="user.favorites && user.favorites.length > 0">
-              <FilmCarouselList :filmIds="filmPreferiti" :title="'Film Preferiti'" />
+              <FilmCarouselList :filmIds="filmPreferiti" />
               </div>
           
             <p v-else>Non hai ancora aggiunto film favoriti.</p>
@@ -80,10 +80,14 @@
 
             <!-- Liste Seguite -->
             <label for="Following">Liste Seguite:</label>
-            <ul v-if="user.followingList && user.followingList.length > 0">
-              <li v-for="list in user.followingList" :key="list">{{ list }}</li>
+            <ul v-if="listaSeguita && listaSeguita.length > 0">
+              <li v-for="list in listaSeguita" :key="list.listId">
+                <h3>{{ list.title }} di {{ list.owner }}</h3>
+                <FilmCarouselList :filmIds="list.films" />
+              </li>
             </ul>
             <p v-else>Non stai seguendo nessuna lista.</p>
+
 
             <!-- Numero di Follower -->
             <label for="Followers">Hai in tutto {{ user.seguiti.length }} follower</label>
@@ -270,6 +274,7 @@ label {
 <script>
 import FilmCarouselList from '@/components/FilmCarouselList.vue';
 import AuthenticationService from '@/services/AuthenticationService';
+import apiUtils from '@/services/apiUtils';
 import Utils from '@/services/apiUtils';
 import emailService from '@/services/emailService';
 export default {
@@ -293,7 +298,8 @@ export default {
       seguace: false,
       passwordCorrente: '',
       loading:true,
-      filmPreferiti: []
+      filmPreferiti: [],
+      listaSeguita:[]
     };
   },
   components:{
@@ -306,11 +312,25 @@ export default {
     }
   },
   methods: {
-    async isSubscribed(user) {
+    async getList(listaId) {
+    try {
+      const response = await apiUtils.getListWithOwner(listaId);
+      console.log('Lista caricata per l\'ID:', listaId, response.data.film);
+      return {
+        title:response.data.list.title,
+        films:response.data.list.film,
+        owner:response.data.owner
+      };
+    } catch (error) {
+      console.error('Errore nel caricare la lista', error);
+      return [];  // Assicurati di ritornare un array vuoto in caso di errore
+    }
+  },
+    isSubscribed(user) {
       if (user) {
-        this.seguace = true;
+        this.seguace = !this.seguace;
       } else {
-        this.seguace = false;
+        this.seguace = !this.seguace;
       }
     },
     async fetchUser() {
@@ -318,7 +338,17 @@ export default {
         const response = await Utils.getUserByUsername(this.username);
         this.user = response.data;
         this.filmPreferiti=response.data.favorites;
-        await this.isSubscribed(this.user);
+
+        // Recupera i film per ogni lista seguita
+        if (this.user.followingList && this.user.followingList.length > 0) {
+        this.listaSeguita = await Promise.all(
+          this.user.followingList.map(async (listId) => {
+            const listData = await this.getList(listId); // Carica i film per ogni lista seguita
+            return { listId, title:listData.title, films:listData.films, owner: listData.owner };  // Ritorna l'ID della lista e i film
+          })
+        );
+        }
+        this.isSubscribed(this.user);
       } catch (error) {
         console.error('Errore nel recupero delle informazioni utente:', error);
         this.error = 'Impossibile caricare i dati dell\'utente';
