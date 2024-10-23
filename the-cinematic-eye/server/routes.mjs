@@ -13,6 +13,35 @@ import ForumController from "./controllers/ForumController.mjs";
 import ReportController from "./controllers/ReportController.mjs";
 import PollController from "./controllers/PollController.mjs";
 import emailController from "./controllers/emailController.mjs";
+import path from "path";
+import multer from "multer";
+
+const fileFilter = (req, file, cb) => {
+  const filetypes = /.jpg|.png/
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
+
+  if (extname) {
+    return cb(null, true);
+  } else {
+    cb('Error: Photos Only!');
+  }
+};
+
+var storage = multer.diskStorage(
+    {
+        destination: './public/profileImg',
+        fileFilter,
+        filename: function ( req, file, cb ) {
+            //req.body is empty...
+            //How could I get the new_file_name property sent from client here?
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+            
+            cb( null,uniqueSuffix + path.extname(file.originalname));
+        }
+    }
+);
+
+const upload = multer({ storage });
 
 export default function (app) {
   app.get("/", (_req, res) => {
@@ -22,6 +51,7 @@ export default function (app) {
   app.post("/register", AuthenticationPolicy.register, Authentication.register);
   app.post("/login", AuthenticationPolicy.register, Authentication.login);
   app.post("/loginWithGoogleToken", Authentication.loginWithGoogleToken);
+  app.post("/loadImage", upload.array("files") , UpdatesPersonalData.loadImage);
 
   app.get("/usrSrc", SearchPolicy.usrSearch, Search.usrSearch);
   app.get('/getUsers', Search.getUser);
@@ -48,6 +78,7 @@ export default function (app) {
   app.delete('/deleteList/:id', ListController.deleteList);
   app.post('/addFilmToList', ListController.addFilmToList);
   app.get('/getList/:id', ListController.getList);
+  app.get('/getListWithOwner/:id', ListController.getListwithOwner);
   app.post('/removeFilmFromList', ListController.removeFilmFromList);
   app.put('/updateList/:listId', ListController.updateList);
   app.get('/getAllList', ListController.getAllList);
@@ -101,5 +132,6 @@ export default function (app) {
   app.post('/subscribeNewsletter', emailController.subscribeNewsletter);
   app.post('/cancelNewsletter', emailController.cancelNewsletter);
   app.post('/sendWelcomeEmail', emailController.sendNewsletterEmail);
-  app.post('/isUserSuspended', BanController.isUserSuspended)
+  app.post('/isUserSuspended', BanController.isUserSuspended);
+  app.post('/isUserSuspendedGoogle', BanController.isUserSuspendedGoogle);
 }

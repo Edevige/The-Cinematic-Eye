@@ -23,6 +23,7 @@ import UserForumView from '@/views/UserForumView.vue'
 import AdminView from '@/views/AdminView.vue'
 import TopListView from '@/views/TopListView.vue'
 import PollsView from '@/views/PollsView.vue'
+import OptionalRegisterView from '@/views/OptionalRegisterView.vue'
 const routes = [
   {
     path: '/',
@@ -186,6 +187,11 @@ const routes = [
     path:'/topList',
     name:'topList',
     component: TopListView
+  },{
+
+    path:'/optRegister',
+    name:'optRegiste',
+    component: OptionalRegisterView
   },
 ]
 

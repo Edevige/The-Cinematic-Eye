@@ -1,7 +1,8 @@
-import {users} from "../models/index.mjs"
+import {messages, users} from "../models/index.mjs"
 import jsonwebtoken from "jsonwebtoken"
 import config from "../config/config.mjs";
 import argon2id from "argon2";
+import { ownKeys } from "core-js/fn/reflect";
 
 function jwtTokenGen(user){
     const ONE_WEEK = 60 * 60 * 24 * 7;
@@ -340,5 +341,27 @@ export default {
                 error: 'An unexpected error occured, conctat the system admin'
             }) 
         }
+    },
+    async loadImage(req, res){
+
+        try {
+            var decode = jsonwebtoken.verify(req.body.token, config.authentication.jwtSecret);
+            const user = await users.findOne({
+                where:
+                {
+                  id : decode.id
+                } 
+            });
+            await user.update({profileImage: req.files[0].filename});
+        
+            return res.status(200).send({ result: ok, message : "Profile image successfull updated" });
+        }catch(e){
+            console.log("Error trying to update profile image\n" + e);
+            res.status(500).send({
+                error: 'An unexpected error occured, conctat the system admin'
+            }); 
+            
+        }
+
     },
 }

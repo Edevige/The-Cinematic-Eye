@@ -123,6 +123,9 @@ export default {
             const banStatus = await userbans.findOne({ where: { UserId: user.id } });
             if (banStatus && banStatus.ban === 1) {
                 return res.status(403).send({ error: "Il tuo account è stato bannato." });
+            } else if (banStatus && banStatus.ban === 2){
+                const suspendedUntil= banStatus.suspendedUntil;
+                return res.status(403).send({ error: "Il tuo account è stato sospeso. Devi aspettare fino a" + suspendedUntil});
             }
     
             // Invia risposta per utente esistente
