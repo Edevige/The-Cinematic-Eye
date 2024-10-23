@@ -93,6 +93,28 @@
             <span>{{ listData.follower }} Follower</span>
         </div>
         <p>Questa lista non contiene ancora nessun film</p>
+        <!-- Form per modificare il titolo e la visibilità della lista -->
+        <div v-if="isEditing" class="edit-form review-form">
+            <form @submit.prevent="saveChanges" class="text-center">
+                <div class="form-group">
+                    <label for="listTitle" class="form-label">Titolo della Lista</label>
+                    <input id="listTitle" v-model="editedTitle" type="text" class="form-control text-center" style="width: 60%; margin: 0 auto;">
+                </div>
+
+                <div class="form-group" style="padding-top: 1rem;">
+                    <label for="listVisibility" class="form-label">Lista Visibile?</label>
+                    <input id="listVisibility" type="checkbox" v-model="editedVisibility" class="form-check-input" style="margin-left: 20px;">
+                    <span style="margin-left: 5px;">{{ editedVisibility ? 'Pubblica' : 'Privata' }}</span>
+                </div>
+
+                <!-- Pulsanti posizionati sulla stessa linea, distanziati -->
+                <div class="d-flex justify-content-center mt-3">
+                    <button type="submit" class="btn btn-outline-light mx-3" style="width: 120px;">Salva</button>
+                    <button type="button" @click="toggleEditMode" class="btn btn-secondary mx-3" style="width: 120px;">Annulla</button>
+                    <button type="button" @click="deleteList" class="btn btn-danger mx-3" style="width: 120px;">Elimina</button>
+                </div>
+            </form>
+        </div>
     </div>
 </template>
 
