@@ -166,6 +166,10 @@ export default {
     // Funzione sospensione
     suspendUser(credentials){
         return Api().post('suspendUser', credentials)
+    },
+    isUserSuspended(credentials){
+        console.log(credentials)
+        return Api().post('/isUserSuspended', {credentials})
     }
     
 }

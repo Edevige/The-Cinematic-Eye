@@ -263,6 +263,7 @@ export default {
             }
 
             try {
+                const fetchSuspension=await apiUtils.isUserSuspended(this.logMail);
                 const response = await AuthenticationService.login({
                     email: this.logMail,
                     password: this.logPass

@@ -72,7 +72,8 @@ export default {
                 if (banStatus && banStatus.ban === 1) {
                     return res.status(403).send({ error: "Il tuo account è stato bannato." });
                 } else if(banStatus && banStatus.ban === 2) {
-                    return res.status(403).send({ error: "Il tuo account è stato sospeso." });
+                    const suspendedUntil= banStatus.suspendedUntil;
+                    return res.status(403).send({ error: "Il tuo account è stato sospeso. Devi aspettare fino a" + suspendedUntil});
                 } 
 
     

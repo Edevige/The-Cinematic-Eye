@@ -59,8 +59,17 @@ export default {
 
     async isUserSuspended(req, res) {
         try {
-            const { userId } = req.params;
-            const ban = await userbans.findOne({ where: { UserId: userId } });
+            const email  = req.body.credentials;
+            console.log('EMAIL', email)
+            const user = await users.findOne({ where: { email: email } });
+            console.log('UTENTE PRIMO', user)
+            if(!user){
+                return res.status(500).send({ error: 'Credenziali Errate' });
+            }
+            console.log('UTENTE', user)
+
+            const userId=user.id
+            const ban= await userbans.findOne({ where: {UserId: userId}});
     
             if (ban) {
                 if (ban.ban === 2 && new Date() > ban.suspendedUntil) {
