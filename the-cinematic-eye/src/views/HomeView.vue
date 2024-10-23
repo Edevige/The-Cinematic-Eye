@@ -1,6 +1,16 @@
-<script setup>
+<script>
 
 import FilmCarousel from '@/components/FilmCarousel.vue';
+export default {
+    setup () {
+
+
+        return {}
+    },
+    components:{
+        FilmCarousel
+    }
+}
 </script>
 
 <template>
