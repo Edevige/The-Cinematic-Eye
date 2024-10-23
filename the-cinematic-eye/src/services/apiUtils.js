@@ -166,6 +166,12 @@ export default {
     // Funzione sospensione
     suspendUser(credentials){
         return Api().post('suspendUser', credentials)
+    },
+    uploadImage(image){
+        return Api().post('/loadImage', image, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }}) 
     }
     
 }
