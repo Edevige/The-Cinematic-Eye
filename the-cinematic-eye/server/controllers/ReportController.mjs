@@ -37,6 +37,7 @@ export default {
     // Funzione per eliminare un report
     async deleteReport(req, res) {
         try {
+          console.log(req.params.id)
             const reportId = req.params.id;
 
             // Trova il report da eliminare
