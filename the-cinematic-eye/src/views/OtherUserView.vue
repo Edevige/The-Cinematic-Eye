@@ -1,5 +1,8 @@
 <template>
   <div v-if="user">
+    <div v-if="user.profileImage" class="profileImage">
+          <img :src="'/profileImg/' + user.profileImage" />
+        </div>
     <div v-if="user.private && user.private === true">
       <h1>Profilo di {{ user.username }} è privato</h1>
     </div>
@@ -408,6 +411,19 @@ li {
   min-width: 150px; /* Imposta una larghezza minima per evitare che siano troppo piccoli */
   text-align: center;
 }
+
+.profileImage{
+        width: 120px;
+        height: 120px;
+        overflow: hidden;
+        margin: 0.5em auto;
+        img{
+            object-fit: cover;
+            width:100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+    }
 
 @media (max-width: 768px) {
   .button-container {

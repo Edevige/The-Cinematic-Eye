@@ -62,7 +62,7 @@
                                 <router-link to="/personalArea" class="d-flex flex-row align-items-center usr-menu">
                                     <div class="">
                                         <div v-if="this.$store.state.user.profileImage" class="profileImage">
-                                            <img :src="'public/profileImg/'+this.$store.state.user.profileImage"/>
+                                            <img :src="'/profileImg/'+this.$store.state.user.profileImage"/>
                                         </div>
                                         <i v-else class="bi bi-person-fill"></i>
                                     </div>

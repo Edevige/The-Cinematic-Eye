@@ -2,7 +2,12 @@
   <div class="user-list-container">
     <h2>Top User</h2>
     <div class="user-card" v-for="item in userFound" :key="item.id" @click="goToUserArea(item.Username)">
-      <div class="user-name">{{ item.Username }}</div>
+      <div class="user-name">
+        <div v-if="item.pic" class="profileImage">
+          <img :src="'/profileImg/' + item.pic" />
+        </div>
+        <h3 style="padding-left: 1em;">{{ item.Username }}</h3>
+      </div>
     </div>
   </div>
 </template>
@@ -25,7 +30,8 @@ export default {
           .slice(0, 10)
           .map(user => ({
             Username: user.Username,  
-            id: user.id
+            id: user.id,
+            pic: user.profilePic
           }));
       } catch (error) {
         console.error(error);
@@ -88,11 +94,24 @@ h2 {
   font-size: 18px;
   color: #2C3E50; /* Dark gray for user name */
   font-weight: bold;
+  display: flex;
 }
 
 .user-card:active {
   transform: translateY(-2px);
 }
+
+.profileImage{
+        width: 35px;
+        height: 35px;
+        overflow: hidden;
+        img{
+            object-fit: cover;
+            width:100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+    }
 
 @media (max-width: 768px) {
   .user-list-container {
