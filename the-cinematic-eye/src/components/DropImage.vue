@@ -7,7 +7,7 @@
 
             <label v-if="this.files.length < 1" for="fileInput" class="file-label">
                 <div v-if="isDragging">Rilascia il file qui.</div>
-                <div v-else>Trascina file o <u>clicca qui</u> per caricare.</div>
+                <div v-else>Trascina l'immagine profilo o <u>clicca qui</u> per caricarla.</div>
             </label>
             <div class="preview-container mt-4" v-if="files.length">
                 <div v-for="file in files" :key="file.name" class="preview-card">
@@ -25,10 +25,11 @@
                 </div>
             </div>
         </div>
+        <button class="align-self-center  mb-2" style="margin-top: 2em ;" type="button" @click="uploadFiles()" title="Upload">
+            <b>Carica</b>
+        </button>
     </div>
-    <button class=" ml-2" type="button" @click="uploadFiles()" title="Upload">
-        <b>Carica</b>
-    </button>
+    
 </template>
 
 <script>
@@ -85,6 +86,7 @@ export default {
 <style lang="scss" scoped>
 .main {
     display: flex;
+    flex-direction: column !important;
     flex-grow: 1;
     align-items: center;
     height: 100vh;
