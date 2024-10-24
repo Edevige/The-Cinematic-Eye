@@ -5,7 +5,7 @@ import assert, { strictEqual } from 'assert';
 let reportResponse;
 let deleteResponse;
 let errorMessage;
-
+console.log('INIZIO TEST REPORT\n')
 // Simula l'autenticazione dell'utente Pro
 Given('l\'utente Pro è autenticato e sulla pagina di report', async function () {
   // Simulazione di autenticazione o preparazione della richiesta
@@ -71,4 +71,5 @@ Then('il report dovrebbe essere eliminato con successo', function () {
   strictEqual(deleteResponse.status, 200, 'Il report non è stato eliminato con successo');
   assert(deleteResponse.data.message === 'Report eliminato con successo.', 'Messaggio di successo non corrisponde');
   console.log('Report eliminato con successo');
+  console.log('FINE TEST REPORT\n')
 });

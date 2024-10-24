@@ -8,5 +8,5 @@ Feature: Gestione dei report
 
   Scenario: Eliminazione di un report da parte di un amministratore
     Given l'amministratore è autenticato e ha accesso alla pagina degli amministratori
-    When l'amministratore elimina il report con ID 8
+    When l'amministratore elimina il report con ID 24
     Then il report dovrebbe essere eliminato con successo

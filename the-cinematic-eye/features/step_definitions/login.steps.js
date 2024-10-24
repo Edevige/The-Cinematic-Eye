@@ -4,7 +4,7 @@ import  axios  from 'axios'; // Puoi usare axios per simulare la richiesta API
 
 let loginResponse;
 let errorMessage;
-console.log('INIZIO TEST LOGIN');
+console.log('INIZIO TEST LOGIN\n');
 Given('l\'utente è sulla pagina di login', function () {
   // Qui puoi simulare il caricamento della pagina di login, se necessario
   console.log('L\'utente è sulla home');
@@ -31,7 +31,7 @@ Then('l\'utente dovrebbe essere reindirizzato alla homepage', function () {
   console.log('L\'utente è stato reindirizzato alla homepage personalizzata');
 });
 
-Then('l\'utente dovrebbe vedere un messaggio di errore {string}', function (expectedErrorMessage) {
+Then('l\'utente vedrà un messaggio di errore {string}', function (expectedErrorMessage) {
   // Confronta il messaggio di errore effettivo con quello atteso
   console.log('il sito verifica la  chiamata e avvisa utente di accesso negato');
   strictEqual(errorMessage, expectedErrorMessage);

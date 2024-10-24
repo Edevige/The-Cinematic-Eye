@@ -32,6 +32,11 @@ async function verifyGoogleToken(id_token){
 export default {
     async register(req, res){
         try {
+            const controllo= await users.findOne({where:{ email:req.body.email}})
+            if(controllo){
+                return res.status(400).send({error:'L\'email è già stata utilizzata'})
+            }
+            console.log(req.body)
             const user = await users.create(req.body);
 
             // Crea le 3 liste predefinite per l'utente appena creato
