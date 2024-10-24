@@ -22,7 +22,7 @@ export default {
         case "password":
           res.status(400).send({
             error:
-              "La password non è valida. Deve rispettare i seguenti requisiti:<br>- Contenere solo lettere e numeri<br>- Avere almeno 8 caratteri<br>- Non più di 32 caratteri",
+              "La password non è valida. Deve rispettare i seguenti requisiti: Contenere solo lettere e numeri. Avere almeno 8 caratteri. Non più di 32 caratteri",
           });
           break;
         case "username":
