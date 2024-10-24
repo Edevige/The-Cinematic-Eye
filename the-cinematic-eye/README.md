@@ -38,5 +38,6 @@ npm run lint
 ```sh
 npm install google-auth-library
 npm install nodemailer
+npm install multer
 ```
 
