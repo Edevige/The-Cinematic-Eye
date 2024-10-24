@@ -86,7 +86,7 @@
         <!-- Film Favoriti -->
         <label for="Favorites"><strong>Preferiti:</strong></label>
         <div v-if="user.favorites && user.favorites.length > 0">
-          <FilmCarouselList :filmIds="filmPreferiti" :title="'Film Preferiti'" />
+          <FilmCarouselList :filmIds="filmPreferiti" />
         </div>
         <p v-else>Non ha ancora aggiunto film favoriti.</p>
         
