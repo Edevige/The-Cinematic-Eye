@@ -5,6 +5,7 @@
 
       <div v-if="user && !loading">
 
+
         <div class="user-info">
           <label for="Username">Username: {{ user.username }}</label>
           <button class="btn-update" type="button" @click="update(1)">Aggiorna Username</button>
@@ -12,6 +13,13 @@
             <input v-model="newUsername" placeholder="Inserisci Nuovo Username" class="input-text">
             <button class="btn-confirm" type="button" @click="confermaModifica(newUsername, 1, '')">Conferma</button>
           </div>
+
+          <label for="Profile Pic">Profile Picture: 
+            <div style="margin: 0 auto" v-if="user.profileImage" class="profileImage">
+              <img :src="'/profileImg/'+user.profileImage"/>
+            </div>
+          </label>
+          <DropImage/>
 
           <!--Bio-->
           <label for="Bio">Bio: {{ user.bio || 'Nessuna bio inserita' }}</label>
@@ -251,6 +259,18 @@ label {
   margin-right: 10px;
 }
 
+.profileImage{
+        width: 65px;
+        height: 65px;
+        overflow: hidden;
+        img{
+            object-fit: cover;
+            width:100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+    }
+
 /* Migliora la visualizzazione sui dispositivi mobili */
 @media screen and (max-width: 600px) {
   .personal-area {
@@ -267,11 +287,14 @@ label {
     flex-direction: column;
     gap: 15px;
   }
+  
+  
 }
 </style>
 
 
 <script>
+import DropImage from '@/components/DropImage.vue';
 import FilmCarouselList from '@/components/FilmCarouselList.vue';
 import AuthenticationService from '@/services/AuthenticationService';
 import apiUtils from '@/services/apiUtils';
@@ -303,7 +326,8 @@ export default {
     };
   },
   components:{
-    FilmCarouselList
+    FilmCarouselList,
+    DropImage
   },
   computed: {
     // Computed property per mostrare sempre 5 pallini al posto della password

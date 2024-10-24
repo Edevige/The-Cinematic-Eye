@@ -353,7 +353,7 @@ export default {
             });
             await user.update({profileImage: req.files[0].filename});
         
-            return res.status(200).send({ result: ok, message : "Profile image successfull updated" });
+            return res.status(200).send({ result: "ok", message : "Profile image successfull updated" });
         }catch(e){
             console.log("Error trying to update profile image\n" + e);
             res.status(500).send({

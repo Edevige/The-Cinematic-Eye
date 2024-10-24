@@ -25,7 +25,7 @@
                 </div>
             </div>
         </div>
-        <button class="align-self-center  mb-2" style="margin-top: 2em ;" type="button" @click="uploadFiles()" title="Upload">
+        <button class="align-self-center  mb-2 btn-update" style="margin-top: 2em ;" type="button" @click="uploadFiles()" title="Upload">
             <b>Carica</b>
         </button>
     </div>
@@ -76,7 +76,7 @@ export default {
             files.forEach((file) => {
                 formData.append("files", file);
             });
-            formData.append("userId", "1");
+            formData.append("token", this.$store.state.token);
             apiUtils.uploadImage(formData);
         },
     },
@@ -89,7 +89,6 @@ export default {
     flex-direction: column !important;
     flex-grow: 1;
     align-items: center;
-    height: 100vh;
     justify-content: center;
     text-align: center;
 }
@@ -133,5 +132,19 @@ export default {
     border-radius: 5px;
     border: 1px solid #a2a2a2;
     background-color: #a2a2a2;
+}
+
+.btn-update, .btn-confirm, .btn-primary, .btn-secondary, .btn-danger {
+  padding: 12px 20px; /* Aumenta il padding per rendere i bottoni più accessibili */
+  margin-top: 10px;
+  border-radius: 8px; /* Maggiore arrotondamento per i bottoni */
+  cursor: pointer;
+  border: none;
+  font-size: 16px; /* Migliora la leggibilità */
+}
+
+.btn-update {
+  background-color: #66BB6A; /* Green for update buttons */
+  color: white;
 }
 </style>
