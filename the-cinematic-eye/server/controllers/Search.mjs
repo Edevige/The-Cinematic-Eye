@@ -26,7 +26,7 @@ export default {
       const user= await users.findAll();
       const found=[]
       user.forEach((i) => {
-        found.push({Username: i.username, id: i.id, private:i.private, seguiti: i.seguiti});
+        found.push({Username: i.username, id: i.id, private:i.private, seguiti: i.seguiti, profilePic: i.profileImage});
       });
       res.send(found);
     } catch (error) {
@@ -53,7 +53,7 @@ export default {
     try {
       const user = await users.findOne({
         where: { username: req.params.username },
-        attributes: ['username', 'email', 'name', 'password', 'google_id', 'subscribed', 'birthdate', 'bio', 'favorites', 'seen', 'lists', 'seguiti', 'private', 'id', 'followingList']
+        attributes: ['username', 'email', 'name', 'password', 'google_id', 'subscribed', 'birthdate', 'bio', 'favorites', 'seen', 'lists', 'seguiti', 'private', 'id', 'followingList', 'profileImage']
       });
       console.log('UTENTE TROVATO', user)
       if (!user) {

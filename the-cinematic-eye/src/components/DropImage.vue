@@ -5,7 +5,7 @@
             <input type="file" multiple name="file" id="fileInput" class="hidden-input" @change="onChange" ref="file"
                 accept=".pdf,.jpg,.jpeg,.png" />
 
-            <label for="fileInput" class="file-label">
+            <label v-if="this.files.length < 1" for="fileInput" class="file-label">
                 <div v-if="isDragging">Rilascia il file qui.</div>
                 <div v-else>Trascina file o <u>clicca qui</u> per caricare.</div>
             </label>
