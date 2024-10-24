@@ -24,6 +24,8 @@ import AdminView from '@/views/AdminView.vue'
 import TopListView from '@/views/TopListView.vue'
 import PollsView from '@/views/PollsView.vue'
 import OptionalRegisterView from '@/views/OptionalRegisterView.vue'
+import MostViewed from '@/views/MostViewed.vue' 
+import Loved from '@/views/Loved.vue'
 const routes = [
   {
     path: '/',
@@ -102,6 +104,16 @@ const routes = [
     path:'/personalArea',
     name: 'personalArea',
     component: PersonalAreaView
+  },
+  {
+    path:'/mostViewed',
+    name: 'MostViewed',
+    component: MostViewed
+  },
+  {
+    path:'/Loved',
+    name: 'Loved',
+    component: Loved
   },
   {
     path: '/OtherUser/:username',
