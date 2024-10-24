@@ -202,7 +202,7 @@ const routes = [
   },{
 
     path:'/optRegister',
-    name:'optRegiste',
+    name:'optRegister',
     component: OptionalRegisterView
   },
 ]

@@ -83,7 +83,7 @@ export default {
           this.$store.dispatch('setUser', response.data.user)
           this.$store.commit('login')
           this.$router.push({
-            name: 'home'
+            name: 'optRegister'
           })
         } catch (error) {
           this.error = error.response.data.error
