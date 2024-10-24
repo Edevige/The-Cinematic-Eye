@@ -6,6 +6,7 @@ let reportResponse;
 let deleteResponse;
 let errorMessage;
 console.log('INIZIO TEST REPORT\n')
+
 // Simula l'autenticazione dell'utente Pro
 Given('l\'utente Pro è autenticato e sulla pagina di report', async function () {
   // Simulazione di autenticazione o preparazione della richiesta
@@ -19,7 +20,7 @@ When('l\'utente inserisce la motivazione {string} e il testo {string}', async fu
     reportResponse = await axios.post('http://localhost:3000/createReport', {
       reason: reason,
       text: text,
-      userId: 11 // Simuliamo che l'utente Pro abbia ID 2
+      userId: 11 // Simuliamo che l'utente Pro abbia ID selezionato
     });
   } catch (error) {
     if (error.response && error.response.data) {
