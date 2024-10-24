@@ -2,13 +2,12 @@
     <div class="d-flex flex-column">
         <div v-if="userFound.length > 0" v-for="item in userFound">
             <router-link class="d-flex flex-row" :to="'/OtherUser/'+item.Username" style="appearance: none !important; text-decoration: none;">
-            <div class="col-1">
-                <!-- img v-if="item.poster_path != null" class="img img-fluid w-auto mt-4" :src="imgUrl + item.poster_path" />
-                <img v-if="item.poster_path == null" class="img img-fluid w-auto mt-4"
-                    src="https://placehold.co/200x300?text=No\nposter " / -->
-
+            <div class="col d-flex align-items-center " style="color:white">
+                <div v-if="item.pic" class="profileImage">
+                    <img :src="'/profileImg/' + item.pic" />
+                </div>
+                <div class="h4 m-4">{{ item.Username }}</div>
             </div>
-            <div class="col d-flex align-items-center " style="color:white"><div class="h4 m-4">{{ item.Username }}</div></div>
             </router-link>
         </div>
         <LoadingSpinner v-else/>
@@ -64,4 +63,19 @@ export default {
 
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+
+.profileImage{
+        width: 50px;
+        height: 50px;
+        overflow: hidden;
+        margin: 0 1em;
+        img{
+            object-fit: cover;
+            width:100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+    }
+
+</style>
