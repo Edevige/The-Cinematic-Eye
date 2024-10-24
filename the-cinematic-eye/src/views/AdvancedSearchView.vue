@@ -181,19 +181,150 @@ export default {
 </script>
 
 <style>
-/* Aggiungi qui i tuoi stili se necessario */
-ul {
-  list-style-type: none;
+/* Stile Generale */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #204D4F; /* Verde scuro per lo sfondo principale */
+  color: #ffffff; /* Colore del testo in bianco */
   margin: 0;
   padding: 0;
 }
 
+/* Container della Ricerca Avanzata */
+.advanced-search-container {
+  max-width: 800px;
+  margin: 3em auto;
+  padding: 2em;
+  background-color: #2D6567; /* Verde leggermente più chiaro per lo sfondo del contenitore */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Titolo della pagina */
+.advanced-search-container h1 {
+  text-align: center;
+  color: #E5F6F7; /* Colore più chiaro per il titolo */
+  margin-bottom: 1.5em;
+}
+
+/* Form Gruppo */
+.form-group {
+  margin-bottom: 1.5em;
+}
+
+/* Label del Form */
+.form-group label {
+  display: block;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+  color: #D6EDED; /* Colore leggermente più chiaro per il testo delle etichette */
+}
+
+/* Select e Input */
+.form-group select, 
+.form-group input[type="number"],
+.form-group input[type="range"] {
+  width: 100%;
+  padding: 0.7em;
+  border: none;
+  border-radius: 5px;
+  background-color: #E5F6F7; /* Bianco sporco per gli input */
+  color: #2D6567; /* Verde scuro per il testo */
+  margin-top: 0.3em;
+  font-size: 1em;
+}
+
+/* Range Slider */
+input[type="range"] {
+  cursor: pointer;
+  appearance: none;
+  height: 5px;
+  background: #A8D4D5;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #2D6567;
+}
+
+/* Bottoni */
+button[type="submit"] {
+  display: block;
+  width: 100%;
+  padding: 0.8em;
+  background-color: #E5F6F7;
+  color: #2D6567;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1em;
+}
+
+button[type="submit"]:hover {
+  background-color: #A8D4D5;
+}
+
+/* Lista dei Suggerimenti delle Persone */
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 0.5em;
+}
+
 li {
   padding: 0.5em;
+  background-color: #204D4F; /* Sfondo verde più scuro */
+  color: #ffffff;
+  border-radius: 5px;
+  margin-bottom: 0.5em;
   cursor: pointer;
 }
 
 li:hover {
-  background-color: #eee;
+  background-color: #3D7F81; /* Colore leggermente più chiaro per hover */
 }
+
+/* Persone selezionate */
+.selected-people ul {
+  margin-top: 1em;
+}
+
+.selected-people li {
+  background-color: #3D7F81;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5em;
+  border-radius: 5px;
+}
+
+.selected-people button {
+  background-color: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.selected-people button:hover {
+  color: #A8D4D5;
+}
+
+/* Media Queries per dispositivi mobili */
+@media (max-width: 768px) {
+  .advanced-search-container {
+    padding: 1.5em;
+  }
+  
+  button[type="submit"] {
+    font-size: 0.9em;
+  }
+}
+
 </style>

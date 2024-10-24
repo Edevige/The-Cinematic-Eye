@@ -65,3 +65,101 @@ export default{
 }
 
 </script>
+
+<style>
+/* Stile Generale */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #204D4F; /* Verde scuro per lo sfondo principale */
+  color: #ffffff; /* Colore del testo in bianco */
+  margin: 0;
+  padding: 0;
+}
+
+/* Stile per i film trovati */
+.d-flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.col-1, .col {
+  padding: 10px;
+}
+
+.col-1 img {
+  border-radius: 5px; /* Arrotondo i bordi delle immagini */
+}
+
+/* Immagini dei film */
+.img {
+  border: 2px solid #E5F6F7; /* Bordi leggeri bianchi per le immagini */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Aggiunge un'ombra per un effetto leggermente sollevato */
+}
+
+/* Link del Router */
+a {
+  text-decoration: none; /* Rimuovo la sottolineatura */
+  color: inherit; /* Mantengo il colore del testo */
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  transition: background-color 0.3s ease;
+  border-radius: 10px; /* Arrotondo i bordi dell'intero contenitore del film */
+}
+
+a:hover {
+  background-color: #2D6567; /* Colore di sfondo leggermente più chiaro al passaggio del mouse */
+}
+
+/* Titolo del film */
+.h4 {
+  font-size: 1.5rem;
+  color: #E5F6F7; /* Bianco chiaro per il testo */
+}
+
+.m-4 {
+  margin: 20px;
+}
+
+/* Pulsanti e Interattività */
+button {
+  background-color: #E5F6F7;
+  color: #2D6567;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #A8D4D5;
+}
+
+/* Media Queries per la reattività */
+@media (max-width: 768px) {
+  .flex-row {
+    flex-direction: column; /* Disposizione verticale per schermi piccoli */
+    align-items: center;
+  }
+
+  .col-1 img {
+    width: 100%; /* Adatta l'immagine alla larghezza disponibile */
+    max-width: 200px;
+  }
+
+  .h4 {
+    text-align: center; /* Allineo il titolo al centro */
+    font-size: 1.3rem;
+  }
+}
+</style>
