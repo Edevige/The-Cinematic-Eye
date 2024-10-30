@@ -14,7 +14,7 @@ Given('l\'utente Pro è autenticato e sulla pagina di report', async function ()
 });
 
 // Step per l'inserimento della motivazione e del testo del report
-When('l\'utente inserisce la motivazione {string} e il testo {string}', async function (reason, text) {
+When('l\'utente con la motivazione {string} e il testo {string}', async function (reason, text) {
   try {
     // Simula la creazione di un report inviando una richiesta POST al server
     reportResponse = await axios.post('http://localhost:3000/createReport', {
